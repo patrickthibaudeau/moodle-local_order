@@ -16,7 +16,7 @@ $context = context_system::instance();
 echo $OUTPUT->header();
 
 $IMPORT = new \local_order\import('/var/www/html/local/order/sample.xlsx');
-print_object($IMPORT->get_rows());
+print_object($IMPORT->clean_column_names());
 //print_object($IMPORT->clean_column_names());
 //**********************
 //*** DISPLAY FOOTER ***

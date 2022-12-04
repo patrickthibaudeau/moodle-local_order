@@ -35,6 +35,7 @@ class dashboard implements \renderable, \templatable {
         global $USER, $CFG, $DB;
 
         $data = [];
+
         return $data;
     }
 
