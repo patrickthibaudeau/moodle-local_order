@@ -289,6 +289,7 @@
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="taken from inventory name"/>
         <FIELD NAME="quantity" TYPE="int" LENGTH="7" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="cost" TYPE="number" LENGTH="12" NOTNULL="false" DEFAULT="0" SEQUENCE="false" DECIMALS="2" COMMENT="Taken form inventory"/>
+        <FIELD NAME="roomid" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
