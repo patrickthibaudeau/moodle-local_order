@@ -13,10 +13,24 @@
  * *************************************************************************
  * ************************************************************************ */
 
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->version = 2022120501;
-$plugin->component = 'local_order';
-$plugin->release = '0.0.0';
-$plugin->requires = 2022041904;
-$plugin->maturity = MATURITY_ALPHA;
+$capabilities = array(
+    /**
+     * YULearn Course capabilites
+     */
+    'local/order:import' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'manager' => CAP_ALLOW
+        )
+    ),
+    'local/order:view_reports' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'manager' => CAP_ALLOW
+        )
+    ),
+);

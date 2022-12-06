@@ -1,6 +1,7 @@
 <?php
 
 require_once('../../config.php');
+require_once('lib.php');
 
 use local_order\request;
 
@@ -18,7 +19,7 @@ $PAGE->requires->js('/local/order/js/dashboard.js', true);
 //*** DISPLAY HEADER ***
 //**********************
 echo $OUTPUT->header();
-
+local_order_navdrawer_items();
 $output = $PAGE->get_renderer('local_order');
 $dashboard = new \local_order\output\dashboard();
 echo $output->render_dashboard($dashboard);
