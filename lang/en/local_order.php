@@ -1,10 +1,13 @@
 <?php
 $string['add'] = 'Add';
+$string['building_import'] = 'Buildings Import';
 $string['buildings'] = 'Buildings';
 $string['campus'] = 'Campus';
 $string['campus_help'] = 'Import campus from excel';
 $string['campus_import'] = 'Campus Import';
 $string['campuses'] = 'Campuses';
+$string['file'] = 'File';
+$string['file_help'] = 'The importer only accepts excel files';
 $string['floors'] = 'Floors';
 $string['home'] = 'Home';
 $string['import'] = 'Import';

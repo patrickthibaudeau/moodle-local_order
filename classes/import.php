@@ -151,4 +151,71 @@ class import
 
         return true;
     }
+
+    /**
+     * @param $columns array
+     * @param $rows array
+     * @return void
+     */
+    public function building($columns, $rows) {
+        global $CFG, $DB, $USER;
+
+        // Make sure the columns exist
+        if (!in_array('campuscode', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/campus.php?err=campuscode');
+        }
+        if (!in_array('code', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/campus.php?err=code');
+        }
+        if (!in_array('name', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/campus.php?err=name');
+        }
+        if (!in_array('shortname', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/campus.php?err=shortname');
+        }
+        // Set the proper column key
+        $campus_code = 0;
+        $code = 0;
+        $name = 0;
+        $short_name = 0;
+        // Set the proper key value for the columns
+        foreach($columns as $key => $name) {
+            switch ($name) {
+                case 'campuscode':
+                    $campus_code = $key;
+                    break;
+                case 'code':
+                    $code = $key;
+                    break;
+                case 'name':
+                    $name = $key;
+                    break;
+                case 'shortname':
+                    $short_name = $key;
+                    break;
+            }
+        }
+
+        // Import campus data if it doesn;t already exists.
+        for($i = 1; $i < count($rows) - 1; $i++) {
+            if (!$found = $DB->get_record(TABLE_BUILDING, ['code' => trim($rows[$i][$code])] )) {
+                // Insert into table
+                $params = new \stdClass();
+                $params->campus_code = trim($rows[$i][$campus_code]);
+                $params->code = trim($rows[$i][$code]);
+                $params->name = trim($rows[$i][$name]);
+                $params->shortname = trim($rows[$i][$short_name]);
+                $params->timecreated = time();
+                $params->timemodified = time();
+                $params->usermodified = $USER->id;
+
+                $DB->insert_record(TABLE_BUILDING, $params);
+                notification::success('Building ' . $params->name . ' has been added.');
+            } else {
+                notification::WARNING('Building ' . $rows[$i][$name] . ' already exists.');
+            }
+        }
+
+        return true;
+    }
 }

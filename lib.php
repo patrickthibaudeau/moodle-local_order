@@ -50,7 +50,7 @@ function local_order_navdrawer_items()
         navdrawer::add(
             get_string('buildings', 'local_order'),
             null,
-            'https://microsoft.com',
+            $CFG->wwwroot . '/local/order/import/building.php',
             'fas fa-building'),
         navdrawer::add(
             get_string('floors', 'local_order'),
