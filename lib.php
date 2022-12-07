@@ -58,6 +58,11 @@ function local_order_navdrawer_items()
             $CFG->wwwroot . '/local/order/import/floor.php',
             'fas fa-grip-lines'),
         navdrawer::add(
+            get_string('room_types', 'local_order'),
+            null,
+            $CFG->wwwroot . '/local/order/import/room_type.php',
+            'fas fa-grip-lines'),
+        navdrawer::add(
             get_string('rooms', 'local_order'),
             null,
             'https://microsoft.com',

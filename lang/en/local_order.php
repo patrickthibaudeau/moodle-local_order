@@ -20,6 +20,9 @@ $string['status'] = 'Status';
 $string['pluginname'] = 'Ordering System';
 $string['reports'] = 'Reports';
 $string['required_field'] = 'This field is required';
+$string['room_type'] = 'Room type';
+$string['room_type_import'] = 'Room Type Import';
+$string['room_types'] = 'Room types';
 $string['rooms'] = 'Rooms';
 $string['select'] = 'Select';
 

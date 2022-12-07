@@ -83,7 +83,8 @@ class import
      * Returns array for colum names
      * @return array
      */
-    public function clean_column_names() {
+    public function clean_column_names()
+    {
         $columns = $this->get_first_row();
         $column_names = [];
         foreach ($columns as $key => $column) {
@@ -105,7 +106,8 @@ class import
      * @param $rows array
      * @return void
      */
-    public function campus($columns, $rows) {
+    public function campus($columns, $rows)
+    {
         global $CFG, $DB, $USER;
 
         // Make sure the columns exist
@@ -119,7 +121,7 @@ class import
         $code = 0;
         $name = 1;
         // Set the proper key value for the columns
-        foreach($columns as $key => $name) {
+        foreach ($columns as $key => $name) {
             switch ($name) {
                 case 'code':
                     $code = $key;
@@ -131,8 +133,8 @@ class import
         }
 
         // Import campus data if it doesn;t already exists.
-        for($i = 1; $i < count($rows) - 1; $i++) {
-            if (!$found = $DB->get_record(TABLE_CAMPUS, ['code' => trim($rows[$i][$code])] )) {
+        for ($i = 1; $i < count($rows) - 1; $i++) {
+            if (!$found = $DB->get_record(TABLE_CAMPUS, ['code' => trim($rows[$i][$code])])) {
                 // Insert into table
                 $params = new \stdClass();
                 $params->code = trim($rows[$i][$code]);
@@ -156,7 +158,8 @@ class import
      * @param $rows array
      * @return void
      */
-    public function building($columns, $rows) {
+    public function building($columns, $rows)
+    {
         global $CFG, $DB, $USER;
 
         // Make sure the columns exist
@@ -178,7 +181,7 @@ class import
         $name = 0;
         $short_name = 0;
         // Set the proper key value for the columns
-        foreach($columns as $key => $name) {
+        foreach ($columns as $key => $name) {
             switch ($name) {
                 case 'campuscode':
                     $campus_code = $key;
@@ -196,8 +199,8 @@ class import
         }
 
         // Import campus data if it doesn;t already exists.
-        for($i = 1; $i < count($rows) - 1; $i++) {
-            if (!$found = $DB->get_record(TABLE_BUILDING, ['code' => trim($rows[$i][$code])] )) {
+        for ($i = 1; $i < count($rows) - 1; $i++) {
+            if (!$found = $DB->get_record(TABLE_BUILDING, ['code' => trim($rows[$i][$code])])) {
                 // Insert into table
                 $params = new \stdClass();
                 $params->campus_code = trim($rows[$i][$campus_code]);
@@ -223,7 +226,8 @@ class import
      * @param $rows array
      * @return void
      */
-    public function floor($columns, $rows) {
+    public function floor($columns, $rows)
+    {
         global $CFG, $DB, $USER;
 
         // Make sure the columns exist
@@ -237,7 +241,7 @@ class import
         $code = 0;
         $building_code = 1;
         // Set the proper key value for the columns
-        foreach($columns as $key => $name) {
+        foreach ($columns as $key => $name) {
             switch ($name) {
                 case 'code':
                     $code = $key;
@@ -249,8 +253,8 @@ class import
         }
 
         // Import campus data if it doesn;t already exists.
-        for($i = 1; $i < count($rows) - 1; $i++) {
-            if (!$found = $DB->get_record(TABLE_FLOOR, ['building_code' => trim($rows[$i][$building_code]),'code' => trim($rows[$i][$code])] )) {
+        for ($i = 1; $i < count($rows) - 1; $i++) {
+            if (!$found = $DB->get_record(TABLE_FLOOR, ['building_code' => trim($rows[$i][$building_code]), 'code' => trim($rows[$i][$code])])) {
                 // Insert into table
                 $params = new \stdClass();
                 $params->code = trim($rows[$i][$code]);
@@ -260,12 +264,57 @@ class import
                 $params->usermodified = $USER->id;
 
                 $DB->insert_record(TABLE_FLOOR, $params);
-                notification::success('Floor ' . $params->code . ' for building code ' . $params->building_code .' has been added.');
+                notification::success('Floor ' . $params->code . ' for building code ' . $params->building_code . ' has been added.');
             } else {
-                notification::WARNING('Floor ' . $rows[$i][$code] . ' for building code ' . $rows[$i][$building_code]  . ' already exists.');
+                notification::WARNING('Floor ' . $rows[$i][$code] . ' for building code ' . $rows[$i][$building_code] . ' already exists.');
             }
         }
 
+        return true;
+    }
+
+    /**
+     * @param $columns array
+     * @param $rows array
+     * @return void
+     */
+    public function room_type($columns, $rows)
+    {
+        global $CFG, $DB, $USER;
+        raise_memory_limit(MEMORY_UNLIMITED);
+        // Make sure the columns exist
+        if (!in_array('name', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/campus.php?err=name');
+        }
+
+        // Set the proper column key
+        $name1 = 0;
+        // Set the proper key value for the columns
+        foreach ($columns as $key => $name) {
+            switch ($name) {
+                case 'name':
+                    $name1 = $key;
+                    break;
+            }
+        }
+
+        // Import campus data if it doesn;t already exists.
+        for ($i = 1; $i < count($rows) - 1; $i++) {
+            if (!$found = $DB->get_record(TABLE_ROOM_TYPE, ['name' => trim($rows[$i][$name1])])) {
+                // Insert into table
+                $params = new \stdClass();
+                $params->name = trim($rows[$i][$name1]);
+                $params->timecreated = time();
+                $params->timemodified = time();
+                $params->usermodified = $USER->id;
+
+                $DB->insert_record(TABLE_ROOM_TYPE, $params);
+                notification::success('Room type ' . $params->name . ' has been added.');
+            } else {
+                notification::WARNING('Room type ' . $rows[$i][$name1] . ' already exists.');
+            }
+        }
+        raise_memory_limit(MEMORY_STANDARD);
         return true;
     }
 }
