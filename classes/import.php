@@ -17,7 +17,6 @@ class import
      */
     public function __construct($file)
     {
-
         // Make sure we have an .xlsx file
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $file_info = finfo_file($finfo, $file);
@@ -111,10 +110,10 @@ class import
 
         // Make sure the columns exist
         if (!in_array('code', $columns)) {
-            redirect($CFG->wwwroot . '/local/order/import/campus.php?err=1');
+            redirect($CFG->wwwroot . '/local/order/import/campus.php?err=code');
         }
         if (!in_array('name', $columns)) {
-            redirect($CFG->wwwroot . '/local/order/import/campus.php?err=2');
+            redirect($CFG->wwwroot . '/local/order/import/campus.php?err=name');
         }
         // Set the proper column key
         $code = 0;
@@ -213,6 +212,57 @@ class import
                 notification::success('Building ' . $params->name . ' has been added.');
             } else {
                 notification::WARNING('Building ' . $rows[$i][$name] . ' already exists.');
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $columns array
+     * @param $rows array
+     * @return void
+     */
+    public function floor($columns, $rows) {
+        global $CFG, $DB, $USER;
+
+        // Make sure the columns exist
+        if (!in_array('code', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/campus.php?err=code');
+        }
+        if (!in_array('building_code', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/campus.php?err=building_code');
+        }
+        // Set the proper column key
+        $code = 0;
+        $building_code = 1;
+        // Set the proper key value for the columns
+        foreach($columns as $key => $name) {
+            switch ($name) {
+                case 'code':
+                    $code = $key;
+                    break;
+                case 'building_code':
+                    $building_code = $key;
+                    break;
+            }
+        }
+
+        // Import campus data if it doesn;t already exists.
+        for($i = 1; $i < count($rows) - 1; $i++) {
+            if (!$found = $DB->get_record(TABLE_FLOOR, ['building_code' => trim($rows[$i][$building_code]),'code' => trim($rows[$i][$code])] )) {
+                // Insert into table
+                $params = new \stdClass();
+                $params->code = trim($rows[$i][$code]);
+                $params->building_code = trim($rows[$i][$building_code]);
+                $params->timecreated = time();
+                $params->timemodified = time();
+                $params->usermodified = $USER->id;
+
+                $DB->insert_record(TABLE_FLOOR, $params);
+                notification::success('Floor ' . $params->code . ' for building code ' . $params->building_code .' has been added.');
+            } else {
+                notification::WARNING('Floor ' . $rows[$i][$code] . ' for building code ' . $rows[$i][$building_code]  . ' already exists.');
             }
         }
 

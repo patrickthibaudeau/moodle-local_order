@@ -55,7 +55,7 @@ function local_order_navdrawer_items()
         navdrawer::add(
             get_string('floors', 'local_order'),
             null,
-            'https://microsoft.com',
+            $CFG->wwwroot . '/local/order/import/floor.php',
             'fas fa-grip-lines'),
         navdrawer::add(
             get_string('rooms', 'local_order'),

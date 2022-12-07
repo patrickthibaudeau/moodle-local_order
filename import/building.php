@@ -39,7 +39,7 @@ if (!$id) {
         }
 
         $name = $mform->get_new_filename('file');
-        $full_path = $path . "/$name";
+        $full_path = $path . "$name";
         $success = $mform->save_file('file', $full_path);
 
         $IMPORT = new import($full_path);

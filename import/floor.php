@@ -2,7 +2,7 @@
 
 require_once("../../../config.php");
 
-require_once($CFG->dirroot . "/local/order/classes/forms/import_campus.php");
+require_once($CFG->dirroot . "/local/order/classes/forms/import_floor.php");
 
 use core\notification;
 use local_order\base;
@@ -19,14 +19,14 @@ $context = CONTEXT_SYSTEM::instance();
 require_login(1, false);
 
 base::page(
-    '/local/order/import/campus.php',
-    get_string('campus_import', 'local_order'),
-    get_string('campus_import', 'local_order'),
+    '/local/order/import/building.php',
+    get_string('floor_import', 'local_order'),
+    get_string('floor_import', 'local_order'),
     $context
 );
 
 if (!$id) {
-    $mform = new \local_order\import_campus();
+    $mform = new \local_order\import_floor();
 
     if ($mform->is_cancelled()) {
         //Handle form cancel operation, if cancel button is present on form
@@ -49,7 +49,7 @@ if (!$id) {
         //Remove file
         unlink($full_path);
         echo $OUTPUT->header();
-        if ($IMPORT->campus($first_row, $rows)) {
+        if ($IMPORT->floor($first_row, $rows)) {
             echo '<a href="' . $CFG->wwwroot . '/local/order/index.php" class="btn btn-primary">' .
                 get_string('home', 'local_order') . '</a>';
         }
@@ -58,16 +58,36 @@ if (!$id) {
         die;
     } else {
         echo $OUTPUT->header();
+//**********************
+//*** DISPLAY HEADER ***
+//
 
         if ($err) {
             notification::error("The file is missing column $err");
         }
         $mform->display();
 
+//**********************
+//*** DISPLAY FOOTER ***
+//**********************
         echo $OUTPUT->footer();
         die;
     }
 }
+
+echo $OUTPUT->header();
+//**********************
+//*** DISPLAY HEADER ***
+//
+echo "<div class='row'>";
+echo "<div class='col-md-4'>";
+Echo 'Stuff';
+echo "</div>";
+echo "</div>";
+//**********************
+//*** DISPLAY FOOTER ***
+//**********************
+echo $OUTPUT->footer();
 
 
 

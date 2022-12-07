@@ -13,7 +13,7 @@ class import_building extends \moodleform
 
     protected function definition()
     {
-        global $DB;
+        global $DB, $OUTPUT;
 
         // Create form object
         $mform = &$this->_form;
@@ -27,6 +27,8 @@ class import_building extends \moodleform
         //Header: General
         $mform->addElement('header', 'request_data', get_string('buildings', 'local_order'));
 
+        $samples = $OUTPUT->render_from_template('local_order/import_samples',[]);
+        $mform->addElement('html', $samples);
 
         // Summary
         $mform->addElement('filepicker', 'file', get_string('file', 'local_order'), null, base::get_file_picker_import_ptions($context));

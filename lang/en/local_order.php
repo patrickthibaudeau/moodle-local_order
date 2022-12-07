@@ -6,8 +6,11 @@ $string['campus'] = 'Campus';
 $string['campus_help'] = 'Import campus from excel';
 $string['campus_import'] = 'Campus Import';
 $string['campuses'] = 'Campuses';
+$string['download_sample_files'] = 'Download sample Excel files';
 $string['file'] = 'File';
 $string['file_help'] = 'The importer only accepts excel files';
+$string['floor'] = 'Floor';
+$string['floor_import'] = 'Floor Import';
 $string['floors'] = 'Floors';
 $string['home'] = 'Home';
 $string['import'] = 'Import';
@@ -18,6 +21,7 @@ $string['pluginname'] = 'Ordering System';
 $string['reports'] = 'Reports';
 $string['required_field'] = 'This field is required';
 $string['rooms'] = 'Rooms';
+$string['select'] = 'Select';
 
 //Capabilities
 $string['order:import'] = 'Import data';

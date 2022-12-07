@@ -1,0 +1,26 @@
+<div class="row mb-3">
+    <div class="col-md-3">
+        <div class="alert alert-info">
+            <label for="local_order_sample_files">{{#str}}download_sample_files, local_order{{/str}}</label>
+            <select id="local_order_sample_files" class="form-control">
+                <option value="">{{#str}}select, local_order{{/str}}</option>
+                <option value="{{config.wwwroot}}/local/order/samples/campuses_sample.xlsx">{{#str}}
+                    campuses, local_order{{/str}}</option>
+                <option value="{{config.wwwroot}}/local/order/samples/buildings_sample.xlsx">{{#str}}
+                    buildings, local_order{{/str}}</option>
+                <option value="{{config.wwwroot}}/local/order/samples/floors_sample.xlsx">{{#str}}
+                    floors, local_order{{/str}}</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#local_order_sample_files').on('change', function () {
+            if ($(this).val() !== '') {
+                window.location.href = $(this).val();
+            }
+        });
+    })
+</script>
