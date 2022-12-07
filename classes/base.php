@@ -67,14 +67,19 @@ class base
      * @return array
      * @global \stdClass $CFG
      */
-    public static function getFileManagerOptions($context, $maxfiles = 1)
+    public static function get_file_manager_options($context, $maxfiles = 1)
     {
         global $CFG;
         return array('subdirs' => 0, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => $maxfiles);
     }
 
+    public static function get_file_picker_import_ptions($context, $maxfiles = 1)
+    {
+        global $CFG;
+        return array('maxbytes' => $CFG->maxbytes, 'accepted_types' => ".xlsx");
+    }
 
-    public static function getEditorOptions($context)
+    public static function get_editor_options($context)
     {
         global $CFG;
         return array('subdirs' => 1, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => -1,

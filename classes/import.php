@@ -100,4 +100,55 @@ class import
 
         return $column_names;
     }
+
+    /**
+     * @param $columns array
+     * @param $rows array
+     * @return void
+     */
+    public function campus($columns, $rows) {
+        global $CFG, $DB, $USER;
+
+        // Make sure the columns exist
+        if (!in_array('code', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/campus.php?err=1');
+        }
+        if (!in_array('name', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/campus.php?err=2');
+        }
+        // Set the proper column key
+        $code = 0;
+        $name = 1;
+        // Set the proper key value for the columns
+        foreach($columns as $key => $name) {
+            switch ($name) {
+                case 'code':
+                    $code = $key;
+                    break;
+                case 'name':
+                    $name = $key;
+                    break;
+            }
+        }
+
+        // Reset rows array
+        for($i = 1; $i < count($rows) - 1; $i++) {
+            if (!$found = $DB->get_record(TABLE_CAMPUS, ['code' => trim($rows[$i][$code])] )) {
+                // Insert into table
+                $params = new \stdClass();
+                $params->code = trim($rows[$i][$code]);
+                $params->name = trim($rows[$i][$name]);
+                $params->timecreated = time();
+                $params->timemodified = time();
+                $params->usermodified = $USER->id;
+
+                $DB->insert_record(TABLE_CAMPUS, $params);
+                notification::success('Campus ' . $params->name . ' has been added.');
+            } else {
+                notification::WARNING('Campus ' . $rows[$i][$name] . ' already exists.');
+            }
+        }
+
+        return true;
+    }
 }
