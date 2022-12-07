@@ -131,7 +131,7 @@ class import
             }
         }
 
-        // Reset rows array
+        // Import campus data if it doesn;t already exists.
         for($i = 1; $i < count($rows) - 1; $i++) {
             if (!$found = $DB->get_record(TABLE_CAMPUS, ['code' => trim($rows[$i][$code])] )) {
                 // Insert into table
