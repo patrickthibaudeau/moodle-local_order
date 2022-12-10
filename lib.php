@@ -45,27 +45,27 @@ function local_order_navdrawer_items()
         navdrawer::add(
             get_string('campuses', 'local_order'),
             null,
-            $CFG->wwwroot . '/local/order/import/campus.php',
+            $CFG->wwwroot . '/local/order/import/index.php?import=campus',
             'fas fa-university'),
         navdrawer::add(
             get_string('buildings', 'local_order'),
             null,
-            $CFG->wwwroot . '/local/order/import/building.php',
+            $CFG->wwwroot . '/local/order/import/index.php?import=building',
             'fas fa-building'),
         navdrawer::add(
             get_string('floors', 'local_order'),
             null,
-            $CFG->wwwroot . '/local/order/import/floor.php',
+            $CFG->wwwroot . '/local/order/import/index.php?import=floor',
             'fas fa-grip-lines'),
         navdrawer::add(
             get_string('room_types', 'local_order'),
             null,
-            $CFG->wwwroot . '/local/order/import/room_type.php',
+            $CFG->wwwroot . '/local/order/import/index.php?import=room_type',
             'fas fa-grip-lines'),
         navdrawer::add(
             get_string('rooms', 'local_order'),
             null,
-            'https://microsoft.com',
+            $CFG->wwwroot . '/local/order/import/index.php?import=room',
             'fas fa-door-open'),
     ];
 

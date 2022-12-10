@@ -14,6 +14,7 @@ $string['floor_import'] = 'Floor Import';
 $string['floors'] = 'Floors';
 $string['home'] = 'Home';
 $string['import'] = 'Import';
+$string['import_type'] = 'Import type';
 $string['inventory'] = 'Inventory';
 $string['number_of_events_today'] = 'Number of events today';
 $string['status'] = 'Status';
@@ -25,6 +26,8 @@ $string['room_type_import'] = 'Room Type Import';
 $string['room_types'] = 'Room types';
 $string['rooms'] = 'Rooms';
 $string['select'] = 'Select';
+$string['select_other_import'] = 'Please select another import type';
+$string['table_must_have_data'] = 'The following tables must have data';
 
 //Capabilities
 $string['order:import'] = 'Import data';

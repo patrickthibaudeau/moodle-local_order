@@ -15,21 +15,22 @@ class import
     /**
      * @param $file string  Path to file
      */
-    public function __construct($file)
+    public function __construct($file = '')
     {
-        // Make sure we have an .xlsx file
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $file_info = finfo_file($finfo, $file);
+        if ($file) {
+            // Make sure we have an .xlsx file
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $file_info = finfo_file($finfo, $file);
 
-        if ($file_info == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
-            $spread_sheet = $reader->load($file);
-            $this->worksheet = $spread_sheet->getActiveSheet();;
-        } else {
-            notification::error('You must upload an xlsx file');
-            $this->worksheet = false;
+            if ($file_info == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+                $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+                $spread_sheet = $reader->load($file);
+                $this->worksheet = $spread_sheet->getActiveSheet();;
+            } else {
+                notification::error('You must upload an xlsx file');
+                $this->worksheet = false;
+            }
         }
-
     }
 
     /**
@@ -102,6 +103,40 @@ class import
     }
 
     /**
+     * Verifiy that certain tables have data before import can be performed.
+     * @param $import_type
+     * @return void
+     */
+    public function can_import($import_type) {
+        global $DB;
+
+        switch ($import_type) {
+            case 'floor':
+                if ($buildings = $DB->count_records(TABLE_BUILDING, [])) {
+                    return true;
+                } else {
+                    $data = [TABLE_BUILDING];
+                    return $data;
+                }
+                break;
+            case 'room':
+                $buildings = $DB->count_records(TABLE_BUILDING, []);
+                $floors = $DB->count_records(TABLE_FLOOR, []);
+                $room_types = $DB->count_records(TABLE_ROOM_TYPE, []);
+                if ($buildings && $floors && $room_types) {
+                    return true;
+                } else {
+                    $data = [TABLE_BUILDING, TABLE_FLOOR, TABLE_ROOM_TYPE];
+                    return $data;
+                }
+                break;
+            default :
+                return true;
+                break;
+        }
+    }
+
+    /**
      * @param $columns array
      * @param $rows array
      * @return void
@@ -112,10 +147,10 @@ class import
 
         // Make sure the columns exist
         if (!in_array('code', $columns)) {
-            redirect($CFG->wwwroot . '/local/order/import/campus.php?err=code');
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=code');
         }
         if (!in_array('name', $columns)) {
-            redirect($CFG->wwwroot . '/local/order/import/campus.php?err=name');
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=name');
         }
         // Set the proper column key
         $code = 0;
@@ -164,16 +199,16 @@ class import
 
         // Make sure the columns exist
         if (!in_array('campuscode', $columns)) {
-            redirect($CFG->wwwroot . '/local/order/import/campus.php?err=campuscode');
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=campuscode');
         }
         if (!in_array('code', $columns)) {
-            redirect($CFG->wwwroot . '/local/order/import/campus.php?err=code');
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=code');
         }
         if (!in_array('name', $columns)) {
-            redirect($CFG->wwwroot . '/local/order/import/campus.php?err=name');
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=name');
         }
         if (!in_array('shortname', $columns)) {
-            redirect($CFG->wwwroot . '/local/order/import/campus.php?err=shortname');
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=shortname');
         }
         // Set the proper column key
         $campus_code = 0;
@@ -232,10 +267,10 @@ class import
 
         // Make sure the columns exist
         if (!in_array('code', $columns)) {
-            redirect($CFG->wwwroot . '/local/order/import/campus.php?err=code');
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=code');
         }
         if (!in_array('building_code', $columns)) {
-            redirect($CFG->wwwroot . '/local/order/import/campus.php?err=building_code');
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=building_code');
         }
         // Set the proper column key
         $code = 0;
@@ -284,7 +319,7 @@ class import
         raise_memory_limit(MEMORY_UNLIMITED);
         // Make sure the columns exist
         if (!in_array('name', $columns)) {
-            redirect($CFG->wwwroot . '/local/order/import/campus.php?err=name');
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=name');
         }
 
         // Set the proper column key
@@ -314,6 +349,106 @@ class import
                 notification::WARNING('Room type ' . $rows[$i][$name1] . ' already exists.');
             }
         }
+        raise_memory_limit(MEMORY_STANDARD);
+        return true;
+    }
+
+    /**
+     * @param $columns array
+     * @param $rows array
+     * @return void
+     */
+    public function room($columns, $rows)
+    {
+        global $CFG, $DB, $USER;
+        raise_memory_limit(MEMORY_UNLIMITED);
+        // Make sure the columns exist
+        if (!in_array('name', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=name');
+        }
+        if (!in_array('building_code', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=building_code');
+        }
+        if (!in_array('floor_code', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=floor_code');
+        }
+        if (!in_array('code', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=code');
+        }
+        if (!in_array('room_type', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=room_type');
+        }
+
+        // Set the proper column key
+        $name1 = 0;
+        $building_code = 0;
+        $floor_code = 0;
+        $code = 0;
+        $room_type = 0;
+        $capacity = 0;
+        // Set the proper key value for the columns
+        foreach ($columns as $key => $name) {
+            switch ($name) {
+                case 'name':
+                    $name1 = $key;
+                    break;
+                case 'building_code':
+                    $building_code = $key;
+                    break;
+                case 'floor_code':
+                    $floor_code = $key;
+                    break;
+                case 'code':
+                    $code = $key;
+                    break;
+                case 'room_type':
+                    $room_type = $key;
+                    break;
+                case 'capacity':
+                    $capacity = $key;
+                    break;
+            }
+        }
+
+        ob_start();
+        // Import data if it doesn't already exists.
+        for ($i = 1; $i < count($rows) - 1; $i++) {
+            // Get room floor
+            $floor = $DB->get_record(TABLE_FLOOR,
+                [
+                    'building_code' => trim($rows[$i][$building_code]),
+                    'code' => trim($rows[$i][$floor_code])
+                ]);
+            $room_type_name = trim($rows[$i][$room_type]);
+            // Get room type
+            $room_type_data = $DB->get_record(TABLE_ROOM_TYPE, ['name' => $room_type_name]);
+
+            if (!$found = $DB->get_record(TABLE_ROOM,
+                [
+                    'floor_id' => $floor->id,
+                    'room_type_id' => $room_type_data->id,
+                    'code' => trim($rows[$i][$code])
+                ])) {
+                // Insert into table
+                $params = new \stdClass();
+                $params->floor_id = $floor->id;
+                $params->room_type_id = $room_type_data->id;
+                $params->code = trim($rows[$i][$code]);
+                $params->name = trim($rows[$i][$name1]);
+                $params->capacity = trim($rows[$i][$capacity]);
+                $params->timecreated = time();
+                $params->timemodified = time();
+                $params->usermodified = $USER->id;
+
+                $DB->insert_record(TABLE_ROOM, $params);
+                notification::success('Room ' . $params->code . ' has been added.');
+            } else {
+                notification::WARNING('Room ' . $rows[$i][$code] . ' already exists.');
+            }
+            ob_flush();
+            flush();
+        }
+        ob_clean();
         raise_memory_limit(MEMORY_STANDARD);
         return true;
     }
