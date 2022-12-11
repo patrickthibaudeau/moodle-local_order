@@ -1,0 +1,32 @@
+<div id="local_order_inventory_instructions" class="row mb-3">
+    <div class="col-md-6">
+        <div class="alert alert-info">
+            <label for="local_order_inventory_import_instructions">{{#str}}instructions, local_order{{/str}}</label>
+            <div id="local_order_inventory_import_instructions">
+                {{#str}}inventory_instructions, local_order, {{import}}{{/str}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#local_order_inventory_instructions').hide();
+        $('#id_inventory_category').on('change', function () {
+            if ($(this).val() !== '') {
+                $('.local_order_type').html($('#id_inventory_category option:selected').text());
+                $('#local_order_inventory_instructions').show();
+            } else {
+                $('#local_order_inventory_instructions').hide();
+            }
+        });
+
+        $('#id_import_type').on('change', function(){
+            if($(this).val() == 'inventory') {
+                $('#local_order_inventory_instructions').show();
+            } else {
+                $('#local_order_inventory_instructions').hide();
+            }
+        })
+    })
+</script>

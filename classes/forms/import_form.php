@@ -1,7 +1,9 @@
 <?php
+
 namespace local_order;
 
 use local_order\base;
+use local_order\inventory_categories;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -21,6 +23,8 @@ class import_form extends \moodleform
         $context = \CONTEXT_SYSTEM::instance();
 
         $import_types = [
+            'inventory' => 'Inventory',
+            'organization' => 'Organization',
             'campus' => 'Campus',
             'building' => 'Building',
             'floor' => 'Floor',
@@ -28,25 +32,41 @@ class import_form extends \moodleform
             'room' => 'Room',
         ];
 
-        $samples = $OUTPUT->render_from_template('local_order/import_samples',[]);
+        $samples = $OUTPUT->render_from_template('local_order/import_samples', []);
         $mform->addElement('html', $samples);
 
         $import = optional_param('import', 'campus', PARAM_TEXT);
 
         $mform->addElement('hidden', 'id');
-//        $mform->setDefault('id', 1);
         $mform->setType('id', PARAM_INT);
 
+        $mform->addElement('hidden', 'import');
+        $mform->setType('import', PARAM_TEXT);
+        $mform->setDefault('import', $import);
 
 
         //Header: General
         $mform->addElement('header', 'request_data', get_string('import', 'local_order'));
-
-
-
-        $mform->addElement('select', 'import_type', get_string('import_type', 'local_order'),$import_types);
+        // Import type select
+        $mform->addElement('select', 'import_type', get_string('import_type', 'local_order'), $import_types);
         $mform->setType('import_type', PARAM_TEXT);
-        $mform->setDefault('import_type',$import);
+        $mform->setDefault('import_type', $import);
+        // If import type equals inventory add select field
+
+        $INVENTORY_CATEGORIES = new \local_order\inventory_categories();
+        $inventory_categories = $INVENTORY_CATEGORIES->get_select_array();
+        $mform->addElement('select', 'inventory_category', get_string('inventory_category', 'local_order'), $inventory_categories);
+        $mform->setType('inventory_category', PARAM_INT);
+        if ($import == 'inventory') {
+            $mform->addRule('inventory_category', get_string('required_field', 'local_order'), 'required');
+        }
+        $mform->addHelpButton('inventory_category', 'inventory_category', 'local_order');
+        $mform->hideIf('inventory_category', 'import_type', 'neq', 'inventory');
+
+        // Instructiions for AV inventory upload
+        $inventory_import = $OUTPUT->render_from_template('local_order/inventory_import', []);
+        $mform->addElement('html', $inventory_import);
+
 
         // Summary
         $mform->addElement('filepicker', 'file', get_string('file', 'local_order'), null, base::get_file_picker_import_ptions($context));

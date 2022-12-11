@@ -20,7 +20,7 @@ $context = CONTEXT_SYSTEM::instance();
 require_login(1, false);
 
 base::page(
-    '/local/order/import/building.php',
+    '/local/order/import/index.php?import=' . $import,
     get_string('import', 'local_order'),
     get_string('import', 'local_order'),
     $context
@@ -42,6 +42,7 @@ if (!$id) {
         $name = $mform->get_new_filename('file');
         $full_path = $path . "$name";
         $success = $mform->save_file('file', $full_path, true);
+
 
         $IMPORT = new import($full_path);
         $first_row = $IMPORT->get_first_row();
@@ -82,6 +83,17 @@ if (!$id) {
                     echo '<a href="' . $CFG->wwwroot . '/local/order/import/index.php?import=room" class="btn btn-primary">' .
                         get_string('import', 'local_order') . '</a>';
 
+                break;
+            case 'inventory':
+                if ($data->inventory_category) {
+                    $IMPORT->inventory($clean_columns, $data->inventory_category);
+                    echo '<a href="' . $CFG->wwwroot . '/local/order/import/index.php?import=inventory" class="btn btn-primary">' .
+                        get_string('import', 'local_order') . '</a>';
+                } else {
+                    echo '<div class="alert alert-danger mb-3">' . get_string('inventory_category_required', 'local_order') . '</div>';
+                    echo '<a href="' . $CFG->wwwroot . '/local/order/import/index.php?import=inventory" class="btn btn-primary">' .
+                        get_string('import', 'local_order') . '</a>';
+                }
                 break;
         }
         raise_memory_limit(MEMORY_STANDARD);

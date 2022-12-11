@@ -452,4 +452,44 @@ class import
         raise_memory_limit(MEMORY_STANDARD);
         return true;
     }
+
+    /**
+     * @param $columns array
+     * @param $rows array
+     * @return void
+     */
+    public function inventory($columns, $inventory_category)
+    {
+        global $CFG, $DB, $USER;
+        raise_memory_limit(MEMORY_UNLIMITED);
+
+        ob_start();
+        // Import data if it doesn't already exists.
+        foreach ($columns as $inventory) {
+
+            if (!$found = $DB->get_record(TABLE_INVENTORY, [
+                'inventorycategoryid' => $inventory_category,
+                'code' => $inventory->shortname
+            ])) {
+                // Insert into table
+                $params = new \stdClass();
+                $params->inventorycategoryid = $inventory_category;
+                $params->name = $inventory->fullname;
+                $params->code = $inventory->shortname;
+                $params->timecreated = time();
+                $params->timemodified = time();
+                $params->usermodified = $USER->id;
+
+                $DB->insert_record(TABLE_INVENTORY, $params);
+                notification::success('Inventory item ' . $params->code . ' has been added.');
+            } else {
+                notification::WARNING('Inventory item ' . $inventory->code . ' already exists.');
+            }
+            ob_flush();
+            flush();
+        }
+        ob_clean();
+        raise_memory_limit(MEMORY_STANDARD);
+        return true;
+    }
 }

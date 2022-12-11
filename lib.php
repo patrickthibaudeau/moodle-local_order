@@ -40,8 +40,13 @@ function local_order_navdrawer_items()
         navdrawer::add(
             get_string('inventory', 'local_order'),
             null,
-            'https://google.ca',
+            '/local/order/import/index.php?import=inventory',
             'fas fa-boxes'),
+        navdrawer::add(
+            get_string('organizations', 'local_order'),
+            null,
+            '/local/order/import/index.php?import=organization',
+            'fas fa-layer-group'),
         navdrawer::add(
             get_string('campuses', 'local_order'),
             null,
@@ -66,7 +71,8 @@ function local_order_navdrawer_items()
             get_string('rooms', 'local_order'),
             null,
             $CFG->wwwroot . '/local/order/import/index.php?import=room',
-            'fas fa-door-open'),
+            'fas fa-door-open',
+            true),
     ];
 
     // Only add import submenu if user has capability
@@ -75,7 +81,8 @@ function local_order_navdrawer_items()
             get_string('import', 'local_order'),
             $import_menu,
             '#',
-            'fas fa-upload');
+            'fas fa-upload',
+        );
     }
 
     // Only add reports if user has capability
@@ -84,9 +91,9 @@ function local_order_navdrawer_items()
             get_string('reports', 'local_order'),
             null,
             '#',
-            'fas fa-file-invoice');
+            'fas fa-file-invoice',
+        );
     }
-
 
 
     return $items;

@@ -15,9 +15,20 @@ $string['floors'] = 'Floors';
 $string['home'] = 'Home';
 $string['import'] = 'Import';
 $string['import_type'] = 'Import type';
+$string['instructions'] = 'Instructions';
 $string['inventory'] = 'Inventory';
+$string['inventory_category'] = 'Inventory category';
+$string['inventory_category_help'] = 'Select a category from which to import too.';
+$string['inventory_category_required'] = 'You must select an inventory category. Press the button below to start again.';
+$string['inventory_instructions'] = '<ol>
+<li>Make a copy of the downloaded <span class="local_order_type"></span> Excel provided.</li>
+<li>Remove all columns from the beginning and the end of the excel file that do not 
+match <span class="local_order_type"></span> items. example, organization, first name, email etc.</li>
+<li>Remove all rows except row one (1).</li>
+<li>Save the file and upload below.</li>
+</ol>';
 $string['number_of_events_today'] = 'Number of events today';
-$string['status'] = 'Status';
+$string['organizations'] = 'Organizations';
 $string['pluginname'] = 'Ordering System';
 $string['reports'] = 'Reports';
 $string['required_field'] = 'This field is required';
@@ -27,6 +38,7 @@ $string['room_types'] = 'Room types';
 $string['rooms'] = 'Rooms';
 $string['select'] = 'Select';
 $string['select_other_import'] = 'Please select another import type';
+$string['status'] = 'Status';
 $string['table_must_have_data'] = 'The following tables must have data';
 
 //Capabilities
