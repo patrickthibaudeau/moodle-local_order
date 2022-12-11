@@ -67,6 +67,11 @@ class import_form extends \moodleform
         $inventory_import = $OUTPUT->render_from_template('local_order/inventory_import', []);
         $mform->addElement('html', $inventory_import);
 
+        if ($import == 'organization') {
+            $organization_import = $OUTPUT->render_from_template('local_order/organization_import', []);
+            $mform->addElement('html', $organization_import);
+        }
+
 
         // Summary
         $mform->addElement('filepicker', 'file', get_string('file', 'local_order'), null, base::get_file_picker_import_ptions($context));

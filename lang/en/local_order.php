@@ -29,6 +29,12 @@ match <span class="local_order_type"></span> items. example, organization, first
 </ol>';
 $string['number_of_events_today'] = 'Number of events today';
 $string['organizations'] = 'Organizations';
+$string['organization_instructions'] = '<ol>
+<li>Make a copy of a downloaded Excel provided.</li>
+<li>Remove all columns except: Assoc., First name, Last name, Email, Phone-Office, Phone-mobile</li>
+<li>Rename all fields as follow: name, firstname,lastname,emai,phone1,phone2</li>
+<li>Save the file and upload below.</li>
+</ol>';
 $string['pluginname'] = 'Ordering System';
 $string['reports'] = 'Reports';
 $string['required_field'] = 'This field is required';
