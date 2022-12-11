@@ -46,7 +46,8 @@ function local_order_navdrawer_items()
             get_string('organizations', 'local_order'),
             null,
             '/local/order/import/index.php?import=organization',
-            'fas fa-layer-group'),
+            'fas fa-layer-group',
+            true),
         navdrawer::add(
             get_string('campuses', 'local_order'),
             null,
@@ -66,12 +67,18 @@ function local_order_navdrawer_items()
             get_string('room_types', 'local_order'),
             null,
             $CFG->wwwroot . '/local/order/import/index.php?import=room_type',
-            'fas fa-grip-lines'),
+            'fas fa-border-style'),
         navdrawer::add(
             get_string('rooms', 'local_order'),
             null,
             $CFG->wwwroot . '/local/order/import/index.php?import=room',
             'fas fa-door-open',
+            true),
+        navdrawer::add(
+            get_string('events', 'local_order'),
+            null,
+            $CFG->wwwroot . '/local/order/import/index.php?import=event',
+            'fas fa-calendar-check',
             true),
     ];
 

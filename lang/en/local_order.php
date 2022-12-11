@@ -7,6 +7,13 @@ $string['campus_help'] = 'Import campus from excel';
 $string['campus_import'] = 'Campus Import';
 $string['campuses'] = 'Campuses';
 $string['download_sample_files'] = 'Download sample Excel files';
+$string['event'] = 'Event';
+$string['event_instructions'] = '<ol>
+<li>Make a copy of the downloaded <span class="local_order_event"></span> Excel provided.</li>
+<li>Drag and drop the file in the field below</li>
+<li>Be patient, this can take a while. 	&#128522;</li>
+</ol>';
+$string['events'] = 'Events';
 $string['file'] = 'File';
 $string['file_help'] = 'The importer only accepts excel files';
 $string['floor'] = 'Floor';

@@ -30,6 +30,7 @@ class import_form extends \moodleform
             'floor' => 'Floor',
             'room_type' => 'Room type',
             'room' => 'Room',
+            'event' => 'Event'
         ];
 
         $samples = $OUTPUT->render_from_template('local_order/import_samples', []);
@@ -57,11 +58,11 @@ class import_form extends \moodleform
         $inventory_categories = $INVENTORY_CATEGORIES->get_select_array();
         $mform->addElement('select', 'inventory_category', get_string('inventory_category', 'local_order'), $inventory_categories);
         $mform->setType('inventory_category', PARAM_INT);
-        if ($import == 'inventory') {
+        if ($import == 'inventory' || $import == 'event') {
             $mform->addRule('inventory_category', get_string('required_field', 'local_order'), 'required');
         }
         $mform->addHelpButton('inventory_category', 'inventory_category', 'local_order');
-        $mform->hideIf('inventory_category', 'import_type', 'neq', 'inventory');
+
 
         // Instructiions for AV inventory upload
         $inventory_import = $OUTPUT->render_from_template('local_order/inventory_import', []);

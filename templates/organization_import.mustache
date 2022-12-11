@@ -8,25 +8,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    $(document).ready(function () {
-        $('#local_order_inventory_instructions').hide();
-        $('#id_inventory_category').on('change', function () {
-            if ($(this).val() !== '') {
-                $('.local_order_type').html($('#id_inventory_category option:selected').text());
-                $('#local_order_inventory_instructions').show();
-            } else {
-                $('#local_order_inventory_instructions').hide();
-            }
-        });
-
-        $('#id_import_type').on('change', function(){
-            if($(this).val() == 'inventory') {
-                $('#local_order_inventory_instructions').show();
-            } else {
-                $('#local_order_inventory_instructions').hide();
-            }
-        })
-    })
-</script>

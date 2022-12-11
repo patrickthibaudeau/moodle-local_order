@@ -19,6 +19,8 @@ $context = CONTEXT_SYSTEM::instance();
 
 require_login(1, false);
 
+$PAGE->requires->js_call_amd('local_order/import', 'init');
+
 base::page(
     '/local/order/import/index.php?import=' . $import,
     get_string('import', 'local_order'),
@@ -99,6 +101,11 @@ if (!$id) {
                     $IMPORT->organization($first_row, $rows);
                     echo '<a href="' . $CFG->wwwroot . '/local/order/import/index.php?import=organization" class="btn btn-primary">' .
                         get_string('import', 'local_order') . '</a>';
+                break;
+            case 'event':
+                $IMPORT->event($first_row, $rows);
+                echo '<a href="' . $CFG->wwwroot . '/local/order/import/index.php?import=event" class="btn btn-primary">' .
+                    get_string('import', 'local_order') . '</a>';
                 break;
         }
         raise_memory_limit(MEMORY_STANDARD);

@@ -18,7 +18,7 @@
  *
  * @module     local_order/user_selector
  * @class      user_selector
- * @package    local_order
+ * @package
  */
 
 define(['jquery', 'core/ajax', 'core/templates', 'core/str'], function($, Ajax, Templates, Str) {
@@ -38,15 +38,17 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str'], function($, Ajax, 
 
             promise[0].then(function(results) {
                 if (results.length <= perpage) {
-                    console.log(results);
-                    success(results); //Callback function returns an array to processResults containing the results obtained from the Ajax call
+                    success(results); //Callback function returns an array to processResults containing the results
+                    // obtained from the Ajax call
                     return;
                 }
                 else {
-                    return Str.get_string('toomanyresults', 'local_yulearn', '>' + perpage).then(function(toomanyresults) {
-                        success(toomanyresults);
-                        return;
-                    });
+                    return Str.get_string('toomanyresults', 'local_yulearn', '>' + perpage)
+                        .then(function(toomanyresults)
+                        {
+                            success(toomanyresults);
+                            return;
+                        });
                 }
 
 
@@ -59,7 +61,8 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str'], function($, Ajax, 
                 $.each(results, function(index, record) {
                     records.push({
                         value: record.id, //the value of the item selected and that is passed into the form?
-                        label: record.firstname + " " + record.lastname + ' (' + record.email + ')' //The text that displays inside the selection menu
+                        label: record.firstname + " " + record.lastname + ' (' + record.email + ')'
+                        //The text that displays inside the selection menu
                     });
                 });
                 return records;
