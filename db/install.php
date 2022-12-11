@@ -14,6 +14,16 @@ function xmldb_local_order_install()
 
     $dbman = $DB->get_manager();
 
+    // Make phone fields bigger
+    // Changing precision of field code on table order_organization to (50).
+    $table = new xmldb_table('user');
+    $field = new xmldb_field('phone1', XMLDB_TYPE_CHAR, '100', null, null, null, null, 'emailstop');
+    $field2 = new xmldb_field('phone2', XMLDB_TYPE_CHAR, '100', null, null, null, null, 'phone1');
+
+    // Launch change of precision for field code.
+    $dbman->change_field_precision($table, $field);
+    $dbman->change_field_precision($table, $field2);
+
     // Add default Inventory categories
     $av = [
         'name' => 'Audio/Visual',

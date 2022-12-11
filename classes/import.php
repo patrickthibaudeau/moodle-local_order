@@ -107,7 +107,8 @@ class import
      * @param $import_type
      * @return void
      */
-    public function can_import($import_type) {
+    public function can_import($import_type)
+    {
         global $DB;
 
         switch ($import_type) {
@@ -491,5 +492,173 @@ class import
         ob_clean();
         raise_memory_limit(MEMORY_STANDARD);
         return true;
+    }
+
+    /**
+     * @param $columns array
+     * @param $rows array
+     * @return void
+     */
+    public function organization($columns, $rows)
+    {
+        global $CFG, $DB, $USER;
+
+        // Make sure the columns exist
+        if (!in_array('name', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=name');
+        }
+        if (!in_array('firstname', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=firstname');
+        }
+        if (!in_array('lastname', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=lastname');
+        }
+        if (!in_array('email', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=email');
+        }
+        if (!in_array('phone1', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=phone1');
+        }
+        if (!in_array('phone2', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=phone2');
+        }
+        // Set the proper column key
+        $organization = 0;
+        $first_name = 0;
+        $last_name = 0;
+        $email = 0;
+        $phone1 = 0;
+        $phone2 = 0;
+        // Set the proper key value for the columns
+        foreach ($columns as $key => $name) {
+            switch ($name) {
+                case 'name':
+                    $organization = $key;
+                    break;
+                case 'firstname':
+                    $first_name = $key;
+                    break;
+                case 'lastname':
+                    $last_name = $key;
+                    break;
+                case 'email':
+                    $email = $key;
+                    break;
+                case 'phone1':
+                    $phone1 = $key;
+                    break;
+                case 'phone2':
+                    $phone2 = $key;
+                    break;
+            }
+        }
+
+        // Import campus data if it doesn;t already exists.
+        for ($i = 1; $i < count($rows) - 1; $i++) {
+            $fields = explode(' - ', $rows[$i][$organization]);
+            if (count($fields) == 2) {
+                $code = trim($fields[0]);
+                $name = trim($fields[1]);
+            } else {
+                $code = '';
+                $name = trim($fields[0]);
+            }
+
+
+            if (!$found = $DB->get_record(TABLE_ORGANIZATION, ['name' => $name])) {
+                // Insert into table
+                $params = new \stdClass();
+                $params->name = $name;
+                $params->code = $code;
+                $params->phone = trim($rows[$i][$phone1]);
+                $params->email = trim($rows[$i][$email]);
+                $params->timecreated = time();
+                $params->timemodified = time();
+                $params->usermodified = $USER->id;
+
+                $organizationid = $DB->insert_record(TABLE_ORGANIZATION, $params);
+
+                if (trim($rows[$i][$first_name]) && trim($rows[$i][$last_name]) && trim($rows[$i][$email])) {
+                    $username = strstr(trim($rows[$i][$email]), '@', true);
+                    $username = str_replace('@', '', $username);
+                    // Create user. If user exists, get user id
+                    if (!$user = $DB->get_record('user', ['username' => $username])) {
+                        $user = new \stdClass();
+                        $user->username = $username;
+                        $user->password = $this->random_password();
+                        $user->auth = 'manual';
+                        $user->firstname = trim($rows[$i][$first_name]);
+                        $user->lastname = trim($rows[$i][$last_name]);
+                        $user->email = trim($rows[$i][$email]);
+                        $user->phone1 = trim($rows[$i][$phone1]);
+                        $user->phone2 = trim($rows[$i][$phone2]);
+                        $user_id = user_create_user($user);
+                    } else {
+                        $user_id = $user->id;
+                    }
+
+                    // insert organization contact
+                    if (!$contact = $DB->get_record(TABLE_ORGANIZATION_CONTACT,
+                        ['organizationid' => $organizationid, 'userid' => $user_id])) {
+                        $contact = new \stdClass();
+                        $contact->organizationid = $organizationid;
+                        $contact->userid = $user_id;
+                        $params->timecreated = time();
+                        $params->timemodified = time();
+                        $params->usermodified = $USER->id;
+
+                        $DB->insert_record(TABLE_ORGANIZATION_CONTACT, $contact);
+                    }
+
+                }
+                notification::success('Organization ' . $name . ' has been added.');
+            } else {
+                // Update organization phone. Must do it here because the first record for the organization
+                // may not have the phone number available
+                if (trim($rows[$i][$phone1])) {
+                    $found->phone = trim($rows[$i][$phone1]);
+                    $DB->update_record(TABLE_ORGANIZATION, $found);
+                }
+                // Update organization email. Must do it here because the first record for the organization
+                // may not have the email available
+                if (trim($rows[$i][$email])) {
+                    $found->email = trim($rows[$i][$email]);
+                    $DB->update_record(TABLE_ORGANIZATION, $found);
+                }
+                notification::WARNING('Organization ' . $name . ' already exists.');
+            }
+        }
+
+        return true;
+    }
+
+    private function random_password()
+    {
+        global $CFG;
+
+        $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $numbers = '1234567890';
+        $symbols = '@!#&*#';
+        $pass = array(); //remember to declare $pass as an array
+        $alpha_length = strlen($alphabet) - 1; //put the length -1 in cache
+        $numbers_length = strlen($numbers) - 1; //put the length -1 in cache
+        $symbols_length = strlen($symbols) - 1; //put the length -1 in cache
+        $numberic_position = rand(0, $CFG->minpasswordlength);
+        $symbol_position = rand(0, 4);
+        $uppercase_position = rand(5, 8);
+        for ($i = 0; $i < $CFG->minpasswordlength; $i++) {
+            $alpha_n = rand(0, $alpha_length);
+            $numeric_n = rand(0, $numbers_length);
+            $symbol_n = rand(0, $symbols_length);
+            if ($i == $numberic_position) {
+                $pass[] = $numbers[$numeric_n];
+            } else if ($i == $symbol_position) {
+                $pass[] = $symbols[$symbol_n];
+            } else {
+                $pass[] = $alphabet[$alpha_n];
+            }
+        }
+
+        return implode($pass); //turn the array into a string
     }
 }

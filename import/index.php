@@ -95,6 +95,11 @@ if (!$id) {
                         get_string('import', 'local_order') . '</a>';
                 }
                 break;
+            case 'organization':
+                    $IMPORT->organization($first_row, $rows);
+                    echo '<a href="' . $CFG->wwwroot . '/local/order/import/index.php?import=organization" class="btn btn-primary">' .
+                        get_string('import', 'local_order') . '</a>';
+                break;
         }
         raise_memory_limit(MEMORY_STANDARD);
         echo $OUTPUT->footer();
