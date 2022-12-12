@@ -632,6 +632,265 @@ class import
         return true;
     }
 
+    /**
+     * @param $columns array
+     * @param $rows array
+     * @param $type int 1 = AV, 2 = Catering, 3 = Furnishing
+     * @param $timezone string
+     * @return void
+     */
+    public function event($columns, $rows, $type, $timezone)
+    {
+        global $CFG, $DB, $USER;
+
+        // Make sure the columns exist
+        if (!in_array('Registrant ID', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=Registrant&nbsp;ID');
+        }
+        if (!in_array('Assoc.', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=Assoc');
+        }
+        if (!in_array('Request title', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=Request&nbsp;title');
+        }
+        if (!in_array('Date', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=Date');
+        }
+        if (!in_array('Start', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=Start');
+        }
+        if (!in_array('End', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=End');
+        }
+        if (!in_array('Allocated room', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=Allocated&nbsp;room');
+        }
+        if (!in_array('This room request requires a catering order?', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=This&nbsp;room&nbsp;request&nbsp;requires&nbsp;a&nbsp;catering&nbsp;order?');
+        }
+        if (!in_array('Other Fees Net', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=Other&nbsp;Fees&nbsp;Net');
+        }
+        // Set the proper column key
+        $registration_id = -1;
+        $assoc = -1;
+        $title = -1;
+        $date = -1;
+        $start = -1;
+        $end = -1;
+        $room = -1;
+        $catering = -1;
+        $other_fees = -1;
+        $event_type = -1;
+        $attendance = -1;
+        $setup_type = -1;
+        $setup_notes = -1;
+        // Set the proper key value for the columns
+        foreach ($columns as $key => $name) {
+            switch ($name) {
+                case 'Registrant ID':
+                    $registration_id = $key;
+                    break;
+                case 'Assoc.':
+                    $assoc = $key;
+                    break;
+                case 'Request title':
+                    $title = $key;
+                    break;
+                case 'Date':
+                    $date = $key;
+                    break;
+                case 'Start':
+                    $start = $key;
+                    break;
+                case 'End':
+                    $end = $key;
+                    break;
+                case 'Allocated room':
+                    $room = $key;
+                    break;
+                case 'This room request requires a catering order?':
+                    $catering = $key;
+                    break;
+                case 'Other Fees Net':
+                    $other_fees = $key;
+                    break;
+                case 'Event-type':
+                    $event_type = $key;
+                    break;
+                case 'Exp. Attn':
+                    $attendance = $key;
+                    break;
+                case 'Set-up':
+                    $setup_type = $key;
+                    break;
+                case 'setup-notes':
+                    $setup_notes = $key;
+                    break;
+            }
+        }
+        // Store Current timezone
+
+        $current_timezone = date_default_timezone_get();
+        date_default_timezone_set($timezone);
+
+        // First start by creating the event
+        for ($i = 1; $i < count($rows) - 1; $i++) {
+            // Check to see if the event already exists
+            if (!$found = $DB->get_record(TABLE_EVENT, ['code' => trim($rows[$i][$registration_id])])) {
+                // Get organization id
+                $fields = explode(' - ', $rows[$i][$assoc]);
+                if (count($fields) == 2) {
+                    $code = trim($fields[0]);
+                    $name = trim($fields[1]);
+                } else {
+                    $code = '';
+                    $name = trim($fields[0]);
+                }
+
+                $organization = $DB->get_record(TABLE_ORGANIZATION, ['name' => $name]);
+
+                // Convert date to array
+                $date_array = explode('/', $rows[$i][$date]);
+
+                // Reset date format as YY-mm-dd
+                $new_date_format = $date_array[2] . '-' . $date_array[1] . '-' . $date_array[0];
+                // Add time to both start date and end date
+                $start_string = $new_date_format . ' ' . trim($rows[$i][$start]) . ':00';
+                $end_string = $new_date_format . ' ' . trim($rows[$i][$end]) . ':00';
+
+                // Convert to timestamp
+                $start_time = strtotime($start_string);
+                $end_time = strtotime($end_string);
+
+                // Get catering if exists
+                if ($catering != -1) {
+                    if (trim($rows[$i][$catering]) == 'Yes') {
+                        $catering_data = true;
+                    } else {
+                        $catering_data = false;
+                    }
+                }
+
+                // Get cost if exists
+                if ($other_fees != -1) {
+                  $cost = $rows[$i][$other_fees];
+                  $cost = str_replace('CA$', '', $cost);
+                  // Convert to number
+                  $cost = (double)$cost;
+                }
+
+                // Get event type if exists
+                if ($event_type != -1) {
+                    $event_type_data = trim($rows[$i][$event_type]);
+                }
+
+                // Get attendance if exists
+                if ($attendance != -1) {
+                    $attendance_data = trim($rows[$i][$attendance]);
+                }
+
+                // Get setup type if exists
+                if ($setup_type != -1) {
+                    $setup_type_data = trim($rows[$i][$setup_type]);
+                }
+
+                // Get setup type if exists
+                if ($setup_notes != -1) {
+                    $setup_notes_data = trim($rows[$i][$setup_notes]);
+                }
+
+                $event = new \stdClass();
+                $event->organizationid = $organization->id;
+                $event->name = trim($rows[$i][$title]);
+                $event->code = trim($rows[$i][$registration_id]);
+                $event->starttime = $start_time;
+                $event->endtime = $end_time;
+                print_object($event);
+            }
+        }
+
+//        print_object($columns);
+//        print_object('Type: ' . $type);
+        // Import campus data if it doesn;t already exists.
+//        for ($i = 1; $i < count($rows) - 1; $i++) {
+//            $fields = explode(' - ', $rows[$i][$organization]);
+//            if (count($fields) == 2) {
+//                $code = trim($fields[0]);
+//                $name = trim($fields[1]);
+//            } else {
+//                $code = '';
+//                $name = trim($fields[0]);
+//            }
+//
+//
+//            if (!$found = $DB->get_record(TABLE_ORGANIZATION, ['name' => $name])) {
+//                // Insert into table
+//                $params = new \stdClass();
+//                $params->name = $name;
+//                $params->code = $code;
+//                $params->phone = trim($rows[$i][$phone1]);
+//                $params->email = trim($rows[$i][$email]);
+//                $params->timecreated = time();
+//                $params->timemodified = time();
+//                $params->usermodified = $USER->id;
+//
+//                $organizationid = $DB->insert_record(TABLE_ORGANIZATION, $params);
+//
+//                if (trim($rows[$i][$first_name]) && trim($rows[$i][$last_name]) && trim($rows[$i][$email])) {
+//                    $username = strstr(trim($rows[$i][$email]), '@', true);
+//                    $username = str_replace('@', '', $username);
+//                    // Create user. If user exists, get user id
+//                    if (!$user = $DB->get_record('user', ['username' => $username])) {
+//                        $user = new \stdClass();
+//                        $user->username = $username;
+//                        $user->password = $this->random_password();
+//                        $user->auth = 'manual';
+//                        $user->firstname = trim($rows[$i][$first_name]);
+//                        $user->lastname = trim($rows[$i][$last_name]);
+//                        $user->email = trim($rows[$i][$email]);
+//                        $user->phone1 = trim($rows[$i][$phone1]);
+//                        $user->phone2 = trim($rows[$i][$phone2]);
+//                        $user_id = user_create_user($user);
+//                    } else {
+//                        $user_id = $user->id;
+//                    }
+//
+//                    // insert organization contact
+//                    if (!$contact = $DB->get_record(TABLE_ORGANIZATION_CONTACT,
+//                        ['organizationid' => $organizationid, 'userid' => $user_id])) {
+//                        $contact = new \stdClass();
+//                        $contact->organizationid = $organizationid;
+//                        $contact->userid = $user_id;
+//                        $params->timecreated = time();
+//                        $params->timemodified = time();
+//                        $params->usermodified = $USER->id;
+//
+//                        $DB->insert_record(TABLE_ORGANIZATION_CONTACT, $contact);
+//                    }
+//
+//                }
+//                notification::success('Organization ' . $name . ' has been added.');
+//            } else {
+//                // Update organization phone. Must do it here because the first record for the organization
+//                // may not have the phone number available
+//                if (trim($rows[$i][$phone1])) {
+//                    $found->phone = trim($rows[$i][$phone1]);
+//                    $DB->update_record(TABLE_ORGANIZATION, $found);
+//                }
+//                // Update organization email. Must do it here because the first record for the organization
+//                // may not have the email available
+//                if (trim($rows[$i][$email])) {
+//                    $found->email = trim($rows[$i][$email]);
+//                    $DB->update_record(TABLE_ORGANIZATION, $found);
+//                }
+//                notification::WARNING('Organization ' . $name . ' already exists.');
+//            }
+//        }
+        dte_default_timezone_set($current_timezone);
+        return true;
+    }
+
     private function random_password()
     {
         global $CFG;

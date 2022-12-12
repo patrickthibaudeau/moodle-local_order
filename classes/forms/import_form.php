@@ -33,6 +33,11 @@ class import_form extends \moodleform
             'event' => 'Event'
         ];
 
+        $timezones = timezone_identifiers_list();
+        $timezones_select = [];
+        foreach ($timezones as $key => $timezone) {
+            $timezones_select[$timezone] = $timezone;
+        }
         $samples = $OUTPUT->render_from_template('local_order/import_samples', []);
         $mform->addElement('html', $samples);
 
@@ -52,8 +57,16 @@ class import_form extends \moodleform
         $mform->addElement('select', 'import_type', get_string('import_type', 'local_order'), $import_types);
         $mform->setType('import_type', PARAM_TEXT);
         $mform->setDefault('import_type', $import);
-        // If import type equals inventory add select field
 
+        // Add timezone
+        $mform->addElement('select', 'timezone', get_string('timezone', 'core'), $timezones_select);
+        $mform->setDefault('timezone', date_default_timezone_get());
+
+        if ($import == 'event') {
+            $mform->addRule('timezone', get_string('required_field', 'local_order'), 'required');
+        }
+
+        // Add inventory category
         $INVENTORY_CATEGORIES = new \local_order\inventory_categories();
         $inventory_categories = $INVENTORY_CATEGORIES->get_select_array();
         $mform->addElement('select', 'inventory_category', get_string('inventory_category', 'local_order'), $inventory_categories);

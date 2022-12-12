@@ -15,9 +15,11 @@ $context = context_system::instance();
 //**********************
 echo $OUTPUT->header();
 
-$IMPORT = new \local_order\import();
-print_object($IMPORT->random_password());
-//print_object($IMPORT->clean_column_names());
+$start = '31/05/19';
+$start = explode('/', $start);
+$start = $start[2] .'-' . $start[1] . '-' . $start[0] . ' 08:00:00';
+
+print_object(strtotime($start));
 //**********************
 //*** DISPLAY FOOTER ***
 //**********************

@@ -35,6 +35,13 @@ export const init = () => {
         $('#fitem_id_inventory_category').hide();
     }
 
+    // Show timezone
+    if ($('#id_import_type').val() == 'event') {
+        $('#fitem_id_timezone').show();
+    } else {
+        $('#fitem_id_timezone').hide();
+    }
+
     // on import type change, display or hide the menu
     $('#id_import_type').on('change', function() {
         if ($('#id_import_type').val() == 'event' || $('#id_import_type').val() == 'inventory') {
@@ -45,6 +52,12 @@ export const init = () => {
             $('#fitem_id_inventory_category').hide();
             $('#local_order_inventory_instructions').hide();
             $('#local_order_event_instructions').hide();
+        }
+
+        if ($('#id_import_type').val() == 'event') {
+            $('#fitem_id_timezone').show();
+        } else {
+            $('#fitem_id_timezone').hide();
         }
     });
 

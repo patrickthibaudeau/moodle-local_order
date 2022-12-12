@@ -245,16 +245,18 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="organizationid" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="code" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="starttime" TYPE="int" LENGTH="16" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="endtime" TYPE="int" LENGTH="16" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="eventtype" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
-        <FIELD NAME="attendance" TYPE="int" LENGTH="7" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="attendance" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="roomid" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="setuptype" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="setupnotes" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="adminnotes" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="requirescatering" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="othernotes" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="cost" TYPE="number" LENGTH="12" NOTNULL="false" DEFAULT="0" SEQUENCE="false" DECIMALS="2"/>
         <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
