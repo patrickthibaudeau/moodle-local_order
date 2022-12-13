@@ -668,9 +668,6 @@ class import
         if (!in_array('This room request requires a catering order?', $columns)) {
             redirect($CFG->wwwroot . '/local/order/import/index.php?err=This&nbsp;room&nbsp;request&nbsp;requires&nbsp;a&nbsp;catering&nbsp;order?');
         }
-        if (!in_array('Other Fees Net', $columns)) {
-            redirect($CFG->wwwroot . '/local/order/import/index.php?err=Other&nbsp;Fees&nbsp;Net');
-        }
         // Set the proper column key
         $registration_id = -1;
         $assoc = -1;
@@ -680,7 +677,6 @@ class import
         $end = -1;
         $room = -1;
         $catering = -1;
-        $other_fees = -1;
         $event_type = -1;
         $attendance = -1;
         $setup_type = -1;
@@ -712,9 +708,6 @@ class import
                 case 'This room request requires a catering order?':
                     $catering = $key;
                     break;
-                case 'Other Fees Net':
-                    $other_fees = $key;
-                    break;
                 case 'Event-type':
                     $event_type = $key;
                     break;
@@ -734,79 +727,117 @@ class import
         $current_timezone = date_default_timezone_get();
         date_default_timezone_set($timezone);
 
-        // First start by creating the event
+        // Loop through all events
         for ($i = 1; $i < count($rows) - 1; $i++) {
+            // Prepare all event data
+            // Get organization id
+            $fields = explode(' - ', $rows[$i][$assoc]);
+            if (count($fields) == 2) {
+                $code = trim($fields[0]);
+                $name = trim($fields[1]);
+            } else {
+                $code = '';
+                $name = trim($fields[0]);
+            }
+
+            $organization = $DB->get_record(TABLE_ORGANIZATION, ['name' => $name]);
+
+            // Convert date to array
+            $date_array = explode('/', $rows[$i][$date]);
+
+            // Reset date format as YY-mm-dd
+            $new_date_format = $date_array[2] . '-' . $date_array[1] . '-' . $date_array[0];
+            // Add time to both start date and end date
+            $start_string = $new_date_format . ' ' . trim($rows[$i][$start]) . ':00';
+            $end_string = $new_date_format . ' ' . trim($rows[$i][$end]) . ':00';
+
+            // Convert to timestamp
+            $start_time = strtotime($start_string);
+            $end_time = strtotime($end_string);
+
+            // Get catering if exists
+            if ($catering != -1) {
+                if (trim($rows[$i][$catering]) == 'Yes') {
+                    $catering_data = true;
+                } else {
+                    $catering_data = false;
+                }
+            }
+
+            // Get event type if exists
+            $event_type_data = '';
+            if ($event_type != -1) {
+                $event_type_data = trim($rows[$i][$event_type]);
+            }
+
+            // Get attendance if exists
+            $attendance_data = '';
+            if ($attendance != -1) {
+                $attendance_data = trim($rows[$i][$attendance]);
+            }
+
+            // Get setup type if exists
+            $setup_type_data = '';
+            if ($setup_type != -1) {
+                $setup_type_data = trim($rows[$i][$setup_type]);
+            }
+
+            // Get setup type if exists
+            $setup_notes_data = '';
+            if ($setup_notes != -1) {
+                $setup_notes_data = trim($rows[$i][$setup_notes]);
+            }
+
+            $event = new \stdClass();
+            $event->organizationid = $organization->id;
+            $event->name = trim($rows[$i][$title]);
+            $event->code = trim($rows[$i][$registration_id]);
+            $event->starttime = $start_time;
+            $event->endtime = $end_time;
+            $event->eventtype = $event_type_data;
+            $event->attendance = $attendance_data;
+            $event->setuptype = $setup_type_data;
+            $event->setupnotes = $setup_notes_data;
+            print_object($event);
             // Check to see if the event already exists
             if (!$found = $DB->get_record(TABLE_EVENT, ['code' => trim($rows[$i][$registration_id])])) {
-                // Get organization id
-                $fields = explode(' - ', $rows[$i][$assoc]);
-                if (count($fields) == 2) {
-                    $code = trim($fields[0]);
-                    $name = trim($fields[1]);
-                } else {
-                    $code = '';
-                    $name = trim($fields[0]);
-                }
+                $event_id = $DB->insert_record(TABLE_EVENT, $event);
+            } else {
+                $event->id = $found->id;
+                $DB->update_record(TABLE_EVENT, $event);
+            }
 
-                $organization = $DB->get_record(TABLE_ORGANIZATION, ['name' => $name]);
+            if (!$event_inventory_category = $DB->get_record(TABLE_EVENT_INVENTORY_CATEGORY,
+                ['eventid' => $event->id, 'inventorycategoryid' => $type])){
+                // Get inventory category
+                $inventory_category = $DB->get_record(TABLE_INVENTORY_CATEGORY, ['id' => $type]);
+                // Get admin notes
+                $admin_notes = '';
+                $notes = '';
+                foreach ($columns as $key => $name) {
+                    if ($name == 'Admin notes - ' . strtolower($inventory_category->name)) {
+                        $admin_notes = trim($rows[$i][$key]);
+                    }
 
-                // Convert date to array
-                $date_array = explode('/', $rows[$i][$date]);
+                    if ($type == 1 && $name == 'Custom Audio Visual Comments - Questions') {
+                        $notes = trim($rows[$i][$key]);
+                    }
 
-                // Reset date format as YY-mm-dd
-                $new_date_format = $date_array[2] . '-' . $date_array[1] . '-' . $date_array[0];
-                // Add time to both start date and end date
-                $start_string = $new_date_format . ' ' . trim($rows[$i][$start]) . ':00';
-                $end_string = $new_date_format . ' ' . trim($rows[$i][$end]) . ':00';
-
-                // Convert to timestamp
-                $start_time = strtotime($start_string);
-                $end_time = strtotime($end_string);
-
-                // Get catering if exists
-                if ($catering != -1) {
-                    if (trim($rows[$i][$catering]) == 'Yes') {
-                        $catering_data = true;
-                    } else {
-                        $catering_data = false;
+                    if ($type == 3 && $name == 'Custom Furnishing Comments - Questions') {
+                        $notes = trim($rows[$i][$key]);
                     }
                 }
+                $eic_params = new \stdClass();
+                $eic_params->eventid = $event->id;
+                $eic_params->inventorycategoryid = $type;
+                $eic_params->name = $inventory_category->name;
+                $eic_params->notes = $notes;
+                $eic_params->adminnotes = $admin_notes;
+                $eic_params->timecreated = time();
+                $eic_params->timemodified = time();
+                $eic_params->usermodified = $USER->id;
 
-                // Get cost if exists
-                if ($other_fees != -1) {
-                  $cost = $rows[$i][$other_fees];
-                  $cost = str_replace('CA$', '', $cost);
-                  // Convert to number
-                  $cost = (double)$cost;
-                }
-
-                // Get event type if exists
-                if ($event_type != -1) {
-                    $event_type_data = trim($rows[$i][$event_type]);
-                }
-
-                // Get attendance if exists
-                if ($attendance != -1) {
-                    $attendance_data = trim($rows[$i][$attendance]);
-                }
-
-                // Get setup type if exists
-                if ($setup_type != -1) {
-                    $setup_type_data = trim($rows[$i][$setup_type]);
-                }
-
-                // Get setup type if exists
-                if ($setup_notes != -1) {
-                    $setup_notes_data = trim($rows[$i][$setup_notes]);
-                }
-
-                $event = new \stdClass();
-                $event->organizationid = $organization->id;
-                $event->name = trim($rows[$i][$title]);
-                $event->code = trim($rows[$i][$registration_id]);
-                $event->starttime = $start_time;
-                $event->endtime = $end_time;
-                print_object($event);
+                $DB->insert_record(TABLE_EVENT_INVENTORY_CATEGORY, $eic_params);
             }
         }
 
