@@ -8,7 +8,7 @@ use theme_congress\navdrawer;
 define("TABLE_BUILDING", "order_building");
 define("TABLE_CAMPUS", "order_campus");
 define("TABLE_EVENT", "order_event");
-define("TABLE_EVENT_INVENTORY", "order_event_inventor");
+define("TABLE_EVENT_INVENTORY", "order_event_inventory");
 define("TABLE_EVENT_INVENTORY_CATEGORY", "order_event_inv_category");
 define("TABLE_EVENT_TYPE", "order_event_type");
 define("TABLE_FLOOR", "order_floor");

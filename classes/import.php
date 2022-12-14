@@ -7,6 +7,7 @@ require_once($CFG->libdir . '/phpspreadsheet/vendor/autoload.php');
 use core\notification;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use local_order\inventories;
 
 class import
 {
@@ -643,6 +644,10 @@ class import
     {
         global $CFG, $DB, $USER;
 
+        $INVENTORIES = new inventories();
+        // get all inventory items
+        $inventory_items = $INVENTORIES->get_records_by_category($type);
+
         // Make sure the columns exist
         if (!in_array('Registrant ID', $columns)) {
             redirect($CFG->wwwroot . '/local/order/import/index.php?err=Registrant&nbsp;ID');
@@ -722,9 +727,20 @@ class import
                     break;
             }
         }
-        // Store Current timezone
 
+        // get keys for inventory items (from inventory table) and create dynamic variables
+        foreach ($inventory_items as $items) {
+            foreach ($columns as $key => $name) {
+                if (trim($items->name) == trim($name)) {
+                    $variable = '_' . $items->code;
+                    $$variable = $key;
+                }
+            }
+        }
+
+        // Store Current timezone
         $current_timezone = date_default_timezone_get();
+        // Set timezone based on value from form
         date_default_timezone_set($timezone);
 
         // Loop through all events
@@ -739,7 +755,7 @@ class import
                 $code = '';
                 $name = trim($fields[0]);
             }
-
+            // get organization
             $organization = $DB->get_record(TABLE_ORGANIZATION, ['name' => $name]);
 
             // Convert date to array
@@ -788,6 +804,7 @@ class import
                 $setup_notes_data = trim($rows[$i][$setup_notes]);
             }
 
+            // create event object
             $event = new \stdClass();
             $event->organizationid = $organization->id;
             $event->name = trim($rows[$i][$title]);
@@ -798,7 +815,7 @@ class import
             $event->attendance = $attendance_data;
             $event->setuptype = $setup_type_data;
             $event->setupnotes = $setup_notes_data;
-            print_object($event);
+
             // Check to see if the event already exists
             if (!$found = $DB->get_record(TABLE_EVENT, ['code' => trim($rows[$i][$registration_id])])) {
                 $event_id = $DB->insert_record(TABLE_EVENT, $event);
@@ -807,8 +824,9 @@ class import
                 $DB->update_record(TABLE_EVENT, $event);
             }
 
+            // Check to see if event inventory category exists
             if (!$event_inventory_category = $DB->get_record(TABLE_EVENT_INVENTORY_CATEGORY,
-                ['eventid' => $event->id, 'inventorycategoryid' => $type])){
+                ['eventid' => $event->id, 'inventorycategoryid' => $type])) {
                 // Get inventory category
                 $inventory_category = $DB->get_record(TABLE_INVENTORY_CATEGORY, ['id' => $type]);
                 // Get admin notes
@@ -827,6 +845,7 @@ class import
                         $notes = trim($rows[$i][$key]);
                     }
                 }
+                // Create event inventory category object and capture the id
                 $eic_params = new \stdClass();
                 $eic_params->eventid = $event->id;
                 $eic_params->inventorycategoryid = $type;
@@ -837,88 +856,37 @@ class import
                 $eic_params->timemodified = time();
                 $eic_params->usermodified = $USER->id;
 
-                $DB->insert_record(TABLE_EVENT_INVENTORY_CATEGORY, $eic_params);
+                $event_inventory_category_id = $DB->insert_record(TABLE_EVENT_INVENTORY_CATEGORY, $eic_params);
+            } else {
+                $event_inventory_category_id = $event_inventory_category->id;
+            }
+
+            // Finally import all inventory items
+            foreach ($inventory_items as $items) {
+                $variable = '_' . $items->code;
+                $event_inventory = new \stdClass();
+                if (trim($rows[$i][$$variable])) {
+                    $event_inventory_array = [
+                        'eventcategoryid' => $event_inventory_category_id,
+                        'inventoryid' => $items->id
+                    ];
+                    // Add inventory item if data exists for it.
+                    if (!$event_inventory_item = $DB->get_record(TABLE_EVENT_INVENTORY, $event_inventory_array)) {
+                        $event_inventory->eventcategoryid = $event_inventory_category_id;
+                        $event_inventory->inventoryid = $items->id;
+                        $event_inventory->name = $items->name;
+                        $event_inventory->description = trim($rows[$i][$$variable]);
+                        $event_inventory->timecreated = time();
+                        $event_inventory->timemodified = time();
+                        $event_inventory->usermodified = $USER->id;
+                        $DB->insert_record(TABLE_EVENT_INVENTORY, $event_inventory);
+                    }
+                }
+                unset($event_inventory);
             }
         }
-
-//        print_object($columns);
-//        print_object('Type: ' . $type);
-        // Import campus data if it doesn;t already exists.
-//        for ($i = 1; $i < count($rows) - 1; $i++) {
-//            $fields = explode(' - ', $rows[$i][$organization]);
-//            if (count($fields) == 2) {
-//                $code = trim($fields[0]);
-//                $name = trim($fields[1]);
-//            } else {
-//                $code = '';
-//                $name = trim($fields[0]);
-//            }
-//
-//
-//            if (!$found = $DB->get_record(TABLE_ORGANIZATION, ['name' => $name])) {
-//                // Insert into table
-//                $params = new \stdClass();
-//                $params->name = $name;
-//                $params->code = $code;
-//                $params->phone = trim($rows[$i][$phone1]);
-//                $params->email = trim($rows[$i][$email]);
-//                $params->timecreated = time();
-//                $params->timemodified = time();
-//                $params->usermodified = $USER->id;
-//
-//                $organizationid = $DB->insert_record(TABLE_ORGANIZATION, $params);
-//
-//                if (trim($rows[$i][$first_name]) && trim($rows[$i][$last_name]) && trim($rows[$i][$email])) {
-//                    $username = strstr(trim($rows[$i][$email]), '@', true);
-//                    $username = str_replace('@', '', $username);
-//                    // Create user. If user exists, get user id
-//                    if (!$user = $DB->get_record('user', ['username' => $username])) {
-//                        $user = new \stdClass();
-//                        $user->username = $username;
-//                        $user->password = $this->random_password();
-//                        $user->auth = 'manual';
-//                        $user->firstname = trim($rows[$i][$first_name]);
-//                        $user->lastname = trim($rows[$i][$last_name]);
-//                        $user->email = trim($rows[$i][$email]);
-//                        $user->phone1 = trim($rows[$i][$phone1]);
-//                        $user->phone2 = trim($rows[$i][$phone2]);
-//                        $user_id = user_create_user($user);
-//                    } else {
-//                        $user_id = $user->id;
-//                    }
-//
-//                    // insert organization contact
-//                    if (!$contact = $DB->get_record(TABLE_ORGANIZATION_CONTACT,
-//                        ['organizationid' => $organizationid, 'userid' => $user_id])) {
-//                        $contact = new \stdClass();
-//                        $contact->organizationid = $organizationid;
-//                        $contact->userid = $user_id;
-//                        $params->timecreated = time();
-//                        $params->timemodified = time();
-//                        $params->usermodified = $USER->id;
-//
-//                        $DB->insert_record(TABLE_ORGANIZATION_CONTACT, $contact);
-//                    }
-//
-//                }
-//                notification::success('Organization ' . $name . ' has been added.');
-//            } else {
-//                // Update organization phone. Must do it here because the first record for the organization
-//                // may not have the phone number available
-//                if (trim($rows[$i][$phone1])) {
-//                    $found->phone = trim($rows[$i][$phone1]);
-//                    $DB->update_record(TABLE_ORGANIZATION, $found);
-//                }
-//                // Update organization email. Must do it here because the first record for the organization
-//                // may not have the email available
-//                if (trim($rows[$i][$email])) {
-//                    $found->email = trim($rows[$i][$email]);
-//                    $DB->update_record(TABLE_ORGANIZATION, $found);
-//                }
-//                notification::WARNING('Organization ' . $name . ' already exists.');
-//            }
-//        }
-        dte_default_timezone_set($current_timezone);
+        // reset timezone to the default time zone.
+        date_default_timezone_set($current_timezone);
         return true;
     }
 
