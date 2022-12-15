@@ -56,4 +56,17 @@ $string['table_must_have_data'] = 'The following tables must have data';
 
 //Capabilities
 $string['order:import'] = 'Import data';
-$string['order:view_reports'] = 'View reports';
+$string['order:event_view'] = 'View all events';
+$string['order:event_view_own'] = 'Can only view own events';
+$string['order:event_edit'] = 'Create/Edit events';
+$string['order:event_delete'] = 'Delete events';
+$string['order:inventory_view'] = 'View inventory items';
+$string['order:inventory_edit'] = 'Create/Edit inventory items';
+$string['order:inventory_delete'] = 'Delete inventory items';
+$string['order:organization_view'] = 'View organizations';
+$string['order:organization_edit'] = 'Create/Edit organizations';
+$string['order:organization_delete'] = 'Delete organizations';
+$string['order:vendor_view'] = 'View vendors';
+$string['order:vendor_edit'] = 'Create/Edit vendors';
+$string['order:vendor_delete'] = 'Delete vendors';
+$string['order:reports_view'] = 'View reports';

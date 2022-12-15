@@ -93,7 +93,7 @@ function local_order_navdrawer_items()
     }
 
     // Only add reports if user has capability
-    if (has_capability('local/order:view_reports', $context)) {
+    if (has_capability('local/order:reports_view', $context)) {
         $items[] = navdrawer::add(
             get_string('reports', 'local_order'),
             null,

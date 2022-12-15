@@ -820,13 +820,14 @@ class import
             if (!$found = $DB->get_record(TABLE_EVENT, ['code' => trim($rows[$i][$registration_id])])) {
                 $event_id = $DB->insert_record(TABLE_EVENT, $event);
             } else {
-                $event->id = $found->id;
+                $event_id = $found->id;
+                $event->id = $event_id;
                 $DB->update_record(TABLE_EVENT, $event);
             }
 
             // Check to see if event inventory category exists
             if (!$event_inventory_category = $DB->get_record(TABLE_EVENT_INVENTORY_CATEGORY,
-                ['eventid' => $event->id, 'inventorycategoryid' => $type])) {
+                ['eventid' => $event_id, 'inventorycategoryid' => $type])) {
                 // Get inventory category
                 $inventory_category = $DB->get_record(TABLE_INVENTORY_CATEGORY, ['id' => $type]);
                 // Get admin notes
@@ -847,7 +848,7 @@ class import
                 }
                 // Create event inventory category object and capture the id
                 $eic_params = new \stdClass();
-                $eic_params->eventid = $event->id;
+                $eic_params->eventid = $event_id;
                 $eic_params->inventorycategoryid = $type;
                 $eic_params->name = $inventory_category->name;
                 $eic_params->notes = $notes;

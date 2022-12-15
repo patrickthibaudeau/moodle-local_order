@@ -26,7 +26,7 @@ function xmldb_local_order_install()
 
     // Add default Inventory categories
     $av = [
-        'name' => 'Audio/Visual',
+        'name' => 'Audiovisual',
         'code' => 'AV',
         'parent' => 1,
         'path' => '/1',
