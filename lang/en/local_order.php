@@ -34,7 +34,11 @@ match <span class="local_order_type"></span> items. example, organization, first
 <li>Remove all rows except row one (1).</li>
 <li>Save the file and upload below.</li>
 </ol>';
+$string['none'] = 'None';
 $string['number_of_events_today'] = 'Number of events today';
+$string['number_of_organizations'] = 'Number of organizations';
+$string['number_of_users'] = 'Number of users';
+$string['number_of_vendors'] = 'Number of vendors';
 $string['organizations'] = 'Organizations';
 $string['organization_instructions'] = '<ol>
 <li>Make a copy of a downloaded Excel provided.</li>

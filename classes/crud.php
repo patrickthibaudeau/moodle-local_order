@@ -4,6 +4,21 @@ namespace local_order;
 
 abstract class crud
 {
+
+    private $table;
+
+    private $id;
+
+    public function set_table($table)
+    {
+        $this->table = $table;
+    }
+
+    public function set_id($id)
+    {
+        $this->id = $id;
+    }
+
     /**
      * @param $table string
      * @param $id int
@@ -11,31 +26,32 @@ abstract class crud
      * @return void
      * @throws \dml_exception
      */
-    public function get_record($table, $id){
+    public function get_record()
+    {
         global $DB;
-        $result = $DB->get_record($table, ['id' => $id]);
-        return  $result;
+        $result = $DB->get_record($this->table, ['id' => $this->id]);
+        return $result;
 
     }
 
     /**
-     * @param $table string
      * @param $id int
      * @return void
      * @throws \dml_exception
      */
-    public function delete_record($table, $id){
+    public function delete_record($id)
+    {
         global $DB;
-        $DB->delete_records($table,['id' => $id]);
+        $DB->delete_records($this->table, ['id' => $id]);
     }
 
     /**
-     * @param $table string
      * @param $data stdClass
      * @return bool|int
      * @throws \dml_exception
      */
-    public function insert_record($table, $data){
+    public function insert_record($data)
+    {
         global $DB, $USER;
 
 
@@ -56,12 +72,12 @@ abstract class crud
     }
 
     /**
-     * @param $table string
      * @param $data stdClass
      * @return bool
      * @throws \dml_exception
      */
-    public function update_record($table, $data){
+    public function update_record( $data)
+    {
         global $DB, $USER;
 
         // Set timemodified
@@ -72,7 +88,7 @@ abstract class crud
         //Set user
         $data->usermodified = $USER->id;
 
-        $id = $DB->update_record($table, $data);
+        $id = $DB->update_record($this->table, $data);
 
         return $id;
     }

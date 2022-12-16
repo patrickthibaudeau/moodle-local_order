@@ -2,7 +2,7 @@
 
 require_once('../../config.php');
 
-
+use local_order\organization;
 // CHECK And PREPARE DATA
 global $CFG, $OUTPUT, $SESSION, $PAGE, $DB, $COURSE, $USER;
 
@@ -15,11 +15,10 @@ $context = context_system::instance();
 //**********************
 echo $OUTPUT->header();
 
-$start = '31/05/19';
-$start = explode('/', $start);
-$start = $start[2] .'-' . $start[1] . '-' . $start[0] . ' 08:00:00';
+$ORG = new organization(1);
 
-print_object(strtotime($start));
+print_object($ORG->get_name());
+
 //**********************
 //*** DISPLAY FOOTER ***
 //**********************

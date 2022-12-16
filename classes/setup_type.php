@@ -9,7 +9,7 @@ namespace local_order;
 
 use local_order\crud;
 
-class inventory_category extends crud {
+class setup_type extends crud {
 
 
 	/**
@@ -20,45 +20,15 @@ class inventory_category extends crud {
 
 	/**
 	 *
-	 *@var int
+	 *@var string
 	 */
-	private $eventid;
-
-	/**
-	 *
-	 *@var int
-	 */
-	private $inventorycategoryid;
+	private $description;
 
 	/**
 	 *
 	 *@var string
 	 */
-	private $name;
-
-	/**
-	 *
-	 *@var string
-	 */
-	private $notes;
-
-	/**
-	 *
-	 *@var string
-	 */
-	private $adminnotes;
-
-	/**
-	 *
-	 *@var int
-	 */
-	private $setuptime;
-
-	/**
-	 *
-	 *@var int
-	 */
-	private $teardowntime;
+	private $code;
 
 	/**
 	 *
@@ -104,7 +74,7 @@ class inventory_category extends crud {
 	public function __construct($id = 0){
   	global $CFG, $DB, $DB;
 
-		$this->table = 'order_event_inv_category';
+		$this->table = 'order_setup_type';
 
 		parent::set_table($this->table);
 
@@ -118,13 +88,8 @@ class inventory_category extends crud {
          parent::set_id($this->id);
       }
 
-		$this->eventid = $result->eventid ?? 0;
-		$this->inventorycategoryid = $result->inventorycategoryid ?? 0;
-		$this->name = $result->name ?? '';
-		$this->notes = $result->notes ?? '';
-		$this->adminnotes = $result->adminnotes ?? '';
-		$this->setuptime = $result->setuptime ?? 0;
-		$this->teardowntime = $result->teardowntime ?? 0;
+		$this->description = $result->description ?? '';
+		$this->code = $result->code ?? '';
 		$this->usermodified = $result->usermodified ?? 0;
 		$this->timecreated = $result->timecreated ?? 0;
           $this->timecreated_hr = '';
@@ -146,52 +111,17 @@ class inventory_category extends crud {
 	}
 
 	/**
-	 * @return eventid - bigint (18)
+	 * @return description - longtext (-1)
 	 */
-	public function get_eventid(){
-		return $this->eventid;
+	public function get_description(){
+		return $this->description;
 	}
 
 	/**
-	 * @return inventorycategoryid - bigint (18)
+	 * @return code - varchar (50)
 	 */
-	public function get_inventorycategoryid(){
-		return $this->inventorycategoryid;
-	}
-
-	/**
-	 * @return name - varchar (255)
-	 */
-	public function get_name(){
-		return $this->name;
-	}
-
-	/**
-	 * @return notes - longtext (-1)
-	 */
-	public function get_notes(){
-		return $this->notes;
-	}
-
-	/**
-	 * @return adminnotes - longtext (-1)
-	 */
-	public function get_adminnotes(){
-		return $this->adminnotes;
-	}
-
-	/**
-	 * @return setuptime - bigint (18)
-	 */
-	public function get_setuptime(){
-		return $this->setuptime;
-	}
-
-	/**
-	 * @return teardowntime - bigint (18)
-	 */
-	public function get_teardowntime(){
-		return $this->teardowntime;
+	public function get_code(){
+		return $this->code;
 	}
 
 	/**
@@ -223,52 +153,17 @@ class inventory_category extends crud {
 	}
 
 	/**
-	 * @param Type: bigint (18)
-	 */
-	public function set_eventid($eventid){
-		$this->eventid = $eventid;
-	}
-
-	/**
-	 * @param Type: bigint (18)
-	 */
-	public function set_inventorycategoryid($inventorycategoryid){
-		$this->inventorycategoryid = $inventorycategoryid;
-	}
-
-	/**
-	 * @param Type: varchar (255)
-	 */
-	public function set_name($name){
-		$this->name = $name;
-	}
-
-	/**
 	 * @param Type: longtext (-1)
 	 */
-	public function set_notes($notes){
-		$this->notes = $notes;
+	public function set_description($description){
+		$this->description = $description;
 	}
 
 	/**
-	 * @param Type: longtext (-1)
+	 * @param Type: varchar (50)
 	 */
-	public function set_adminnotes($adminnotes){
-		$this->adminnotes = $adminnotes;
-	}
-
-	/**
-	 * @param Type: bigint (18)
-	 */
-	public function set_setuptime($setuptime){
-		$this->setuptime = $setuptime;
-	}
-
-	/**
-	 * @param Type: bigint (18)
-	 */
-	public function set_teardowntime($teardowntime){
-		$this->teardowntime = $teardowntime;
+	public function set_code($code){
+		$this->code = $code;
 	}
 
 	/**

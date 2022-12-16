@@ -15,7 +15,11 @@
 
 namespace local_order\output;
 
-use local_order\request;
+use local_order\event;
+use local_order\events;
+use local_order\organization;
+use local_order\organizations;
+use local_order\vendors;
 
 class dashboard implements \renderable, \templatable {
 
@@ -34,7 +38,21 @@ class dashboard implements \renderable, \templatable {
     public function export_for_template(\renderer_base $output) {
         global $USER, $CFG, $DB;
 
-        $data = [];
+        // Get number of users
+        if ($users = $DB->count_records('user', ['deleted' => 0])) {
+            $number_of_users = $users;
+        } else {
+            $number_of_users = get_string('none', 'local_order');
+        }
+
+        $EVENTS = new events();
+        $ORGANIZATIONS = new organizations();
+
+        $data = [
+            'number_of_users' => $number_of_users,
+            'number_of_events' => $EVENTS->get_events_count_today(),
+            'number_of_organizations' => $ORGANIZATIONS->get_number_of_organizations()
+        ];
 
         return $data;
     }
