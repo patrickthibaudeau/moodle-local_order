@@ -1,0 +1,23 @@
+img  {
+    vertical-align: top !important;
+    border-style: none;
+}
+
+.local_order_image_container {
+    position: relative;
+    text-align: center;
+    widht: 100%;
+    height: 100px;
+    color: #fff;
+    font-size: 5rem;
+    font-weight: 900;
+}
+
+.local_order_card_top_image {
+    height: 100px;
+    width: 100%;
+    top 0;
+    object-position: center;
+    object-fit: cover;
+}
+}

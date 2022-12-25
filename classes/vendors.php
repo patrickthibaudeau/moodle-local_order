@@ -21,7 +21,7 @@ class vendors {
 	 */
 	public function __construct() {
 	    global $DB;
-	    $this->results = $DB->get_records('order_vendor');
+	    $this->results = $DB->get_records('order_vendor', [], 'name');
 	}
 
 	/**
@@ -45,5 +45,17 @@ class vendors {
 	      }
 	    return $array;
 	}
+
+    public function get_number_of_vendors() {
+        global $DB;
+
+        $number_of_vendors = get_string('none', 'local_order');
+
+        if ($count = $DB->count_records(TABLE_VENDOR, [])) {
+            $number_of_vendors = $count;
+        }
+
+        return $number_of_vendors;
+    }
 
 }

@@ -47,11 +47,13 @@ class dashboard implements \renderable, \templatable {
 
         $EVENTS = new events();
         $ORGANIZATIONS = new organizations();
+        $VENDORS = new vendors();
 
         $data = [
             'number_of_users' => $number_of_users,
             'number_of_events' => $EVENTS->get_events_count_today(),
-            'number_of_organizations' => $ORGANIZATIONS->get_number_of_organizations()
+            'number_of_organizations' => $ORGANIZATIONS->get_number_of_organizations(),
+            'number_of_vendors' => $VENDORS->get_number_of_vendors()
         ];
 
         return $data;

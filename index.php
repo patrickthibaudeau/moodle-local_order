@@ -15,6 +15,7 @@ $context = context_system::instance();
 
  // Load JS
 $PAGE->requires->js('/local/order/js/dashboard.js', true);
+$PAGE->requires->css('/local/order/css/general.css');
 //**************** ******
 //*** DISPLAY HEADER ***
 //**********************

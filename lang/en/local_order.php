@@ -14,6 +14,7 @@ $string['event_instructions'] = '<ol>
 <li>Be patient, this can take a while. 	&#128522;</li>
 </ol>';
 $string['events'] = 'Events';
+$string['events_card_help'] = 'View, edit, add and print out event information.';
 $string['file'] = 'File';
 $string['file_help'] = 'The importer only accepts excel files';
 $string['floor'] = 'Floor';
@@ -24,6 +25,7 @@ $string['import'] = 'Import';
 $string['import_type'] = 'Import type';
 $string['instructions'] = 'Instructions';
 $string['inventory'] = 'Inventory';
+$string['inventory_card_help'] = 'Manage your inventory items.';
 $string['inventory_category'] = 'Inventory category';
 $string['inventory_category_help'] = 'Select a category from which to import too.';
 $string['inventory_category_required'] = 'You must select an inventory category. Press the button below to start again.';
@@ -40,6 +42,7 @@ $string['number_of_organizations'] = 'Number of organizations';
 $string['number_of_users'] = 'Number of users';
 $string['number_of_vendors'] = 'Number of vendors';
 $string['organizations'] = 'Organizations';
+$string['organizations_card_help'] = 'Manage organizations and thier contacts.';
 $string['organization_instructions'] = '<ol>
 <li>Make a copy of a downloaded Excel provided.</li>
 <li>Remove all columns except: Assoc., First name, Last name, Email, Phone-Office, Phone-mobile</li>
@@ -57,6 +60,10 @@ $string['select'] = 'Select';
 $string['select_other_import'] = 'Please select another import type';
 $string['status'] = 'Status';
 $string['table_must_have_data'] = 'The following tables must have data';
+$string['vendor'] = 'Vendor';
+$string['vendors'] = 'Vendors';
+$string['vendors_card_help'] = 'Manage vendors and their contacts.';
+$string['view'] = 'View';
 
 //Capabilities
 $string['order:import'] = 'Import data';
