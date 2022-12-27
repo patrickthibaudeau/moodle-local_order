@@ -2,11 +2,18 @@
 $string['add'] = 'Add';
 $string['building_import'] = 'Buildings Import';
 $string['buildings'] = 'Buildings';
+$string['cancel'] = 'Cancel';
 $string['campus'] = 'Campus';
 $string['campus_help'] = 'Import campus from excel';
 $string['campus_import'] = 'Campus Import';
 $string['campuses'] = 'Campuses';
+$string['delete'] = 'Delete';
+$string['delete_event'] = 'Delete event';
+$string['delete_event_help'] = 'Are you sure you want to delete this event? All data associated with this event will be 
+permanently deleted and unrecoverable.';
 $string['download_sample_files'] = 'Download sample Excel files';
+$string['edit'] = 'Edit';
+$string['error_deleting'] = 'An error occured while deleting the the record.';
 $string['event'] = 'Event';
 $string['event_instructions'] = '<ol>
 <li>Make a copy of the downloaded <span class="local_order_event"></span> Excel provided.</li>
@@ -17,6 +24,7 @@ $string['events'] = 'Events';
 $string['events_card_help'] = 'View, edit, add and print out event information.';
 $string['file'] = 'File';
 $string['file_help'] = 'The importer only accepts excel files';
+$string['filters'] = 'Filters';
 $string['floor'] = 'Floor';
 $string['floor_import'] = 'Floor Import';
 $string['floors'] = 'Floors';
@@ -36,6 +44,7 @@ match <span class="local_order_type"></span> items. example, organization, first
 <li>Remove all rows except row one (1).</li>
 <li>Save the file and upload below.</li>
 </ol>';
+$string['new'] = 'New';
 $string['none'] = 'None';
 $string['number_of_events_today'] = 'Number of events today';
 $string['number_of_organizations'] = 'Number of organizations';
@@ -81,3 +90,7 @@ $string['order:vendor_view'] = 'View vendors';
 $string['order:vendor_edit'] = 'Create/Edit vendors';
 $string['order:vendor_delete'] = 'Delete vendors';
 $string['order:reports_view'] = 'View reports';
+
+// Time strings
+$string['strftimedate'] = '%b %d, %Y';
+$string['strftime'] = '%H:%I';

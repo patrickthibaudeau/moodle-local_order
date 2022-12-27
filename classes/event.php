@@ -9,6 +9,8 @@ namespace local_order;
 
 use local_order\crud;
 
+include_once('../lib.php');
+
 class event extends crud {
 
 
@@ -299,6 +301,33 @@ class event extends crud {
 		return $this->timemodified;
 	}
 
+    /**
+     * Returns all inventory categories for this event
+     * @return array|false
+     * @throws \dml_exception
+     */
+    public function get_inventory_categories() {
+        global $DB;
+        if ($this->id) {
+            $categories = $DB->get_records(TABLE_EVENT_INVENTORY_CATEGORY,
+                ['eventid' => $this->id], 'inventorycategoryid');
+            return $categories;
+        }
+        return false;
+    }
+
+    /**
+     * Returns all ievent inventory items by event category id.
+     * @param $event_category_id int
+     * @return array
+     * @throws \dml_exception
+     */
+    public function get_inventory_items_by_category($event_category_id) {
+        global $DB;
+        $inventory = $DB->get_records(TABLE_EVENT_INVENTORY, ['eventcategoryid' => $event_category_id ]);
+        return $inventory;
+    }
+
 	/**
 	 * @param Type: bigint (18)
 	 */
@@ -417,5 +446,19 @@ class event extends crud {
 	public function set_timemodified($timemodified){
 		$this->timemodified = $timemodified;
 	}
+
+    public function delete_record() {
+        global $DB;
+        $inventory_categories = $this->get_inventory_categories();
+        //Delete all items and their category
+        foreach ($inventory_categories as $ic) {
+            $DB->delete_records(TABLE_EVENT_INVENTORY, ['eventcategoryid' => $ic->id]);
+            $DB->delete_records(TABLE_EVENT_INVENTORY_CATEGORY, ['id' => $ic->id]);
+        }
+        if ($DB->delete_records(TABLE_EVENT, ['id' => $this->id])) {
+            return true;
+        }
+        return false;
+    }
 
 }

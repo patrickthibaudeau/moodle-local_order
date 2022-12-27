@@ -19,5 +19,15 @@ class renderer extends \plugin_renderer_base {
         return $this->render_from_template('local_order/dashboard', $data);
     }
 
+    /**
+     * Used with root/index.php
+     * @param \templatable $dashboard
+     * @return type
+     */
+    public function render_events_dashboard(\templatable $events) {
+        $data = $events->export_for_template($this);
+        return $this->render_from_template('local_order/events_dashboard', $data);
+    }
+
 
 }
