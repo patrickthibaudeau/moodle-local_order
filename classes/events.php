@@ -113,7 +113,7 @@ class events
         if ($term) {
             $sql .= " AND (e.name LIKE '%$term%' ";
             $sql .= " OR e.code LIKE '%$term%' ";
-            $sql .= " OR e.eventype LIKE '%$term%' ";
+            $sql .= " OR e.eventtype LIKE '%$term%' ";
             $sql .= " OR o.name LIKE '%$term%') ";
         }
 

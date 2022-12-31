@@ -1,5 +1,6 @@
 <?php
 $string['add'] = 'Add';
+$string['building'] = 'Building';
 $string['building_import'] = 'Buildings Import';
 $string['buildings'] = 'Buildings';
 $string['cancel'] = 'Cancel';
@@ -7,11 +8,13 @@ $string['campus'] = 'Campus';
 $string['campus_help'] = 'Import campus from excel';
 $string['campus_import'] = 'Campus Import';
 $string['campuses'] = 'Campuses';
+$string['code'] = 'code';
 $string['delete'] = 'Delete';
 $string['delete_event'] = 'Delete event';
 $string['delete_event_help'] = 'Are you sure you want to delete this event? All data associated with this event will be 
 permanently deleted and unrecoverable.';
 $string['download_sample_files'] = 'Download sample Excel files';
+$string['end_time'] = 'End date/time';
 $string['edit'] = 'Edit';
 $string['error_deleting'] = 'An error occured while deleting the the record.';
 $string['event'] = 'Event';
@@ -20,6 +23,7 @@ $string['event_instructions'] = '<ol>
 <li>Drag and drop the file in the field below</li>
 <li>Be patient, this can take a while. 	&#128522;</li>
 </ol>';
+$string['event_type'] = 'Event type';
 $string['events'] = 'Events';
 $string['events_card_help'] = 'View, edit, add and print out event information.';
 $string['file'] = 'File';
@@ -44,12 +48,14 @@ match <span class="local_order_type"></span> items. example, organization, first
 <li>Remove all rows except row one (1).</li>
 <li>Save the file and upload below.</li>
 </ol>';
+$string['name'] = 'Name';
 $string['new'] = 'New';
 $string['none'] = 'None';
 $string['number_of_events_today'] = 'Number of events today';
 $string['number_of_organizations'] = 'Number of organizations';
 $string['number_of_users'] = 'Number of users';
 $string['number_of_vendors'] = 'Number of vendors';
+$string['organization'] = 'Organization';
 $string['organizations'] = 'Organizations';
 $string['organizations_card_help'] = 'Manage organizations and thier contacts.';
 $string['organization_instructions'] = '<ol>
@@ -61,13 +67,17 @@ $string['organization_instructions'] = '<ol>
 $string['pluginname'] = 'Ordering System';
 $string['reports'] = 'Reports';
 $string['required_field'] = 'This field is required';
+$string['room'] = 'Room';
 $string['room_type'] = 'Room type';
 $string['room_type_import'] = 'Room Type Import';
 $string['room_types'] = 'Room types';
 $string['rooms'] = 'Rooms';
 $string['select'] = 'Select';
 $string['select_other_import'] = 'Please select another import type';
-$string['status'] = 'Status';
+$string['start_time'] =  'Start date/time';
+$string['status'] =  'Status';
+$string['title'] =  'Title';
+$string['title_help'] =  'Enter the title or name for the event';
 $string['table_must_have_data'] = 'The following tables must have data';
 $string['vendor'] = 'Vendor';
 $string['vendors'] = 'Vendors';
@@ -93,4 +103,4 @@ $string['order:reports_view'] = 'View reports';
 
 // Time strings
 $string['strftimedate'] = '%b %d, %Y';
-$string['strftime'] = '%H:%I';
+$string['strftime'] = '%H:%M';

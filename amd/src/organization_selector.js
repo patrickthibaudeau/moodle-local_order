@@ -16,7 +16,7 @@
 /**
  * Potential user selector module.
  *
- * @module     local_order/user_selector
+ * @module     local_order/organization_selector
  * @class      user_selector
  * @package
  */
@@ -30,7 +30,7 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str'], function($, Ajax, 
             let perpage = 50;
 
             promise = Ajax.call([{
-                methodname: 'local_order_get_users',
+                methodname: 'local_order_get_organizations',
                 args: {
                     name: query,
                 }
@@ -61,7 +61,7 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str'], function($, Ajax, 
                 $.each(results, function(index, record) {
                     records.push({
                         value: record.id, //the value of the item selected and that is passed into the form?
-                        label: record.firstname + " " + record.lastname + ' (' + record.email + ')'
+                        label: record.name  + ' (' + record.email + ')'
                         //The text that displays inside the selection menu
                     });
                 });
@@ -71,8 +71,6 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str'], function($, Ajax, 
                 return results;
             }
         }
-
-
     };
 
 });

@@ -30,11 +30,8 @@ $(document).ready(function () {
             {
                 "searchable": false,
                 "targets": [4, 5, 6]
-            },
-            {
-                "order": 'desc',
-                "targets": [4]
             }],
+        'order': [[4, ' asc']],
         // buttons: [
         //     'excelHtml5',
         // ],
@@ -59,6 +56,13 @@ $(document).ready(function () {
                     });
                 });
             });
+
+            // edit event
+            $('.btn-edit-event').on('click', function() {
+                let dateRange = $('#local_order_events_daterange').val();
+                location.href = M.cfg.wwwroot + '/local/order/events/edit_event.php?id=' + $(this).data('id') +
+                 '&daterange=' + dateRange;
+            });
         },
         "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
         "pageLength": 10,
@@ -77,6 +81,12 @@ $(document).ready(function () {
         location.href = wwwroot + '/local/order/events/index.php?daterange=' + dateRange;
     });
 
+    // Add new event
+    $('.btn-add-new').on('click', function(){
+        let wwwroot = M.cfg.wwwroot;
+        let dateRange = $('#local_order_events_daterange').val();
+        location.href = M.cfg.wwwroot + '/local/order/events/edit_event.php?id=0&daterange=' + dateRange;
+    });
 
 
     // Click on row
