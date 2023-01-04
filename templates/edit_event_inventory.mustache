@@ -1,0 +1,14 @@
+<div class="row">
+    <div class="col">
+        <div class="accordion" id="event_inventory_accordion">
+            {{> local_order/edit_event_inventory_items}}
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col">
+        <div class="alert alert-info d-flex justify-content-end">
+            <b>{{#str}}total_cost_event, local_order{{/str}}: {{{event_total_cost}}}</b>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,42 @@
+<div class="col">
+    <div class="card">
+        <div class="card-body">
+            <form id="event_inventory_edit_form">
+                <input type="hidden" name="id" value="{{id}}">
+                <input type="hidden" name="eventcategoryid" value="{{eventcategoryid}}">
+                <div class="form-group">
+                    <label for="event_inventory_name">{{#str}}inventory_package, local_order{{/str}}</label>
+                    <select id="event_inventory_name" name="name" class="form-control">
+                        <option value="">{{#str}}select, local_order{{/str}}</option>
+                        {{#inventory}}
+                            <option value="{{id}}" {{selected}}>{{name}}</option>
+                        {{/inventory}}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="event_inventory_description">{{#str}}description, local_order{{/str}}</label>
+                    <textarea id="event_inventory_description" name="description" class="form-control">
+                        {{description}}
+                    </textarea>
+                </div>
+                <div class="form-group">
+                    <label for="event_inventory_quantity">{{#str}}quantity, local_order{{/str}}</label>
+                    <input type="text" id="event_inventory_quantity" name="quantity" class="form-control" value="{{quantity}}">
+                </div>
+                <div class="form-group">
+                    <label for="event_inventory_cost">{{#str}}cost, local_order{{/str}}</label>
+                    <input type="text" id="event_inventory_costy" name="cost" class="form-control" value="{{cost}}">
+                </div>
+                <div class="form-group">
+                    <label for="event_inventory_vendor">{{#str}}vendor, local_order{{/str}}</label>
+                    <select id="event_inventory_vendor" name="vendorid" class="form-control">
+                        <option value="">{{#str}}select, local_order{{/str}}</option>
+                        {{#vendor}}
+                            <option value="{{id}}" {{selected}}>{{name}}</option>
+                        {{/vendor}}
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

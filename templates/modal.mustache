@@ -4,8 +4,9 @@
     "action_button_name": "Delete",
     "close_button_name": "Cancel"
 }-->
-<div class="modal fade" id="{{modal_id}}Modal" tabindex="-1" aria-labelledby="{{modal_id}}ModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade" id="{{modal_id}}Modal" tabindex="-1" aria-labelledby="{{modal_id}}ModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog {{class}}">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="{{modal_id}}ModalLLabel">{{title}}</h5>
@@ -14,11 +15,13 @@
                 </button>
             </div>
             <div class="modal-body">
-                {{content}}
+                {{{content}}}
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">{{close_button_name}}</button>
-                <button type="button" class="btn btn-primary btn-{{action_button}}">{{action_button_name}}</button>
+                {{#action_button}}
+                    <button type="button" class="btn btn-primary btn-{{action_button}}">{{action_button_name}}</button>
+                {{/action_button}}
             </div>
         </div>
     </div>

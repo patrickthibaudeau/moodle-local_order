@@ -9,6 +9,8 @@
 namespace local_order;
 
 use local_order\crud;
+use local_order\vendor;
+use local_order\room;
 
 include_once('../lib.php');
 
@@ -387,9 +389,91 @@ class event extends crud
      */
     public function get_inventory_items_by_category($event_category_id)
     {
-        global $DB;
-        $inventory = $DB->get_records(TABLE_EVENT_INVENTORY, ['eventcategoryid' => $event_category_id]);
+        global $DB, $OUTPUT;
+        $inventory = [];
+        $i = 0;
+        $inventory_items = $DB->get_records(TABLE_EVENT_INVENTORY, ['eventcategoryid' => $event_category_id]);
+        // Set currency object (Format number)
+        $amount = new \NumberFormatter( get_string('currency_locale', 'local_order'),
+            \NumberFormatter::CURRENCY );
+        foreach($inventory_items as $item) {
+            $ROOM = new room($item->roomid);
+            $actions = [
+                'id' => $item->id,
+                'type' => 'event-inventory-item'
+            ];
+            // format cost based on language currency
+            $item->cost_formatted = $amount->format($item->cost);
+            $item->vendor_name = $this->get_vendor_name($item->vendorid);
+            $item->room_name = $ROOM->get_full_name();
+            $item->actions = $OUTPUT->render_from_template('local_order/action_buttons', $actions);
+            $inventory[$i] = $item;
+            unset($ROOM);
+            $i++;
+        }
         return $inventory;
+    }
+
+    /**
+     * Returns all inventory categories with their items
+     * @return array|false
+     * @throws \dml_exception
+     */
+    public function get_inventory_categories_with_items() {
+        global $DB;
+        $categories = $this->get_inventory_categories();
+        $results = [];
+        $i = 0;
+        $amount = new \NumberFormatter( get_string('currency_locale', 'local_order'),
+            \NumberFormatter::CURRENCY );
+        foreach ($categories as $c) {
+            $c->total_cost = $amount->format($this->get_total_cost_by_category($c->id));
+            $c->items = array_values($this->get_inventory_items_by_category($c->id));
+            $results[$i] = $c;
+            $i++;
+        }
+        return $results;
+    }
+
+    /**
+     * Return total cost of inventory items in category
+     * @param $event_category_id
+     * @return float|mixed
+     * @throws \dml_exception
+     */
+    public function get_total_cost_by_category($event_category_id)  {
+        global $CFG, $DB;
+
+        $sql = "SELECT SUM(cost) as amount FROM {order_event_inventory} WHERE eventcategoryid = $event_category_id";
+        $result = $DB->get_record_sql($sql);
+
+        return $result->amount;
+    }
+
+    /**
+     * Returns total cost of all items from all categories
+     * @return false|string
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
+    public function get_total_cost_of_event() {
+        $sum = 0;
+        foreach($this->get_inventory_categories() as $c) {
+            $sum = $sum + $this->get_total_cost_by_category($c->id);
+        }
+        $amount = new \NumberFormatter( get_string('currency_locale', 'local_order'),
+            \NumberFormatter::CURRENCY );
+        return $amount->format($sum);
+    }
+
+    /**
+     * Return vendor name
+     * @param $vendor_id
+     * @return name|string
+     */
+    public function get_vendor_name($vendor_id) {
+        $VENDOR = new vendor($vendor_id);
+        return $VENDOR->get_name();
     }
 
     /**

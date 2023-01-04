@@ -1,22 +1,31 @@
 <?php
 $string['add'] = 'Add';
 $string['building'] = 'Building';
+$string['building_help'] = '<p>To select a room, first start by selecting a building in this menu. Then use the 
+room menu to select the appropriate room. You can use the search functions within both menus. In the room menu,
+for example, you can search for "classroom" to get all classrooms in a building</p>';
 $string['building_import'] = 'Buildings Import';
+$string['building_placeholder'] = 'Select a building first';
 $string['buildings'] = 'Buildings';
 $string['cancel'] = 'Cancel';
 $string['campus'] = 'Campus';
 $string['campus_help'] = 'Import campus from excel';
 $string['campus_import'] = 'Campus Import';
 $string['campuses'] = 'Campuses';
+$string['close'] = 'Close';
 $string['code'] = 'code';
+$string['currency_locale'] = 'en_CA';
 $string['delete'] = 'Delete';
 $string['delete_event'] = 'Delete event';
 $string['delete_event_help'] = 'Are you sure you want to delete this event? All data associated with this event will be 
 permanently deleted and unrecoverable.';
+$string['details'] = 'Details';
 $string['download_sample_files'] = 'Download sample Excel files';
 $string['end_time'] = 'End date/time';
 $string['edit'] = 'Edit';
+$string['edit_items'] = 'Edit items';
 $string['error_deleting'] = 'An error occured while deleting the the record.';
+$string['estimated_attendance'] = 'Estimated attendance';
 $string['event'] = 'Event';
 $string['event_instructions'] = '<ol>
 <li>Make a copy of the downloaded <span class="local_order_event"></span> Excel provided.</li>
@@ -68,6 +77,7 @@ $string['pluginname'] = 'Ordering System';
 $string['reports'] = 'Reports';
 $string['required_field'] = 'This field is required';
 $string['room'] = 'Room';
+$string['room_placeholder'] = 'Rooms will be available when a building is selected';
 $string['room_type'] = 'Room type';
 $string['room_type_import'] = 'Room Type Import';
 $string['room_types'] = 'Room types';
@@ -76,9 +86,10 @@ $string['select'] = 'Select';
 $string['select_other_import'] = 'Please select another import type';
 $string['start_time'] =  'Start date/time';
 $string['status'] =  'Status';
+$string['table_must_have_data'] = 'The following tables must have data';
 $string['title'] =  'Title';
 $string['title_help'] =  'Enter the title or name for the event';
-$string['table_must_have_data'] = 'The following tables must have data';
+$string['total_cost_event'] = 'Total event cost';
 $string['vendor'] = 'Vendor';
 $string['vendors'] = 'Vendors';
 $string['vendors_card_help'] = 'Manage vendors and their contacts.';

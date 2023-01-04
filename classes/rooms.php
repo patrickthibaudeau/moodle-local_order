@@ -73,12 +73,14 @@ class rooms {
 
         // Loop through records and build room array
         foreach($floor_rooms as $fr) {
+            // Get room type
+            $room_type = $DB->get_record(TABLE_ROOM_TYPE, ['id' => $fr->room_type_id]);
             if ($fr->capacity) {
                 $capacity = " ($fr->capacity)";
             } else {
                 $capacity = '';
             }
-            $rooms[$fr->id] = $fr->code . $capacity;
+            $rooms[$fr->id] = $fr->code . ' - ' . $room_type->name . $capacity;
         }
         return $rooms;
     }

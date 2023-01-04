@@ -22,7 +22,8 @@ if ($id) {
     $formdata->daterange = $date_range;
     $formdata->organizationid = $EVENT->get_organization();
     $formdata->eventtypeid = $EVENT->get_event_type();
-
+    $formdata->inventory_categories = $EVENT->get_inventory_categories_with_items();
+    $formdata->event_total_cost = $EVENT->get_total_cost_of_event();
 }
 
 $mform = new \local_order\event_form(null, array('formdata' => $formdata));
@@ -47,6 +48,8 @@ if ($mform->is_cancelled()) {
     $context);
 
 // Load JS
+$PAGE->requires->jquery();
+$PAGE->requires->jquery('ui');
 $PAGE->requires->js_call_amd('local_order/edit_event', 'init()');
 $PAGE->requires->js('/local/order/js/edit_event.js', true);
 $PAGE->requires->css('/local/order/css/general.css');

@@ -14,7 +14,7 @@ class event_form extends \moodleform
 
     protected function definition()
     {
-        global $DB;
+        global $DB, $OUTPUT;
 
         $formdata = $this->_customdata['formdata'];
         // Create form object
@@ -54,7 +54,7 @@ class event_form extends \moodleform
 
         $mform->addElement('html', '<div class="container-fluid">');
         $mform->addElement('html', '<div class="row">');
-        $mform->addElement('html', '<div class="col-md-7">');
+        $mform->addElement('html', '<div class="col-md-6">');
         // Form content for col-md-7
         // Create card
         $mform->addElement('html', '<div class="card">');
@@ -66,7 +66,7 @@ class event_form extends \moodleform
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', get_string('required_field', 'local_order'), 'required');
         // code
-        $mform->addElement('text', 'code', get_string('code', 'local_order'));
+        $mform->addElement('text', 'code', get_string('code', 'local_order'), ['style' => 'width: 40%;']);
         $mform->setType('code', PARAM_TEXT);
         //Start time
         $mform->addElement('date_time_selector', 'starttime', get_string('start_time', 'local_order'));
@@ -95,31 +95,43 @@ class event_form extends \moodleform
         $mform->setType('eventtypename', PARAM_TEXT);
 
 
-        // Room - Must use multiple select options for building and room
-        $room_group = [];
-        $room_group[] =& $mform->createElement('selectgroups', 'building',
-            get_string('building', 'local_order'), $buildings);
-        $room_group[] =& $mform->createElement('selectgroups', 'room',
-            get_string('room', 'local_order'), $rooms);
+        $mform->addElement('selectgroups', 'building', get_string('building', 'local_order'), $buildings);
+        $mform->addHelpButton('building', 'building', 'local_order');
 
-        $mform->addGroup($room_group, 'room_array', get_string('room', 'local_order'),
-            array(' '), false);
+        $mform->addElement('select', 'room', get_string('room', 'local_order'), $rooms);
+        $mform->setType('room', PARAM_INT);
+
+        $mform->addElement('text', 'attendance', get_string('estimated_attendance', 'local_order'),  ['style' => 'width: 40%;']);
+        $mform->setType('attendance', PARAM_TEXT);
+
 
         $mform->addElement('html', '</div>'); // End div card-body
         $mform->addElement('html', '</div>'); // End div card
-        $mform->addElement('html', '</div>'); // End div col-md-7
+        $mform->addElement('html', '</div>'); // End div col-md-6
 
-        $mform->addElement('html', '<div class="col-md-5">');
+        $mform->addElement('html', '<div class="col-md-6">');
         // Form content for col-md-5
         // Create card
         $mform->addElement('html', '<div class="card">');
         $mform->addElement('html', '<div class="card-body">');
 
-        // Content for form here
+        // Print each inventory categories
+        $mform->addElement('html', '<div id="event_inventory_container">');
+        $mform->addElement('html', $OUTPUT->render_from_template('local_order/edit_event_inventory', $formdata) );
+        $mform->addElement('html', '</div>'); // End event_inventory_container
+        // Edit inventory modal
+        $edit_modal = new \stdClass();
+        $edit_modal->modal_id = "localOrderEditEvent";
+        $edit_modal->class = "modal-xl";
+        $edit_modal->title = get_string('edit_items', 'local_order');
+        $edit_modal->content = '<div id="local_order_inventory_edit_container"></div>';
+        $edit_modal->close_button_name = get_string('close', 'local_order');
+        $mform->addElement('html', $OUTPUT->render_from_template('local_order/modal', $edit_modal) );
+
 
         $mform->addElement('html', '</div>'); // End div card-body
         $mform->addElement('html', '</div>'); // End div card
-        $mform->addElement('html', '</div>'); // End div col-md-5
+        $mform->addElement('html', '</div>'); // End div col-md-6
         $mform->addElement('html', '</div>'); // End div row
         /**
          * Button row
