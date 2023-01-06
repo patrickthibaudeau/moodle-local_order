@@ -5,6 +5,7 @@ require_once('../lib.php');
 require_once('../classes/forms/event_form.php');
 
 use local_order\event;
+use local_order\room;
 
 // CHECK And PREPARE DATA
 global $CFG, $OUTPUT, $SESSION, $PAGE, $DB, $COURSE, $USER;
@@ -18,12 +19,15 @@ $id = optional_param('id', 0, PARAM_INT);
 $EVENT = new event($id);
 
 if ($id) {
+    $ROOM = new room($EVENT->get_roomid());
     $formdata = $EVENT->get_record();
     $formdata->daterange = $date_range;
     $formdata->organizationid = $EVENT->get_organization();
     $formdata->eventtypeid = $EVENT->get_event_type();
     $formdata->inventory_categories = $EVENT->get_inventory_categories_with_items();
     $formdata->event_total_cost = $EVENT->get_total_cost_of_event();
+    $formdata->building = $ROOM->get_building_code();
+
 }
 
 $mform = new \local_order\event_form(null, array('formdata' => $formdata));
@@ -44,7 +48,7 @@ if ($mform->is_cancelled()) {
 
 \local_order\base::page($CFG->wwwroot . '/local/order/events//index.php',
     get_string('event', 'local_order'),
-    get_string('event', 'local_order'),
+    '',
     $context);
 
 // Load JS

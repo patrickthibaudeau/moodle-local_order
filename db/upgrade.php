@@ -44,7 +44,18 @@ function xmldb_local_order_upgrade($oldversion)
         upgrade_plugin_savepoint(true, 2022123000, 'local', 'order');
     }
 
+    if ($oldversion < 2023010500) {
 
+        // Changing type of field building_code on table order_floor to char.
+        $table = new xmldb_table('order_floor');
+        $field = new xmldb_field('building_code', XMLDB_TYPE_CHAR, '50', null, null, null, null, 'id');
+
+        // Launch change of type for field building_code.
+        $dbman->change_field_type($table, $field);
+
+        // Order savepoint reached.
+        upgrade_plugin_savepoint(true, 2023010500, 'local', 'order');
+    }
 
     return true;
 }

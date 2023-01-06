@@ -39,18 +39,34 @@ $(document).ready(function () {
      * Edit inventory items
      */
     $('.btn-inventory-edit').on('click', function(){
-        let id = $(this).data('id');
-        let event = $(this).data('event');
+        let eventCategoryId = $(this).data('eventinventorycategoryid');
+        let eventId = $(this).data('eventid');
 
         $.ajax({
             type: "GET",
-            url: M.cfg.wwwroot + "/local/order/ajax/get_inventory_details.php?id=" + id + '&event=' + event ,
+            url: M.cfg.wwwroot + "/local/order/ajax/get_inventory_details.php?id=" + eventCategoryId + '&eventid=' + eventId ,
             dataType: "html",
             success: function (results) {
                 $('#local_order_inventory_edit_container').html(results);
-
                 $('#localOrderEditEventModal').modal('show');
+                add_event_inventory_item();
             }
         });
     });
 });
+
+function add_event_inventory_item() {
+    $('#local_order_add_event_inventory').on('click', function() {
+        let eventInventoryCategoryId = $(this).data('eventinventorycategoryid');
+        let eventId = $(this).data('eventid');
+
+        $.ajax({
+            type: "GET",
+            url: M.cfg.wwwroot + "/local/order/ajax/edit_event_inventory_form.php?eicid=" + eventInventoryCategoryId + '&eventid=' + eventId ,
+            dataType: "html",
+            success: function (results) {
+                $('#event_inventory_edit_form_container').html(results);
+            }
+        });
+    });
+}

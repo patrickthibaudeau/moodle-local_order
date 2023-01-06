@@ -1,5 +1,6 @@
 <?php
 $string['add'] = 'Add';
+$string['admin_notes'] = 'Admin notes';
 $string['building'] = 'Building';
 $string['building_help'] = '<p>To select a room, first start by selecting a building in this menu. Then use the 
 room menu to select the appropriate room. You can use the search functions within both menus. In the room menu,
@@ -14,11 +15,13 @@ $string['campus_import'] = 'Campus Import';
 $string['campuses'] = 'Campuses';
 $string['close'] = 'Close';
 $string['code'] = 'code';
+$string['cost'] = 'Cost';
 $string['currency_locale'] = 'en_CA';
 $string['delete'] = 'Delete';
 $string['delete_event'] = 'Delete event';
 $string['delete_event_help'] = 'Are you sure you want to delete this event? All data associated with this event will be 
 permanently deleted and unrecoverable.';
+$string['description'] = 'Description';
 $string['details'] = 'Details';
 $string['download_sample_files'] = 'Download sample Excel files';
 $string['end_time'] = 'End date/time';
@@ -57,6 +60,7 @@ match <span class="local_order_type"></span> items. example, organization, first
 <li>Remove all rows except row one (1).</li>
 <li>Save the file and upload below.</li>
 </ol>';
+$string['inventory_package'] = 'Inventory package';
 $string['name'] = 'Name';
 $string['new'] = 'New';
 $string['none'] = 'None';
@@ -73,7 +77,9 @@ $string['organization_instructions'] = '<ol>
 <li>Rename all fields as follow: name, firstname,lastname,emai,phone1,phone2</li>
 <li>Save the file and upload below.</li>
 </ol>';
+$string['other_notes'] = 'Other notes';
 $string['pluginname'] = 'Ordering System';
+$string['quantity'] = 'Quantity';
 $string['reports'] = 'Reports';
 $string['required_field'] = 'This field is required';
 $string['room'] = 'Room';
@@ -84,6 +90,7 @@ $string['room_types'] = 'Room types';
 $string['rooms'] = 'Rooms';
 $string['select'] = 'Select';
 $string['select_other_import'] = 'Please select another import type';
+$string['setup_notes'] =  'Setup notes';
 $string['start_time'] =  'Start date/time';
 $string['status'] =  'Status';
 $string['table_must_have_data'] = 'The following tables must have data';

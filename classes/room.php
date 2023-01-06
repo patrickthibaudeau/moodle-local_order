@@ -9,6 +9,8 @@
 namespace local_order;
 
 use local_order\crud;
+use local_order\floor;
+
 
 class room extends crud
 {
@@ -201,6 +203,14 @@ class room extends crud
         }
 
         return $name;
+    }
+
+    /**
+     * @return string|building_code
+     */
+    public function get_building_code() {
+        $FLOOR = new floor($this->floor_id);
+        return $FLOOR->get_building_code();
     }
 
     /**

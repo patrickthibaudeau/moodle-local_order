@@ -18,20 +18,20 @@
                         <tr>
                             <td>{{name}}</td>
                             <td>{{description}}</td>
-                            <td>{{cost_formatted}}</td>
+                            <td class="d-flex justify-content-end">{{cost_formatted}}</td>
                         </tr>
                     {{/items}}
                     <tr>
                         <td></td>
                         <td></td>
-                        <td><b>{{{total_cost}}}</b></td>
+                        <td class="d-flex justify-content-end"><b>{{{total_cost}}}</b></td>
                     </tr>
                     </tbody>
                 </table>
                 <div class="float-right">
 
                     <button type="button" class="btn btn-outline-primary btn-sm btn-inventory-edit"
-                            data-id="{{id}}" data-event="{{eventid}}">
+                            data-eventinventorycategoryid="{{id}}" data-eventid="{{eventid}}">
                         {{#str}}details, local_order{{/str}} / {{#str}}edit, local_order{{/str}}
                     </button>
                 </div>

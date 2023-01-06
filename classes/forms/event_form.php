@@ -3,6 +3,7 @@ namespace local_order;
 
 use local_order\event;
 use local_order\buildings;
+use local_order\rooms;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -42,8 +43,12 @@ class event_form extends \moodleform
         // Get buildings and rooms
         $BUILDINGS = new buildings();
         $buildings = $BUILDINGS->get_buildings_by_campus();
-        // Rooms will always be empty. Will dynamically be updated when building is selected
+        // Rooms empty unless a room id exists. Otherwise, will dynamically be updated when building is selected
         $rooms = [];
+        if ($formdata->roomid) {
+            $ROOMS = new rooms();
+            $rooms = $ROOMS->get_rooms_by_building_floor($formdata->building);
+        }
 
         // event id
         $mform->addElement('hidden', 'id');
@@ -53,9 +58,23 @@ class event_form extends \moodleform
         $mform->setType('daterange', PARAM_TEXT);
 
         $mform->addElement('html', '<div class="container-fluid">');
+        /**
+         * Button row
+         */
+        $mform->addElement('html', '<div class="row">');
+        $mform->addElement('html', '<div class="col d-flex justify-content-start">');
+        $mform->addElement('html', '<h4>' . get_string('event', 'local_order') . '</h4>');
+        $mform->addElement('html', '</div>');
+        $mform->addElement('html', '<div class="col d-flex justify-content-end">');
+
+        $this->add_action_buttons();
+
+        $mform->addElement('html', '</div>'); // End button col
+        $mform->addElement('html', '</div>'); // End button row
+
         $mform->addElement('html', '<div class="row">');
         $mform->addElement('html', '<div class="col-md-6">');
-        // Form content for col-md-7
+        // Form content for col-md-6
         // Create card
         $mform->addElement('html', '<div class="card">');
         $mform->addElement('html', '<div class="card-body">');
@@ -119,6 +138,13 @@ class event_form extends \moodleform
         $mform->addElement('html', '<div id="event_inventory_container">');
         $mform->addElement('html', $OUTPUT->render_from_template('local_order/edit_event_inventory', $formdata) );
         $mform->addElement('html', '</div>'); // End event_inventory_container
+
+        $mform->addElement('textarea', 'setupnotes', get_string('setup_notes', 'local_order'),
+            'wrap="virtual" rows="10"');
+
+        $mform->addElement('textarea', 'othernotes', get_string('other_notes', 'local_order'),
+            'wrap="virtual" rows="10"');
+
         // Edit inventory modal
         $edit_modal = new \stdClass();
         $edit_modal->modal_id = "localOrderEditEvent";
@@ -137,7 +163,7 @@ class event_form extends \moodleform
          * Button row
          */
         $mform->addElement('html', '<div class="row mb-5">');
-        $mform->addElement('html', '<div class="col">');
+        $mform->addElement('html', '<div class="col d-flex justify-content-end">');
 
         $this->add_action_buttons();
 
