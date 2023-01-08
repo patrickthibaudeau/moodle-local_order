@@ -20,6 +20,7 @@ use local_order\events;
 use local_order\organization;
 use local_order\organizations;
 use local_order\vendors;
+use local_order\inventory_categories;
 
 class events_dashboard implements \renderable, \templatable {
 
@@ -43,6 +44,17 @@ class events_dashboard implements \renderable, \templatable {
     public function export_for_template(\renderer_base $output) {
         global $USER, $CFG, $DB;
 
+        $INVENTORY_CATEGORIES = new inventory_categories();
+        $inventory_categories_records = $INVENTORY_CATEGORIES->get_records();
+        $inventory_categories = [];
+        $i = 0;
+        foreach ($inventory_categories_records as $icr) {
+            $inventory_categories[$i]['id'] = $icr->id;
+            $inventory_categories[$i]['name'] = $icr->name;
+            $inventory_categories[$i]['code'] = $icr->code;
+            $i++;
+        }
+
         $modal = [
             'modal_id' => 'eventDelete',
             'title' => get_string('delete_event', 'local_order'),
@@ -54,6 +66,7 @@ class events_dashboard implements \renderable, \templatable {
 
         $data = [
             'daterange' => $this->date_range,
+            'inventory_categories' => $inventory_categories,
             'event_modal' => $modal
         ];
 

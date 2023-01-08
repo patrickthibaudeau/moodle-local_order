@@ -191,4 +191,22 @@ class events
         return $html;
     }
 
+    /**
+     * Returns array of event ids based on date range
+     * @param $date_range
+     * @return array
+     * @throws \dml_exception
+     */
+    public function get_event_ids_by_daterange($date_range) {
+        global $DB;
+
+        $date_range = explode(' - ', $date_range);
+        $start_time = strtotime($date_range[0] . ' 00:00:00');
+        $end_time = strtotime($date_range[1] . ' 23:59:59');
+
+        $sql = "SELECT id FROM {order_event} WHERE starttime BETWEEN ? AND ? ORDER BY starttime";
+
+        return $DB->get_records_sql($sql,[$start_time, $end_time]);
+    }
+
 }

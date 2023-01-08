@@ -21,7 +21,7 @@ class inventory_categories {
 	 */
 	public function __construct() {
 	    global $DB;
-	    $this->results = $DB->get_records('order_inventory_category');
+	    $this->results = $DB->get_records('order_inventory_category', [], 'name');
 	}
 
 	/**

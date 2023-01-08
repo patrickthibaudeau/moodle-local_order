@@ -1,6 +1,9 @@
 <?php
 $string['add'] = 'Add';
 $string['admin_notes'] = 'Admin notes';
+$string['all'] = 'All';
+$string['audio_visual_order'] = 'Audio/Visual Order';
+$string['booking_details'] = 'Booking details';
 $string['building'] = 'Building';
 $string['building_help'] = '<p>To select a room, first start by selecting a building in this menu. Then use the 
 room menu to select the appropriate room. You can use the search functions within both menus. In the room menu,
@@ -13,6 +16,7 @@ $string['campus'] = 'Campus';
 $string['campus_help'] = 'Import campus from excel';
 $string['campus_import'] = 'Campus Import';
 $string['campuses'] = 'Campuses';
+$string['catering_order'] = 'Catering order';
 $string['close'] = 'Close';
 $string['code'] = 'code';
 $string['cost'] = 'Cost';
@@ -23,6 +27,7 @@ $string['delete_event_help'] = 'Are you sure you want to delete this event? All 
 permanently deleted and unrecoverable.';
 $string['description'] = 'Description';
 $string['details'] = 'Details';
+$string['download_pdf'] = 'Download PDF';
 $string['download_sample_files'] = 'Download sample Excel files';
 $string['end_time'] = 'End date/time';
 $string['edit'] = 'Edit';
@@ -35,6 +40,8 @@ $string['event_instructions'] = '<ol>
 <li>Drag and drop the file in the field below</li>
 <li>Be patient, this can take a while. 	&#128522;</li>
 </ol>';
+$string['event_name'] = 'Event name';
+$string['event_order'] = 'Event order';
 $string['event_type'] = 'Event type';
 $string['events'] = 'Events';
 $string['events_card_help'] = 'View, edit, add and print out event information.';
@@ -44,6 +51,8 @@ $string['filters'] = 'Filters';
 $string['floor'] = 'Floor';
 $string['floor_import'] = 'Floor Import';
 $string['floors'] = 'Floors';
+$string['furnishing'] = 'Furnishing';
+$string['furnishing_order'] = 'Furnishing order';
 $string['home'] = 'Home';
 $string['import'] = 'Import';
 $string['import_type'] = 'Import type';
@@ -68,6 +77,7 @@ $string['number_of_events_today'] = 'Number of events today';
 $string['number_of_organizations'] = 'Number of organizations';
 $string['number_of_users'] = 'Number of users';
 $string['number_of_vendors'] = 'Number of vendors';
+$string['order'] = 'Order';
 $string['organization'] = 'Organization';
 $string['organizations'] = 'Organizations';
 $string['organizations_card_help'] = 'Manage organizations and thier contacts.';
@@ -121,4 +131,5 @@ $string['order:reports_view'] = 'View reports';
 
 // Time strings
 $string['strftimedate'] = '%b %d, %Y';
+$string['strftimelongdate'] = '%A %B %e, %Y';
 $string['strftime'] = '%H:%M';

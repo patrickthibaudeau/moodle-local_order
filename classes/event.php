@@ -219,7 +219,7 @@ class event extends crud
     }
 
     /**
-     * Returns organizatin id and name in an array
+     * Returns organization id and name in an array
      * @return organization - array
      */
     public function get_organization()
@@ -234,6 +234,35 @@ class event extends crud
         return $organization;
     }
 
+    public function get_organization_details() {
+        global $DB;
+
+        $sql = "Select
+                o.id,
+                o.name,
+                o.address,
+                o.postal,
+                o.province,
+                o.country,
+                o.phone,
+                o.email,
+                o.website,
+                c.preferredphone,
+                u.firstname,
+                u.lastname,
+                u.email As user_email,
+                u.phone1,
+                u.phone2
+            From
+                {order_organization} o Left Join
+                {order_organization_contact} c On c.organizationid = o.id Left Join
+                {user} u On u.id = c.userid
+            Where
+                o.id = ?";
+
+        return $DB->get_record_sql($sql, [$this->organizationid]);
+
+    }
     /**
      * @return name - varchar (255)
      */
@@ -276,13 +305,15 @@ class event extends crud
 
     public function get_event_type() {
         global $DB;
-        $result = $DB->get_record(TABLE_EVENT_TYPE, ['id' => $this->eventtypeid]);
-        $event_type = [
-            'id' => $this->eventtypeid,
-            'name' => $result->description
-        ];
+        if ($result = $DB->get_record(TABLE_EVENT_TYPE, ['id' => $this->eventtypeid])) {
+            $event_type = [
+                'id' => $this->eventtypeid,
+                'name' => $result->description
+            ];
+            return $event_type;
+        }
 
-        return $event_type;
+        return false;
     }
 
     /**
@@ -299,6 +330,12 @@ class event extends crud
     public function get_roomid()
     {
         return $this->roomid;
+    }
+
+    public function get_room_details() {
+        $ROOM = new room($this->roomid);
+
+        return $ROOM->get_full_name();
     }
 
     /**
@@ -416,10 +453,12 @@ class event extends crud
 
     /**
      * Returns all inventory categories with their items
-     * @return array|false
+     * @param $inventory_category_id default all.
+     * @return array
+     * @throws \coding_exception
      * @throws \dml_exception
      */
-    public function get_inventory_categories_with_items() {
+    public function get_inventory_categories_with_items($inventory_category_id = 0) {
         global $DB;
         $categories = $this->get_inventory_categories();
         $results = [];
@@ -427,10 +466,22 @@ class event extends crud
         $amount = new \NumberFormatter( get_string('currency_locale', 'local_order'),
             \NumberFormatter::CURRENCY );
         foreach ($categories as $c) {
-            $c->total_cost = $amount->format($this->get_total_cost_by_category($c->id));
-            $c->items = array_values($this->get_inventory_items_by_category($c->id));
-            $results[$i] = $c;
-            $i++;
+            if ($inventory_category_id == 0) {
+                // Return all categories and their items
+                $c->total_cost = $amount->format($this->get_total_cost_by_category($c->id));
+                $c->items = array_values($this->get_inventory_items_by_category($c->id));
+                $results[$i] = $c;
+                $i++;
+            } else {
+                // Only return for the specified category
+                if ($c->inventorycategoryid == $inventory_category_id) {
+                    $c->total_cost = $amount->format($this->get_total_cost_by_category($c->id));
+                    $c->items = array_values($this->get_inventory_items_by_category($c->id));
+                    $results[$i] = $c;
+                    $i++;
+                }
+            }
+
         }
         return $results;
     }
@@ -625,6 +676,48 @@ class event extends crud
             return true;
         }
         return false;
+    }
+
+    /**
+     * Use for printing out PDF
+     * @param $inventory_category_id
+     * @return \stdClass
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
+    public function get_data_for_pdf($inventory_category_id = 0) {
+        $data = new \stdClass();
+        // Sett the title for the page based on inventory category
+        switch ($inventory_category_id) {
+            case 1:
+                $title = get_string('audio_visual_order', 'local_order');
+                break;
+            case 2:
+                $title = get_string('catering_order', 'local_order');
+                break;
+            case 3:
+                $title = get_string('furnishing_order', 'local_order');
+                break;
+            default:
+                $title = get_string('event_order', 'local_order');
+                break;
+        }
+        $data->title = $title;
+        $data->code = $this->code; // Event name
+        $data->name = $this->name; // Event name
+        $data->date = strftime(get_string('strftimelongdate', 'local_order'), $this->starttime);
+        $data->start_time = strftime(get_string('strftime', 'local_order'), $this->starttime);
+        $data->end_time = strftime(get_string('strftime', 'local_order'), $this->endtime);
+        $data->event_type = $this->get_event_type();
+        $data->room = $this->get_room_details();
+        $data->setup_type = $this->setuptype;
+        $data->setup_notes = $this->setupnotes;
+        $data->other_notes = $this->othernotes;
+        $data->cost = $this->get_total_cost_of_event();
+        $data->organization = $this->get_organization_details();
+        $data->inventory_items = $this->get_inventory_categories_with_items($inventory_category_id);
+
+        return $data;
     }
 
 }

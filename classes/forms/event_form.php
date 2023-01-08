@@ -4,6 +4,7 @@ namespace local_order;
 use local_order\event;
 use local_order\buildings;
 use local_order\rooms;
+use local_order\inventory_categories;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -50,6 +51,22 @@ class event_form extends \moodleform
             $rooms = $ROOMS->get_rooms_by_building_floor($formdata->building);
         }
 
+        // Get inventory categories for pdf buttons
+        $INVENTORY_CATEGORIES = new inventory_categories();
+        $inventory_categories_records = $INVENTORY_CATEGORIES->get_records();
+        $inventory_categories = [];
+        $i = 0;
+        foreach ($inventory_categories_records as $icr) {
+            $inventory_categories[$i]['id'] = $icr->id;
+            $inventory_categories[$i]['name'] = $icr->name;
+            $inventory_categories[$i]['code'] = $icr->code;
+            $i++;
+        }
+
+        $pdf_buttons = [
+            'inventory_categories' => $inventory_categories
+        ];
+
         // event id
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
@@ -67,7 +84,11 @@ class event_form extends \moodleform
         $mform->addElement('html', '</div>');
         $mform->addElement('html', '<div class="col d-flex justify-content-end">');
 
-        $this->add_action_buttons();
+        $buttonarray=array();
+        $buttonarray[] = $mform->createElement('html', $OUTPUT->render_from_template('local_order/pdf_buttons', $pdf_buttons));
+        $buttonarray[] = $mform->createElement('submit', 'submitbutton', get_string('savechanges'));
+        $buttonarray[] = $mform->createElement('cancel');
+        $mform->addGroup($buttonarray, 'buttonar', '', ' ', false);
 
         $mform->addElement('html', '</div>'); // End button col
         $mform->addElement('html', '</div>'); // End button row

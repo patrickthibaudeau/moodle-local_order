@@ -20,13 +20,13 @@ $(document).ready(function () {
         $('#id_room').empty();
         $.ajax({
             type: "POST",
-            url: M.cfg.wwwroot + "/local/order/ajax/get_rooms.php?id=" + id ,
+            url: M.cfg.wwwroot + "/local/order/ajax/get_rooms.php?id=" + id,
             dataType: "json",
             success: function (results) {
-                $.each(results, function(value, text){
+                $.each(results, function (value, text) {
                     $('#id_room').append($('<option>', {
                         value: value,
-                        text : text
+                        text: text
                     }));
                 });
 
@@ -38,13 +38,13 @@ $(document).ready(function () {
     /**
      * Edit inventory items
      */
-    $('.btn-inventory-edit').on('click', function(){
+    $('.btn-inventory-edit').on('click', function () {
         let eventCategoryId = $(this).data('eventinventorycategoryid');
         let eventId = $(this).data('eventid');
 
         $.ajax({
             type: "GET",
-            url: M.cfg.wwwroot + "/local/order/ajax/get_inventory_details.php?id=" + eventCategoryId + '&eventid=' + eventId ,
+            url: M.cfg.wwwroot + "/local/order/ajax/get_inventory_details.php?id=" + eventCategoryId + '&eventid=' + eventId,
             dataType: "html",
             success: function (results) {
                 $('#local_order_inventory_edit_container').html(results);
@@ -53,16 +53,25 @@ $(document).ready(function () {
             }
         });
     });
+
+    // Download pdf of event
+    $('.btn-local-order-export-pdf').on('click', function () {
+        let id = $("input[name='id']").val();
+        let inventoryCategoryId = $(this).data('inventorycategory');
+        window.open(M.cfg.wwwroot + '/local/order/export/pdf.php?id=' + id + '&icid=' + inventoryCategoryId,
+            '_blank'
+        );
+    });
 });
 
 function add_event_inventory_item() {
-    $('#local_order_add_event_inventory').on('click', function() {
+    $('#local_order_add_event_inventory').on('click', function () {
         let eventInventoryCategoryId = $(this).data('eventinventorycategoryid');
         let eventId = $(this).data('eventid');
 
         $.ajax({
             type: "GET",
-            url: M.cfg.wwwroot + "/local/order/ajax/edit_event_inventory_form.php?eicid=" + eventInventoryCategoryId + '&eventid=' + eventId ,
+            url: M.cfg.wwwroot + "/local/order/ajax/edit_event_inventory_form.php?eicid=" + eventInventoryCategoryId + '&eventid=' + eventId,
             dataType: "html",
             success: function (results) {
                 $('#event_inventory_edit_form_container').html(results);

@@ -83,9 +83,15 @@ $(document).ready(function () {
 
     // Add new event
     $('.btn-add-new').on('click', function(){
-        let wwwroot = M.cfg.wwwroot;
         let dateRange = $('#local_order_events_daterange').val();
         location.href = M.cfg.wwwroot + '/local/order/events/edit_event.php?id=0&daterange=' + dateRange;
+    });
+
+    // Download PDF button
+    $('.btn-local-order-export-pdf').on('click', function(){
+        let inventoryCategoryId = $(this).data('inventorycategory');
+        let dateRange = $('#local_order_events_daterange').val();
+        location.href = M.cfg.wwwroot + '/local/order/export/pdf.php?icid=' + inventoryCategoryId  + '&daterange=' + dateRange;
     });
 
 
