@@ -13,9 +13,10 @@ $(document).ready(function () {
         },
         'deferRender': true,
         "columns": [
-            {"data": "name"},
-            {"data": "shortname"},
-            {"data": "cost"},
+            {"data": "id", name: 'name', className: 'editable'},
+            {"data": "name", name: 'name', className: 'editable'},
+            {"data": "shortname", name: 'code', className: 'editable'},
+            {"data": "cost", name: 'cost', className: 'editable'},
             {"data": "category"},
             {"data": "actions"},
         ],
@@ -23,6 +24,11 @@ $(document).ready(function () {
             {
                 "searchable": false,
                 "targets": [4]
+            },
+            {
+                'target': 0,
+                'searchable': false,
+                'visible': false
             }],
         'order': [[4, ' asc']],
         // buttons: [
@@ -66,6 +72,49 @@ $(document).ready(function () {
 
     $('.buttons-html5').addClass('btn-outline-primary');
     $('.buttons-html5').removeClass('btn-secondary');
+
+    // Edit table
+    // when the mouse enters a cell, create an editor.
+    $('#local_order_inventory_table').on('click', 'td.editable', function (e) {
+        e.preventDefault() // I'm a noob, don't know what this means
+        // I think there is some delay on when the events trigger
+        // so sometimes the cell still contains the input element and this check
+        // prevents accidently creating another input element
+        if (e.target.localName != 'input') {
+            let row = e.target._DT_CellIndex.row
+            let col = e.target._DT_CellIndex.column
+            if (!e.target.children.length) {
+                e.target.innerHTML = `<input id="${row}-${col}" type="text" class="editor" value="${e.target.innerHTML}">`
+            }
+        }
+    })
+
+// when the mouse exits the editor, write the data into the table and redraw
+    $('#local_order_inventory_table').on('change', 'td.editable', function (e) {
+        e.preventDefault()
+        if (e.target.localName != 'input') {
+            let row = e.target._DT_CellIndex.row
+            let col = e.target._DT_CellIndex.column
+            inventoryTable.cell(row, col).data(e.target.firstElementChild.value)
+            console.log(e.target.firstElementChild.value);
+            inventoryTable.draw() // up to you
+        }
+        else { // forces write when there is an event delay
+            let [row, col] = e.target.id.split('-')
+            let id = inventoryTable.cell(Number(row), 0).data();
+            let column = inventoryTable.column(Number(col)).dataSrc();
+            $.ajax({
+                type: "POST",
+                url: M.cfg.wwwroot + "/local/order/ajax/update_inventory.php?id=" + id + "&column=" + column +
+                    '&value=' +  e.target.value,
+                dataType: "html",
+                success: function (resultData) {
+                    inventoryTable.draw()
+                }
+            });
+        }
+        // inventoryTable.draw()
+    })
 
     // Add new inventory item
     $('.btn-add-new').on('click', function(){
