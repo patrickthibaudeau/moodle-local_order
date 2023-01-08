@@ -8,7 +8,10 @@ $(document).ready(function () {
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": wwwroot + "/local/order/ajax/inventory_dashboard.php?category=" + categoryId,
+            "url": wwwroot + "/local/order/ajax/inventory_dashboard.php",
+            "data": {
+                category: categoryId
+            },
             "type": "POST"
         },
         'deferRender': true,
@@ -30,20 +33,20 @@ $(document).ready(function () {
                 'searchable': false,
                 'visible': false
             }],
-        'order': [[4, ' asc']],
+        'order': [[1, ' asc']],
         // buttons: [
         //     'excelHtml5',
         // ],
         "drawCallback": function (settings) {
             // Click on delete button
-            $('.btn-delete-inventory').on('click', function(){
+            $('.btn-delete-inventory').on('click', function () {
                 let id = $(this).data('id');
                 $('#inventoryDeleteModal').modal('show');
                 // Delete the row and refresh table
-                $('.btn-delete-inventory-confirm').on('click', function(){
+                $('.btn-delete-inventory-confirm').on('click', function () {
                     $.ajax({
                         type: "POST",
-                        url: M.cfg.wwwroot + "/local/order/ajax/delete.php?id=" + id + "&action=inventory" ,
+                        url: M.cfg.wwwroot + "/local/order/ajax/delete.php?id=" + id + "&action=inventory",
                         dataType: "html",
                         success: function (resultData) {
                             if (resultData == 1) {
@@ -57,7 +60,7 @@ $(document).ready(function () {
             });
 
             // edit event
-            $('.btn-edit-inventory').on('click', function() {
+            $('.btn-edit-inventory').on('click', function () {
                 let dateRange = $('#local_order_events_daterange').val();
                 location.href = M.cfg.wwwroot + '/local/order/inventory/edit_inventory.php?id=' + $(this).data('id');
             });
@@ -76,15 +79,13 @@ $(document).ready(function () {
     // Edit table
     // when the mouse enters a cell, create an editor.
     $('#local_order_inventory_table').on('click', 'td.editable', function (e) {
-        e.preventDefault() // I'm a noob, don't know what this means
-        // I think there is some delay on when the events trigger
-        // so sometimes the cell still contains the input element and this check
+        e.preventDefault()
         // prevents accidently creating another input element
         if (e.target.localName != 'input') {
             let row = e.target._DT_CellIndex.row
             let col = e.target._DT_CellIndex.column
             if (!e.target.children.length) {
-                e.target.innerHTML = `<input id="${row}-${col}" type="text" class="editor" value="${e.target.innerHTML}">`
+                e.target.innerHTML = `<input id="${row}-${col}" type="text" class="editor form-control" value="${e.target.innerHTML}">`
             }
         }
     })
@@ -92,37 +93,29 @@ $(document).ready(function () {
 // when the mouse exits the editor, write the data into the table and redraw
     $('#local_order_inventory_table').on('change', 'td.editable', function (e) {
         e.preventDefault()
-        if (e.target.localName != 'input') {
-            let row = e.target._DT_CellIndex.row
-            let col = e.target._DT_CellIndex.column
-            inventoryTable.cell(row, col).data(e.target.firstElementChild.value)
-            console.log(e.target.firstElementChild.value);
-            inventoryTable.draw() // up to you
-        }
-        else { // forces write when there is an event delay
-            let [row, col] = e.target.id.split('-')
-            let id = inventoryTable.cell(Number(row), 0).data();
-            let column = inventoryTable.column(Number(col)).dataSrc();
-            $.ajax({
-                type: "POST",
-                url: M.cfg.wwwroot + "/local/order/ajax/update_inventory.php?id=" + id + "&column=" + column +
-                    '&value=' +  e.target.value,
-                dataType: "html",
-                success: function (resultData) {
-                    inventoryTable.draw()
-                }
-            });
-        }
-        // inventoryTable.draw()
+        console.log('perform this');
+        let [row, col] = e.target.id.split('-')
+        let id = inventoryTable.cell(Number(row), 0).data();
+        let column = inventoryTable.column(Number(col)).dataSrc();
+        $.ajax({
+            type: "POST",
+            url: M.cfg.wwwroot + "/local/order/ajax/update_inventory.php?id=" + id + "&column=" + column +
+                '&value=' + e.target.value,
+            dataType: "html",
+            success: function (resultData) {
+                inventoryTable.draw()
+            }
+        });
     })
 
+
     // Add new inventory item
-    $('.btn-add-new').on('click', function(){
+    $('.btn-add-new').on('click', function () {
         location.href = M.cfg.wwwroot + '/local/order/inventory/edit_inventory.php';
     });
 
     // Filter refresh
-    $('#local_order_inventory_category').on('change', function (){
+    $('#local_order_inventory_category').on('change', function () {
         let id = $(this).val();
         location.href = M.cfg.wwwroot + '/local/order/inventory/index.php?category=' + id;
     });

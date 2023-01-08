@@ -123,6 +123,9 @@ class inventories
             case 'cost':
                 $order_column = 'i.cost';
                 break;
+            case 'name':
+                $order_column = 'i.name';
+                break;
             default:
                 $order_column = 'i.name';
                 break;
@@ -136,8 +139,8 @@ class inventories
         $inventory = [];
         $i = 0;
         // To use with cost to format with current currency
-        $amount = new \NumberFormatter( get_string('currency_locale', 'local_order'),
-            \NumberFormatter::CURRENCY );
+        $amount = new \NumberFormatter(get_string('currency_locale', 'local_order'),
+            \NumberFormatter::CURRENCY);
 
         foreach ($results as $r) {
             $actions = [
