@@ -103,6 +103,7 @@ $string['select_other_import'] = 'Please select another import type';
 $string['setup_notes'] =  'Setup notes';
 $string['start_time'] =  'Start date/time';
 $string['status'] =  'Status';
+$string['subtotal'] =  'Subtotal';
 $string['table_must_have_data'] = 'The following tables must have data';
 $string['title'] =  'Title';
 $string['title_help'] =  'Enter the title or name for the event';

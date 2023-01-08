@@ -48,7 +48,7 @@ if ($id) {
     $data = $EVENT->get_data_for_pdf($inventory_category_id);
     $html = $OUTPUT->render_from_template('local_order/pdf_order', $data);
     unset($EVENT);
-
+//    echo $html;
     $pdf->AddPage();
     $pdf->writeHTML($html, true, false, true, false, '');
     $pdf->lastPage();
