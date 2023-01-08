@@ -91,7 +91,10 @@ $(document).ready(function () {
     $('.btn-local-order-export-pdf').on('click', function(){
         let inventoryCategoryId = $(this).data('inventorycategory');
         let dateRange = $('#local_order_events_daterange').val();
-        location.href = M.cfg.wwwroot + '/local/order/export/pdf.php?icid=' + inventoryCategoryId  + '&daterange=' + dateRange;
+        window.open(
+            M.cfg.wwwroot + '/local/order/export/pdf.php?icid=' + inventoryCategoryId  + '&daterange=' + dateRange,
+            '_blank'
+        );
     });
 
 
