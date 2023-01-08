@@ -36,9 +36,15 @@ class inventory_categories {
 	  * Defaults used key = record id, value = name 
 	  * Modify as required. 
 	 */
-	public function get_select_array() {
+	public function get_select_array($use_select = false) {
+        // What should the 0 key be called
+        if ($use_select) {
+            $name = get_string('select', 'local_order');
+        } else {
+            $name = get_string('all', 'local_order');
+        }
 	    $array = [
-	        '' => get_string('select', 'local_order')
+	        '0' => $name
 	      ];
 	      foreach($this->results as $r) {
 	            $array[$r->id] = $r->name;

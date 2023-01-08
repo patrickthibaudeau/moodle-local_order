@@ -1,0 +1,40 @@
+<div class="row mt-2">
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                {{> local_order/inventory_dashboard_filters}}
+                <div class="row mt-2">
+                    <div class="col">
+                        <table id="local_order_inventory_table" class="table table-striped table-hover">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th>
+                                    {{#str}}name, local_order{{/str}}
+                                </th>
+                                <th>
+                                    {{#str}}shortname, core{{/str}}
+                                </th>
+                                <th>
+                                    {{#str}}cost, local_order{{/str}}
+                                </th>
+                                <th>
+                                    {{#str}}category, local_order{{/str}}
+                                </th>
+                                <th>
+                                    {{#str}}actions, local_order{{/str}}
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{#inventory_modal}}
+    {{> local_order/modal}}
+{{/inventory_modal}}
+

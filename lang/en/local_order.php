@@ -1,4 +1,5 @@
 <?php
+$string['actions'] = 'Actions';
 $string['add'] = 'Add';
 $string['admin_notes'] = 'Admin notes';
 $string['all'] = 'All';
@@ -16,6 +17,7 @@ $string['campus'] = 'Campus';
 $string['campus_help'] = 'Import campus from excel';
 $string['campus_import'] = 'Campus Import';
 $string['campuses'] = 'Campuses';
+$string['category'] = 'Category';
 $string['catering_order'] = 'Catering order';
 $string['close'] = 'Close';
 $string['code'] = 'code';
@@ -24,6 +26,9 @@ $string['currency_locale'] = 'en_CA';
 $string['delete'] = 'Delete';
 $string['delete_event'] = 'Delete event';
 $string['delete_event_help'] = 'Are you sure you want to delete this event? All data associated with this event will be 
+permanently deleted and unrecoverable.';
+$string['delete_inventory'] = 'Delete inventory item';
+$string['delete_inventory_help'] = 'Are you sure you want to delete this inventory item? All data associated with this event will be 
 permanently deleted and unrecoverable.';
 $string['description'] = 'Description';
 $string['details'] = 'Details';
@@ -45,6 +50,7 @@ $string['event_order'] = 'Event order';
 $string['event_type'] = 'Event type';
 $string['events'] = 'Events';
 $string['events_card_help'] = 'View, edit, add and print out event information.';
+$string['field_required'] = 'This field is required';
 $string['file'] = 'File';
 $string['file_help'] = 'The importer only accepts excel files';
 $string['filters'] = 'Filters';

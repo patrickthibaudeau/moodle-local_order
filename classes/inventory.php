@@ -161,6 +161,17 @@ class inventory extends crud
     }
 
     /**
+     * Fomratted based on locale currency
+     * @return false|string
+     * @throws \coding_exception
+     */
+    public function get_cost_formatted() {
+        $amount = new \NumberFormatter( get_string('currency_locale', 'local_order'),
+            \NumberFormatter::CURRENCY );
+        return $amount->format($this->cost);
+    }
+
+    /**
      * @return usermodified - bigint (18)
      */
     public function get_usermodified()
