@@ -75,6 +75,23 @@ function add_event_inventory_item() {
             dataType: "html",
             success: function (results) {
                 $('#event_inventory_edit_form_container').html(results);
+                // Make quantity availabe only when an inventory package is selected
+                $('#event_inventory_name').on('change', function () {
+
+                    if ($(this).val() != 0) {
+                        console.log($(this).val());
+                        $('#event_inventory_quantity').removeAttr('disabled');
+                    }
+                });
+                // Adjust cost once quantity changed
+                $('#event_inventory_quantity').on('change', function () {
+                    let quantity = Number($(this).val());
+                    let itemCostArray = $('#event_inventory_name').val().split('|');
+                    console.log(itemCostArray);
+                    let itemCost = Number(itemCostArray[1]);
+                    let cost = quantity * itemCost;
+                    $('#event_inventory_costy').val(cost);
+                });
             }
         });
     });

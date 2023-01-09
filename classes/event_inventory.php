@@ -107,7 +107,7 @@ class event_inventory extends crud {
      *  
      *
      */
-	public function __construct($id = 0){
+	public function Ï__construct($id = 0){
   	global $CFG, $DB, $DB;
 
 		$this->table = 'order_event_inventory';
@@ -130,7 +130,7 @@ class event_inventory extends crud {
 		$this->name = $result->name ?? '';
 		$this->description = $result->description ?? '';
 		$this->quantity = $result->quantity ?? 0;
-		$this->cost = $result->cost ?? '';
+		$this->cost = $result->cost ?? 0;
 		$this->roomid = $result->roomid ?? 0;
 		$this->usermodified = $result->usermodified ?? 0;
 		$this->timecreated = $result->timecreated ?? 0;
@@ -158,6 +158,11 @@ class event_inventory extends crud {
 	public function get_eventcategoryid(){
 		return $this->eventcategoryid;
 	}
+
+    public function get_event_inventory_category_details($event_inventory_category_id) {
+        global $DB;
+        return $DB->get_record(TABLE_EVENT_INVENTORY_CATEGORY, ['id' => $event_inventory_category_id]);
+    }
 
 	/**
 	 * @return vendorid - bigint (18)
