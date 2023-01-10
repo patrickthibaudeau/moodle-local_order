@@ -171,8 +171,10 @@ class event_form extends \moodleform
         $edit_modal->modal_id = "localOrderEditEvent";
         $edit_modal->class = "modal-xl";
         $edit_modal->title = get_string('edit_items', 'local_order');
-        $edit_modal->content = '<div id="local_order_inventory_edit_container"></div>';
+        $edit_modal->content =  $OUTPUT->render_from_template('local_order/event_inventory_form', []);
         $edit_modal->close_button_name = get_string('close', 'local_order');
+        $edit_modal->action_button_name = get_string('save', 'local_order');
+        $edit_modal->action_button = 'event-inventory-item-save';
         $mform->addElement('html', $OUTPUT->render_from_template('local_order/modal', $edit_modal) );
 
 

@@ -17,11 +17,13 @@
                     {{#items}}
                         <tr>
                             <td>{{name}}</td>
-                            <td>{{description}}</td>
+                            <td>{{quantity}}</td>
                             <td class="d-flex justify-content-end">{{cost_formatted}}</td>
+                            <td>{{{actions}}}</td>
                         </tr>
                     {{/items}}
                     <tr>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td class="d-flex justify-content-end"><b>{{{total_cost}}}</b></td>
@@ -30,9 +32,9 @@
                 </table>
                 <div class="float-right">
 
-                    <button type="button" class="btn btn-outline-primary btn-sm btn-inventory-edit"
+                    <button type="button" class="btn btn-outline-primary btn-sm btn-inventory-add-item"
                             data-eventinventorycategoryid="{{id}}" data-eventid="{{eventid}}">
-                        {{#str}}details, local_order{{/str}} / {{#str}}edit, local_order{{/str}}
+                        {{#str}}add, local_order{{/str}}
                     </button>
                 </div>
             </div>

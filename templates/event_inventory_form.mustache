@@ -1,16 +1,13 @@
 <div class="col">
     <div class="card">
         <div class="card-body">
-            <form id="event_inventory_edit_form">
+            <div id="event_inventory_edit_form">
                 <input type="hidden" name="id" value="{{id}}">
                 <input type="hidden" name="eventinventorycategoryid" value="{{eventinventorycategoryid}}">
                 <div class="form-group">
                     <label for="event_inventory_name">{{#str}}inventory_package, local_order{{/str}}</label>
-                    <select id="event_inventory_name" name="name" class="form-control">
+                    <select id="event_inventory_name" name="name" class="form-control select2-element">
                         <option value="">{{#str}}select, local_order{{/str}}</option>
-                        {{#inventory}}
-                            <option value="{{id}}|{{cost}}" {{selected}}>{{name}} {{#cost}} - {{cost_formatted}}{{/cost}}</option>
-                        {{/inventory}}
                     </select>
                 </div>
                 <div class="form-group">
@@ -29,14 +26,11 @@
                 </div>
                 <div class="form-group">
                     <label for="event_inventory_vendor">{{#str}}vendor, local_order{{/str}}</label>
-                    <select id="event_inventory_vendor" name="vendorid" class="form-control">
+                    <select id="event_inventory_vendor" name="vendorid" class="form-control select2-element">
                         <option value="">{{#str}}select, local_order{{/str}}</option>
-                        {{#vendors}}
-                            <option value="{{id}}" {{selected}}>{{name}}</option>
-                        {{/vendors}}
                     </select>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>

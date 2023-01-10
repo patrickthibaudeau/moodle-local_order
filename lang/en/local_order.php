@@ -104,6 +104,7 @@ $string['room_type'] = 'Room type';
 $string['room_type_import'] = 'Room Type Import';
 $string['room_types'] = 'Room types';
 $string['rooms'] = 'Rooms';
+$string['save'] = 'Save';
 $string['select'] = 'Select';
 $string['select_other_import'] = 'Please select another import type';
 $string['setup_notes'] =  'Setup notes';

@@ -59,7 +59,6 @@ foreach($all_vendors as $v) {
     $x++;
 }
 
-
 $items = [
     'id' => $id,
     'eventinventorycategoryid' => $event_inventory_category_id,
@@ -70,4 +69,4 @@ $items = [
     'vendors' => $vendors
 ];
 
-echo $OUTPUT->render_from_template('local_order/event_inventory_form', $items);
+echo json_encode($items);
