@@ -39,9 +39,27 @@ $(document).ready(function () {
         });
     });
 
+   init_event_inventory_items();
+
+    // Download pdf of event
+    $('.btn-local-order-export-pdf').on('click', function () {
+        let id = $("input[name='id']").val();
+        let inventoryCategoryId = $(this).data('inventorycategory');
+        window.open(M.cfg.wwwroot + '/local/order/export/pdf.php?id=' + id + '&icid=' + inventoryCategoryId,
+            '_blank'
+        );
+    });
+});
+
+/**
+ * Initialize inventory items fucntionality
+ * This is required so that all fucntions can be reloaded on saving items
+ */
+function init_event_inventory_items() {
     /**
      * Edit inventory items
      */
+    $('.btn-inventory-add-item').off();
     $('.btn-inventory-add-item').on('click', function () {
         let eventInventoryCategoryId = $(this).data('eventinventorycategoryid');
         let eventId = $(this).data('eventid');
@@ -53,7 +71,7 @@ $(document).ready(function () {
             success: function (results) {
                 // console.log(results.inventory);
                 // Add values to hidden fields
-                $('input[name="id"]').val(eventId);
+                $('input[name="eventid"]').val(eventId);
                 $('input[name="eventinventorycategoryid"]').val(eventInventoryCategoryId);
                 // Clear all options
                 $('#event_inventory_name')
@@ -101,36 +119,45 @@ $(document).ready(function () {
     });
 
     // Save event inventory item
-    $('.btn-event-inventory-item-save').on('click', function (field, value) {
-         $('#event_inventory_edit_form input').each(function() {
-            console.log (field + ' = ' + value);
-        });
-    });
-
-    // Download pdf of event
-    $('.btn-local-order-export-pdf').on('click', function () {
-        let id = $("input[name='id']").val();
-        let inventoryCategoryId = $(this).data('inventorycategory');
-        window.open(M.cfg.wwwroot + '/local/order/export/pdf.php?id=' + id + '&icid=' + inventoryCategoryId,
-            '_blank'
-        );
-    });
-});
-
-function add_event_inventory_item() {
-    $('#local_order_add_event_inventory').on('click', function () {
-        let eventInventoryCategoryId = $(this).data('eventinventorycategoryid');
-        let eventId = $(this).data('eventid');
-
+    $('.btn-event-inventory-item-save').on('click', function () {
+        let data = {
+            eventid: $('input[name="eventid"]').val(),
+            eventinventorycategoryid: $('input[name="eventinventorycategoryid"]').val(),
+            quantity: $('input[name="quantity"]').val(),
+            cost: $('input[name="cost"]').val(),
+            description: $('#event_inventory_description').val(),
+            inventory_id: $('#event_inventory_name').val(),
+            vendorid: $('#event_inventory_vendor').val()
+        };
         $.ajax({
             type: "GET",
-            url: M.cfg.wwwroot + "/local/order/ajax/edit_event_inventory_form.php?eicid=" + eventInventoryCategoryId + '&eventid=' + eventId,
+            url: M.cfg.wwwroot + "/local/order/ajax/insert_event_inventory_item.php",
+            data: data,
             dataType: "html",
             success: function (results) {
-                $('#event_inventory_edit_form_container').html(results);
-
-
+                $('#event_inventory_accordion').html(results);
+                init_event_inventory_items();
+                // Expand accordiaon
+                $('.btn-collapse-' + data.eventid).attr('aria-expanded', 'true');
+                $('#collapse_' + data.eventid).addClass('show');
+                get_event_total_cost(data.eventid);
             }
         });
+
     });
+}
+
+/**
+ * Update event total cost
+ * @param eventId
+ */
+function get_event_total_cost(eventId) {
+        $.ajax({
+            type: "GET",
+            url: M.cfg.wwwroot + "/local/order/ajax/get_event_total_cost.php?id=" + eventId,
+            dataType: "html",
+            success: function (results) {
+                $('#event_total_cost').html(results);
+            }
+        });
 }

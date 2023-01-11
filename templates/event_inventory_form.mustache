@@ -2,7 +2,8 @@
     <div class="card">
         <div class="card-body">
             <div id="event_inventory_edit_form">
-                <input type="hidden" name="id" value="{{id}}">
+                <input type="hidden" name="id" value="0">
+                <input type="hidden" name="eventid" value="{{eventid}}">
                 <input type="hidden" name="eventinventorycategoryid" value="{{eventinventorycategoryid}}">
                 <div class="form-group">
                     <label for="event_inventory_name">{{#str}}inventory_package, local_order{{/str}}</label>
@@ -12,9 +13,7 @@
                 </div>
                 <div class="form-group">
                     <label for="event_inventory_description">{{#str}}description, local_order{{/str}}</label>
-                    <textarea id="event_inventory_description" name="description" class="form-control">
-                        {{description}}
-                    </textarea>
+                    <textarea id="event_inventory_description" name="description" class="form-control">{{description}}</textarea>
                 </div>
                 <div class="form-group">
                     <label for="event_inventory_quantity">{{#str}}quantity, local_order{{/str}}</label>
