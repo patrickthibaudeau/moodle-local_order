@@ -64,6 +64,7 @@ function init_event_inventory_items() {
         let eventInventoryCategoryId = $(this).data('eventinventorycategoryid');
         let eventId = $(this).data('eventid');
 
+
         $.ajax({
             type: "GET",
             url: M.cfg.wwwroot + "/local/order/ajax/edit_event_inventory_form.php?eicid=" + eventInventoryCategoryId + '&eventid=' + eventId,
@@ -112,13 +113,20 @@ function init_event_inventory_items() {
     $('#event_inventory_quantity').on('change', function () {
         let quantity = Number($(this).val());
         let itemCostArray = $('#event_inventory_name').val().split('|');
-        console.log(itemCostArray);
-        let itemCost = Number(itemCostArray[1]);
-        let cost = quantity * itemCost;
-        $('#event_inventory_costy').val(cost);
+        if (isNaN(quantity)) {
+            alert('You must enter an integer');
+        } else {
+            let itemCost = Number(itemCostArray[1]);
+            if(isNaN(itemCost)) {
+                itemCost = 0
+            }
+            let cost = quantity * itemCost;
+            $('#event_inventory_cost').val(cost);
+        }
     });
 
     // Save event inventory item
+    $('.btn-event-inventory-item-save').off();
     $('.btn-event-inventory-item-save').on('click', function () {
         let data = {
             eventid: $('input[name="eventid"]').val(),
@@ -136,11 +144,18 @@ function init_event_inventory_items() {
             dataType: "html",
             success: function (results) {
                 $('#event_inventory_accordion').html(results);
+                $('#event_inventory_description').val('');
+                $('#event_inventory_quantity').val('');
+                $('#event_inventory_quantity').attr('disabled', true);
+                $('#event_inventory_quantity').prop('disabled', true);
+                $('#event_inventory_cost').val('');
                 init_event_inventory_items();
                 // Expand accordiaon
-                $('.btn-collapse-' + data.eventid).attr('aria-expanded', 'true');
-                $('#collapse_' + data.eventid).addClass('show');
+                $('.btn-collapse-' + data.eventinventorycategoryid).attr('aria-expanded', 'true');
+                $('#collapse_' + data.eventinventorycategoryid).addClass('show');
                 get_event_total_cost(data.eventid);
+                $('.btn-event-inventory-item-save').off();
+                $('#localOrderEditEventModal').modal('hide');
             }
         });
 
