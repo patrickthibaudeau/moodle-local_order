@@ -63,6 +63,7 @@ $items = [
     'id' => $id,
     'eventinventorycategoryid' => $event_inventory_category_id,
     'eventid' => $event_id,
+    'quantity' => $EVENT_INVENTORY->get_quantity(),
     'description' => $EVENT_INVENTORY->get_description(),
     'cost' => $EVENT_INVENTORY->get_cost(),
     'inventory' => $inventory_items,

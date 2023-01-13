@@ -437,7 +437,9 @@ class event extends crud
             $ROOM = new room($item->roomid);
             $actions = [
                 'id' => $item->id,
-                'type' => 'event-inventory-item'
+                'type' => 'event-inventory-item',
+                'attributes' => 'data-eventid=' . $this->id
+                    . ' data-eventinventorycategoryid=' . $event_category_id
             ];
             // format cost based on language currency
             $item->cost_formatted = $amount->format($item->cost);

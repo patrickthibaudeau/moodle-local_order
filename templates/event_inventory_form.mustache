@@ -2,13 +2,16 @@
     <div class="card">
         <div class="card-body">
             <div id="event_inventory_edit_form">
-                <input type="hidden" name="id" value="0">
+                <input type="hidden" name="inventoryid" value="0">
                 <input type="hidden" name="eventid" value="{{eventid}}">
                 <input type="hidden" name="eventinventorycategoryid" value="{{eventinventorycategoryid}}">
                 <div class="form-group">
                     <label for="event_inventory_name">{{#str}}inventory_package, local_order{{/str}}</label>
                     <select id="event_inventory_name" name="name" class="form-control select2-element">
                         <option value="">{{#str}}select, local_order{{/str}}</option>
+                        <option value="1-20">20</option>
+                        <option value="2-30">30</option>
+                        <option value="3-80">80</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -21,7 +24,7 @@
                 </div>
                 <div class="form-group">
                     <label for="event_inventory_cost">{{#str}}cost, local_order{{/str}}</label>
-                    <input type="text" id="event_inventory_cost" name="cost" class="form-control" value="{{cost}}">
+                    <input type="text" id="event_inventory_cost" name="cost" class="form-control" value="">
                 </div>
                 <div class="form-group">
                     <label for="event_inventory_vendor">{{#str}}vendor, local_order{{/str}}</label>
