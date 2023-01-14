@@ -103,7 +103,7 @@ class organizations
 
         switch ($order_column) {
             case 'code':
-                $order_column = 'o.code';
+                $order_column = 'o.code+0';
                 break;
             case 'name':
                 $order_column = 'o.name';

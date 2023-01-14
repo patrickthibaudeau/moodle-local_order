@@ -121,7 +121,7 @@ class events
 
         switch ($order_column) {
             case 'code':
-                $order_column = 'e.code';
+                $order_column = 'e.code+0';
                 break;
             case 'title':
                 $order_column = 'e.name';
