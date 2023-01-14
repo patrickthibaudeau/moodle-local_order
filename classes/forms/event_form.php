@@ -160,11 +160,15 @@ class event_form extends \moodleform
         $mform->addElement('html', $OUTPUT->render_from_template('local_order/edit_event_inventory', $formdata) );
         $mform->addElement('html', '</div>'); // End event_inventory_container
 
+        // Charge back Account
+        $mform->addElement('text', 'chargebackaccount', get_string('charge_back_account', 'local_order'));
+        $mform->setType('chargebackaccount', PARAM_TEXT);
+
         $mform->addElement('textarea', 'setupnotes', get_string('setup_notes', 'local_order'),
-            'wrap="virtual" rows="10"');
+            'wrap="virtual" rows="9"');
 
         $mform->addElement('textarea', 'othernotes', get_string('other_notes', 'local_order'),
-            'wrap="virtual" rows="10"');
+            'wrap="virtual" rows="9"');
 
         // Edit inventory modal
         $edit_modal = new \stdClass();

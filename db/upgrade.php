@@ -90,6 +90,21 @@ function xmldb_local_order_upgrade($oldversion)
         upgrade_plugin_savepoint(true, 2023011401, 'local', 'order');
     }
 
+    if ($oldversion < 2023011404) {
+
+        // Define field chargebackaccount to be added to order_event.
+        $table = new xmldb_table('order_event');
+        $field = new xmldb_field('chargebackaccount', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'othernotes');
+
+        // Conditionally launch add field chargebackaccount.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Order savepoint reached.
+        upgrade_plugin_savepoint(true, 2023011404, 'local', 'order');
+    }
+
 
     return true;
 }

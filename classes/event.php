@@ -110,6 +110,12 @@ class event extends crud
 
     /**
      *
+     * @var string
+     */
+    private $chargebackaccount;
+
+    /**
+     *
      * @var int
      */
     private $usermodified;
@@ -187,6 +193,7 @@ class event extends crud
         $this->setuptype = $result->setuptype ?? '';
         $this->setupnotes = $result->setupnotes ?? '';
         $this->adminnotes = $result->adminnotes ?? '';
+        $this->chargebackaccount = $result->chargebackaccount ?? '';
         $this->requirescatering = $result->requirescatering ?? 0;
         $this->othernotes = $result->othernotes ?? '';
         $this->usermodified = $result->usermodified ?? 0;
@@ -271,6 +278,14 @@ class event extends crud
     public function get_name()
     {
         return $this->name;
+    }
+
+    /**
+     * @return string - varchar (255)
+     */
+    public function get_chargebackaccount()
+    {
+        return $this->chargebackaccount;
     }
 
     /**
@@ -566,6 +581,14 @@ class event extends crud
     /**
      * @param Type: varchar (255)
      */
+    public function set_chargebackaccount($chargebackaccount)
+    {
+        $this->chargebackaccount = $chargebackaccount;
+    }
+
+    /**
+     * @param Type: varchar (255)
+     */
     public function set_code($code)
     {
         $this->code = $code;
@@ -718,6 +741,7 @@ class event extends crud
         $data->title = $title;
         $data->code = $this->code; // Event name
         $data->name = $this->name; // Event name
+        $data->chargebackaccount = $this->chargebackaccount; // Event name
         $data->date = strftime(get_string('strftimelongdate', 'local_order'), $this->starttime);
         $data->start_time = strftime(get_string('strftime', 'local_order'), $this->starttime);
         $data->end_time = strftime(get_string('strftime', 'local_order'), $this->endtime);
