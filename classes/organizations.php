@@ -109,7 +109,7 @@ class organizations
                 $order_column = 'o.name';
                 break;
             case 'contact':
-                $order_column = 'u.lastname u.firstname';
+                $order_column = 'u.lastname, u.firstname';
                 break;
             case 'email':
                 $order_column = 'o.email';
