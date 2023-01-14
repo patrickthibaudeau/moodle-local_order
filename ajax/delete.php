@@ -16,12 +16,20 @@ switch ($action) {
         break;
     case 'inventory':
         $INVENTORY = new inventory($id);
-        $INVENTORY->delete_record();
-        echo true;
+        if (!$INVENTORY->is_used()) {
+            $INVENTORY->delete_record();
+            echo true;
+        } else {
+            echo false;
+        }
         break;
     case 'organization':
         $ORGANIZATION = new organization($id);
-        $ORGANIZATION->delete_record();
-        echo true;
+        if (!$ORGANIZATION->is_used()) {
+            $ORGANIZATION->delete_record();
+            echo true;
+        } else {
+            echo false;
+        }
         break;
 }

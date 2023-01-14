@@ -57,5 +57,39 @@ function xmldb_local_order_upgrade($oldversion)
         upgrade_plugin_savepoint(true, 2023010500, 'local', 'order');
     }
 
+    if ($oldversion < 2023011401) {
+
+        // Define field deleted to be added to order_organization.
+        $table = new xmldb_table('order_organization');
+        $field = new xmldb_field('deleted', XMLDB_TYPE_INTEGER, '1', null, null, null, '0', 'website');
+
+        // Conditionally launch add field deleted.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field deleted to be added to order_vendor.
+        $table = new xmldb_table('order_vendor');
+        $field = new xmldb_field('deleted', XMLDB_TYPE_INTEGER, '1', null, null, null, '0', 'website');
+
+        // Conditionally launch add field deleted.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field deleted to be added to order_inventory.
+        $table = new xmldb_table('order_inventory');
+        $field = new xmldb_field('deleted', XMLDB_TYPE_INTEGER, '1', null, null, null, '0', 'cost');
+
+        // Conditionally launch add field deleted.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Order savepoint reached.
+        upgrade_plugin_savepoint(true, 2023011401, 'local', 'order');
+    }
+
+
     return true;
 }

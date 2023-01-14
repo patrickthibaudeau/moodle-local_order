@@ -43,7 +43,8 @@ $(document).ready(function () {
                             if (resultData == 1) {
                                 location.reload();
                             } else {
-                                alert(M.util.get_string('error_deleting', 'local_order'));
+                                $('#organizationDeleteModal').modal('hide');
+                                $('#organizationAlertModal').modal('show');
                             }
                         }
                     });
@@ -53,7 +54,7 @@ $(document).ready(function () {
             // edit event
             $('.btn-edit-organization').on('click', function() {
                 let dateRange = $('#local_order_events_daterange').val();
-                location.href = M.cfg.wwwroot + '/local/order/events/edit_organization.php?id=' + $(this).data('id');
+                location.href = M.cfg.wwwroot + '/local/order/organization/edit_organization.php?id=' + $(this).data('id');
             });
         },
         "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
@@ -69,6 +70,6 @@ $(document).ready(function () {
 
     // Add new event
     $('.btn-add-new').on('click', function(){
-        location.href = M.cfg.wwwroot + '/local/order/events/edit_organization.php'
+        location.href = M.cfg.wwwroot + '/local/order/organization/edit_organization.php'
     });
 });

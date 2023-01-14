@@ -259,4 +259,14 @@ class inventory extends crud
         $this->timemodified = $timemodified;
     }
 
+    /**
+     * Checks to see if this item is used in the event inventory table
+     * @return int
+     * @throws \dml_exception
+     */
+    public function is_used() {
+        global $DB;
+        return $DB->count_records('order_event_inventory', ['inventoryid' => $this->id]);
+    }
+
 }

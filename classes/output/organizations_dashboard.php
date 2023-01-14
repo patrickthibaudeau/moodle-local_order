@@ -42,8 +42,16 @@ class organizations_dashboard implements \renderable, \templatable {
             'close_button_name' => get_string('cancel', 'local_order'),
         ];
 
+        $alert_modal = [
+            'modal_id' => 'organizationAlert',
+            'title' => get_string('cannot_delete', 'local_order'),
+            'content' => get_string('organization_used', 'local_order'),
+            'close_button_name' => get_string('close', 'local_order'),
+        ];
+
         $data = [
-            'organization_modal' => $modal
+            'organization_modal' => $modal,
+            'alert_modal' => $alert_modal
         ];
 
         return $data;

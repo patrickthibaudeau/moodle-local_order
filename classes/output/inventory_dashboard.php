@@ -51,6 +51,13 @@ class inventory_dashboard implements \renderable, \templatable
             'close_button_name' => get_string('cancel', 'local_order'),
         ];
 
+        $alert_modal = [
+            'modal_id' => 'inventoryAlert',
+            'title' => get_string('cannot_delete', 'local_order'),
+            'content' => get_string('inventory_item_used', 'local_order'),
+            'close_button_name' => get_string('close', 'local_order'),
+        ];
+
         $INVENTORY_CATEGORIES = new inventory_categories();
         $inventory_categories = $INVENTORY_CATEGORIES->get_select_array();
         $categories = [];
@@ -67,6 +74,7 @@ class inventory_dashboard implements \renderable, \templatable
         }
         $data = [
             'inventory_modal' => $modal,
+            'alert_modal' => $alert_modal,
             'category_id' => $this->category_id,
             'categories' => $categories
         ];

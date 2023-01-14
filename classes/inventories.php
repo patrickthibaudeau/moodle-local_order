@@ -94,18 +94,16 @@ class inventories
                     i.cost
                 From
                     {order_inventory_category} ic Inner Join
-                    {order_inventory} i On i.inventorycategoryid = ic.id";
+                    {order_inventory} i On i.inventorycategoryid = ic.id
+                Where
+                    i.deleted = 0";
 
         if ($category_id) {
-            $sql .= " Where i.inventorycategoryid = $category_id";
+            $sql .= " And i.inventorycategoryid = $category_id";
         }
 
         if ($term) {
-            if ($category_id) {
-                $sql .= " AND (i.name LIKE '%$term%' ";
-            } else {
-                $sql .= " WHERE (i.name LIKE '%$term%' ";
-            }
+            $sql .= " AND (i.name LIKE '%$term%' ";
             $sql .= " OR i.code LIKE '%$term%' ";
             $sql .= " OR i.cost LIKE '%$term%' ";
             $sql .= " OR ic.name LIKE '%$term%') ";

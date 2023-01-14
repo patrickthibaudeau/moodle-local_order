@@ -87,11 +87,12 @@ class organizations
                 From
                     {order_organization} o Left Join
                     {order_organization_contact} oc On o.id = oc.organizationid Left Join
-                    {user} u  On oc.userid = u.id";
-
-
+                    {user} u  On oc.userid = u.id
+                Where
+                    o.deleted = 0";
+        
         if ($term) {
-            $sql .= " WHERE (o.name LIKE '%$term%' ";
+            $sql .= " AND (o.name LIKE '%$term%' ";
             $sql .= " OR o.code LIKE '%$term%' ";
             $sql .= " OR o.email LIKE '%$term%' ";
             $sql .= " OR o.phone LIKE '%$term%' ";

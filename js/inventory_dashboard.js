@@ -41,7 +41,7 @@ $(document).ready(function () {
             // Click on delete button
             $('.btn-delete-inventory').on('click', function () {
                 let id = $(this).data('id');
-                $('#inventoryDeleteModal').modal('show');
+                 $('#inventoryDeleteModal').modal('show');
                 // Delete the row and refresh table
                 $('.btn-delete-inventory-confirm').on('click', function () {
                     $.ajax({
@@ -52,7 +52,8 @@ $(document).ready(function () {
                             if (resultData == 1) {
                                 location.reload();
                             } else {
-                                alert(M.util.get_string('error_deleting', 'local_order'));
+                                $('#inventoryDeleteModal').modal('hide');
+                                $('#inventoryAlertModal').modal('show');
                             }
                         }
                     });

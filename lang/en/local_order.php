@@ -17,10 +17,12 @@ $string['campus'] = 'Campus';
 $string['campus_help'] = 'Import campus from excel';
 $string['campus_import'] = 'Campus Import';
 $string['campuses'] = 'Campuses';
+$string['cannot_delete'] = 'Cannot delete';
 $string['category'] = 'Category';
 $string['catering_order'] = 'Catering order';
 $string['close'] = 'Close';
-$string['code'] = 'code';
+$string['contact'] = 'Contact';
+$string['code'] = 'Code';
 $string['cost'] = 'Cost';
 $string['currency_locale'] = 'en_CA';
 $string['delete'] = 'Delete';
@@ -78,6 +80,7 @@ match <span class="local_order_type"></span> items. example, organization, first
 <li>Remove all rows except row one (1).</li>
 <li>Save the file and upload below.</li>
 </ol>';
+$string['inventory_item_used'] = 'This inventory item cannot be deleted because it is currently assigned to an event';
 $string['inventory_package'] = 'Inventory package';
 $string['name'] = 'Name';
 $string['new'] = 'New';
@@ -88,8 +91,9 @@ $string['number_of_users'] = 'Number of users';
 $string['number_of_vendors'] = 'Number of vendors';
 $string['order'] = 'Order';
 $string['organization'] = 'Organization';
+$string['organization_used'] = 'This organization cannot be deleted because it is assigned to and event';
 $string['organizations'] = 'Organizations';
-$string['organizations_card_help'] = 'Manage organizations and thier contacts.';
+$string['organizations_card_help'] = 'Manage organizations and their contacts.';
 $string['organization_instructions'] = '<ol>
 <li>Make a copy of a downloaded Excel provided.</li>
 <li>Remove all columns except: Assoc., First name, Last name, Email, Phone-Office, Phone-mobile</li>
