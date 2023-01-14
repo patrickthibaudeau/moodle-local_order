@@ -35,6 +35,9 @@ permanently deleted and unrecoverable.';
 $string['delete_organization'] = 'Delete organization';
 $string['delete_organization_help'] = 'Are you sure you want to delete this organization? All data associated with this organization will be 
 permanently deleted and unrecoverable.';
+$string['delete_vendor'] = 'Delete vendor';
+$string['delete_vendor_help'] = 'Are you sure you want to delete this vendor? All data associated with this vendor will be 
+permanently deleted and unrecoverable.';
 $string['description'] = 'Description';
 $string['details'] = 'Details';
 $string['download_pdf'] = 'Download PDF';
@@ -123,6 +126,7 @@ $string['title'] =  'Title';
 $string['title_help'] =  'Enter the title or name for the event';
 $string['total_cost_event'] = 'Total event cost';
 $string['vendor'] = 'Vendor';
+$string['vendor_used'] = 'This vendor cannot be deleted because it is assigned to and event';
 $string['vendors'] = 'Vendors';
 $string['vendors_card_help'] = 'Manage vendors and their contacts.';
 $string['view'] = 'View';

@@ -67,6 +67,19 @@ class organizations
         return $number_of_organizations;
     }
 
+    /**
+     * Return data for DataTables
+     * @param $start
+     * @param $end
+     * @param $term
+     * @param $order_column
+     * @param $order_direction
+     * @return \stdClass
+     * @throws \coding_exception
+     * @throws \dml_exception
+     * @throws \moodle_exception
+     * @throws \require_login_exception
+     */
     public function get_datatable($start, $end, $term, $order_column = 'name', $order_direction = 'ASC')
     {
         global $CFG, $DB, $OUTPUT, $PAGE;

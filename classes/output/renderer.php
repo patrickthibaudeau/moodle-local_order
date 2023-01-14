@@ -49,4 +49,14 @@ class renderer extends \plugin_renderer_base {
         return $this->render_from_template('local_order/organizations_dashboard', $data);
     }
 
+    /**
+     * Used with vendor/index.php
+     * @param \templatable $vendors
+     * @return type
+     */
+    public function render_vendors_dashboard(\templatable $vendors) {
+        $data = $vendors->export_for_template($this);
+        return $this->render_from_template('local_order/vendors_dashboard', $data);
+    }
+
 }

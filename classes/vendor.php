@@ -355,4 +355,108 @@ class vendor extends crud {
 		$this->timemodified = $timemodified;
 	}
 
+    /**
+     * Get the contact user and return array
+     * @return array|false
+     * @throws \dml_exception
+     */
+    public function get_contact_user() {
+        global $DB;
+
+        if ($found = $DB->get_record('order_vendor_contact', ['vendorid' => $this->id])) {
+            $user = $DB->get_record('user', ['id' => $found->userid]);
+            return $user->id;
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks to see if this vendor is used in an event
+     * @return int
+     * @throws \dml_exception
+     */
+    public function is_used() {
+        global $DB;
+        return $DB->count_records('order_event_inventory', ['vendorid' => $this->id]);
+    }
+
+    /**
+     * @param $data stdClass
+     * @return bool
+     * @throws \dml_exception
+     */
+    public function update_contact_record($data)
+    {
+        global $DB, $USER;
+
+        // Get contact record
+        $record = $DB->get_record('order_vendor_contact', ['vendorid' => $data->vendorid]);
+        $data->id = $record->id;
+        if ($data) {
+            // Set timemodified
+            if (!isset($data->timemodified)) {
+                $data->timemodified = time();
+            }
+
+            //Set user
+            $data->usermodified = $USER->id;
+
+            $id = $DB->update_record('order_vendor_contact', $data);
+
+            return $id;
+        } else {
+            error_log('No data provided');
+        }
+    }
+
+    /**
+     * @param $id int
+     * @return void
+     * @throws \dml_exception
+     */
+    public function delete_record()
+    {
+        global $DB;
+        if ($this->id) {
+            // Delete contact record
+            $DB->delete_records('order_vendor_contact', ['vendorid' => $this->id]);
+            $DB->delete_records($this->table, ['id' => $this->id]);
+        } else {
+            error_log('No id number provided');
+        }
+
+    }
+
+    /**
+     * @param $data stdClass
+     * @return bool
+     * @throws \dml_exception
+     */
+    public function insert_contact_record($data)
+    {
+        global $DB, $USER;
+
+        if ($data) {
+            // Set timemodified
+            if (!isset($data->timemodified)) {
+                $data->timemodified = time();
+            }
+
+            //Set user
+            $data->usermodified = $USER->id;
+
+            // Only add record if one doesn't exist for this organization. Otherwise, update the record
+            if (!$record = $DB->get_record('order_vendor_contact', ['vendorid' => $data->vendorid])) {
+                $id = $DB->insert_record('order_vendor_contact', $data);
+            } else {
+                $data->id = $record->id;
+                $DB->update_record('order_vendor_contact', $data);
+                $id = $record->id;
+            }
+            return $id;
+        } else {
+            error_log('No data provided');
+        }
+    }
 }

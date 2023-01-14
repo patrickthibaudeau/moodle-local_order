@@ -1,0 +1,45 @@
+<div class="row mt-2">
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                {{> local_order/vendors_dashboard_filters}}
+
+                <div class="row mt-2">
+                    <div class="col">
+                        <table id="local_order_vendors_table" class="table table-striped table-hover">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th>
+                                    name
+                                </th>
+                                <th>
+                                    Contact
+                                </th>
+                                <th>
+                                    Email
+                                </th>
+                                <th>
+                                    Phone
+                                </th>
+                                <th>
+                                    Actions
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{#vendor_modal}}
+    {{> local_order/modal}}
+{{/vendor_modal}}
+
+{{#alert_modal}}
+    {{> local_order/modal}}
+{{/alert_modal}}
+
