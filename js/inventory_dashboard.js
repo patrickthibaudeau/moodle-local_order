@@ -86,6 +86,7 @@ $(document).ready(function () {
             let col = e.target._DT_CellIndex.column
             if (!e.target.children.length) {
                 e.target.innerHTML = `<input id="${row}-${col}" type="text" class="editor form-control" value="${e.target.innerHTML}">`
+                $(`#${row}-${col}`).focus();
             }
         }
     })
