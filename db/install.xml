@@ -244,7 +244,7 @@
         <KEY NAME="usermodified" TYPE="foreign" FIELDS="usermodified" REFTABLE="user" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="order_event" COMMENT="Events">
+    <TABLE NAME="order_event" COMMENT="Events table">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="organizationid" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
@@ -261,6 +261,7 @@
         <FIELD NAME="adminnotes" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="requirescatering" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="othernotes" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="chargebackaccount" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="cost" TYPE="number" LENGTH="12" NOTNULL="false" DEFAULT="0" SEQUENCE="false" DECIMALS="2"/>
         <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
