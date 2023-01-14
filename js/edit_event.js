@@ -1,12 +1,14 @@
 $(document).ready(function () {
+    // hide elements
     $('#id_starttime_calendar').hide();
     $('#id_endtime_calendar').hide();
-    // Initiate select2 elements
+    // Initiate select2 for inventory item
     $('#event_inventory_name').select2({
         theme: 'bootstrap4',
         placeholder: 'Inventory item',
         dropdownParent: $('#localOrderEditEventModal')
     });
+    // Initiate select2 for vendor
     $('#event_inventory_vendor').select2({
         theme: 'bootstrap4',
         placeholder: 'Vendor',
@@ -24,6 +26,7 @@ $(document).ready(function () {
         placeholder: M.util.get_string('building_placeholder', 'local_order')
     });
 
+    // Build room menu on building selected
     building.on('select2:select', function (e) {
         let data = e.params.data;
         let id = data.id;
@@ -40,12 +43,10 @@ $(document).ready(function () {
                         text: text
                     }));
                 });
-
-                // console.log(results);
             }
         });
     });
-
+    // Initialize all events for innventory items
     init_event_inventory_items();
 
     // Download pdf of event
@@ -155,17 +156,14 @@ function init_event_inventory_items() {
                         selected = false;
                     }
                     // Add option to menu
-                    let newOption = new Option(text, id, false, false);
+                    let newOption = new Option(text, id, false, selected);
                     $('#event_inventory_name').append(newOption).trigger('change');
-                    $('#event_inventory_name').val(selectedId);
                 });
 
                 // add vendors to event_inventory_name
-               let modal =  $('#localOrderEditEventModal').modal('show');
-               // modal.on('shown.bs.modal', function(){
-               //     console.log('hello');
-               //     selectSelects();
-               // });
+
+                // Open modal for editing
+                let modal = $('#localOrderEditEventModal').modal('show');
             }
         });
     });
@@ -200,13 +198,12 @@ function init_event_inventory_items() {
                 $('.btn-collapse-' + data.eventinventorycategoryid).attr('aria-expanded', 'true');
                 $('#collapse_' + data.eventinventorycategoryid).addClass('show');
                 get_event_total_cost(data.eventid);
-                // $('.btn-event-inventory-item-save').off();
-                // $('.btn-edit-event-inventory-item').off();
                 $('#localOrderEditEventModal').modal('hide');
             }
         });
     });
 
+    // Delete inventory item
     $('.btn-delete-event-inventory-item').off();
     $('.btn-delete-event-inventory-item').on('click', function () {
         let data = {
@@ -284,8 +281,4 @@ function get_event_total_cost(eventId) {
 function calculate_cost(quantity, itemCost) {
     let cost = quantity * itemCost;
     $('#event_inventory_cost').val(cost);
-}
-
-function selectSelects(){
-    $('.select2-element').trigger('change');
 }
