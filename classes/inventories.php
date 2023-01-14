@@ -77,7 +77,7 @@ class inventories
      * @throws \moodle_exception
      * @throws \require_login_exception
      */
-    public function get_inventory_datatable($category_id, $start, $end, $term, $order_column = 'name', $order_direction = 'ASC')
+    public function get_datatable($category_id, $start, $end, $term, $order_column = 'name', $order_direction = 'ASC')
     {
         global $CFG, $DB, $OUTPUT, $PAGE;
 

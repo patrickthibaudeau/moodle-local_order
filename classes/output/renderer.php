@@ -20,7 +20,7 @@ class renderer extends \plugin_renderer_base {
     }
 
     /**
-     * Used with root/index.php
+     * Used with events/index.php
      * @param \templatable $dashboard
      * @return type
      */
@@ -30,7 +30,7 @@ class renderer extends \plugin_renderer_base {
     }
 
     /**
-     * Used with root/index.php
+     * Used with inventory/index.php
      * @param \templatable $inventory
      * @return type
      */
@@ -39,5 +39,14 @@ class renderer extends \plugin_renderer_base {
         return $this->render_from_template('local_order/inventory_dashboard', $data);
     }
 
+    /**
+     * Used with organization/index.php
+     * @param \templatable $organizations
+     * @return type
+     */
+    public function render_organizations_dashboard(\templatable $organizations) {
+        $data = $organizations->export_for_template($this);
+        return $this->render_from_template('local_order/organizations_dashboard', $data);
+    }
 
 }

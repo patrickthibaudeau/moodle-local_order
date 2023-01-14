@@ -84,7 +84,7 @@ class events
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    public function get_events_datatable($date_range, $start, $end, $term, $order_column = 'starttime', $order_direction = 'DESC')
+    public function get_datatable($date_range, $start, $end, $term, $order_column = 'starttime', $order_direction = 'DESC')
     {
         global $CFG, $DB, $OUTPUT, $PAGE;
 

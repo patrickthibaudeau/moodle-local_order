@@ -9,8 +9,8 @@
 namespace local_order;
 
 use local_order\crud;
-use local_order\vendor;
 use local_order\room;
+use local_order\vendor;
 
 include_once('../lib.php');
 
@@ -234,7 +234,8 @@ class event extends crud
         return $organization;
     }
 
-    public function get_organization_details() {
+    public function get_organization_details()
+    {
         global $DB;
 
         $sql = "Select
@@ -263,6 +264,7 @@ class event extends crud
         return $DB->get_record_sql($sql, [$this->organizationid]);
 
     }
+
     /**
      * @return name - varchar (255)
      */
@@ -303,7 +305,8 @@ class event extends crud
         return $this->eventtypeid;
     }
 
-    public function get_event_type() {
+    public function get_event_type()
+    {
         global $DB;
         if ($result = $DB->get_record(TABLE_EVENT_TYPE, ['id' => $this->eventtypeid])) {
             $event_type = [
@@ -332,7 +335,8 @@ class event extends crud
         return $this->roomid;
     }
 
-    public function get_room_details() {
+    public function get_room_details()
+    {
         $ROOM = new room($this->roomid);
 
         return $ROOM->get_full_name();
@@ -429,27 +433,29 @@ class event extends crud
         global $DB, $OUTPUT;
         $inventory = [];
         $i = 0;
-        $inventory_items = $DB->get_records(TABLE_EVENT_INVENTORY, ['eventcategoryid' => $event_category_id]);
-        // Set currency object (Format number)
-        $amount = new \NumberFormatter( get_string('currency_locale', 'local_order'),
-            \NumberFormatter::CURRENCY );
-        foreach($inventory_items as $item) {
-            $ROOM = new room($item->roomid);
-            $actions = [
-                'id' => $item->id,
-                'type' => 'event-inventory-item',
-                'attributes' => 'data-eventid=' . $this->id
-                    . ' data-eventinventorycategoryid=' . $event_category_id
-            ];
-            // format cost based on language currency
-            $item->cost_formatted = $amount->format($item->cost);
-            $item->vendor_name = $this->get_vendor_name($item->vendorid);
-            $item->room_name = $ROOM->get_full_name();
-            $item->actions = $OUTPUT->render_from_template('local_order/action_buttons', $actions);
-            $inventory[$i] = $item;
-            unset($ROOM);
-            $i++;
+        if ($inventory_items = $DB->get_records(TABLE_EVENT_INVENTORY, ['eventcategoryid' => $event_category_id])) {
+            // Set currency object (Format number)
+            $amount = new \NumberFormatter(get_string('currency_locale', 'local_order'),
+                \NumberFormatter::CURRENCY);
+            foreach ($inventory_items as $item) {
+                $ROOM = new room($item->roomid);
+                $actions = [
+                    'id' => $item->id,
+                    'type' => 'event-inventory-item',
+                    'attributes' => 'data-eventid=' . $this->id
+                        . ' data-eventinventorycategoryid=' . $event_category_id
+                ];
+                // format cost based on language currency
+                $item->cost_formatted = $amount->format($item->cost);
+                $item->vendor_name = $this->get_vendor_name($item->vendorid);
+                $item->room_name = $ROOM->get_full_name();
+                $item->actions = $OUTPUT->render_from_template('local_order/action_buttons', $actions);
+                $inventory[$i] = $item;
+                unset($ROOM);
+                $i++;
+            }
         }
+
         return $inventory;
     }
 
@@ -460,13 +466,14 @@ class event extends crud
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    public function get_inventory_categories_with_items($inventory_category_id = 0) {
+    public function get_inventory_categories_with_items($inventory_category_id = 0)
+    {
         global $DB;
         $categories = $this->get_inventory_categories();
         $results = [];
         $i = 0;
-        $amount = new \NumberFormatter( get_string('currency_locale', 'local_order'),
-            \NumberFormatter::CURRENCY );
+        $amount = new \NumberFormatter(get_string('currency_locale', 'local_order'),
+            \NumberFormatter::CURRENCY);
         foreach ($categories as $c) {
             if ($inventory_category_id == 0) {
                 // Return all categories and their items
@@ -494,7 +501,8 @@ class event extends crud
      * @return float|mixed
      * @throws \dml_exception
      */
-    public function get_total_cost_by_category($event_category_id)  {
+    public function get_total_cost_by_category($event_category_id)
+    {
         global $CFG, $DB;
 
         $sql = "SELECT SUM(cost) as amount FROM {order_event_inventory} WHERE eventcategoryid = $event_category_id";
@@ -509,13 +517,14 @@ class event extends crud
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    public function get_total_cost_of_event() {
+    public function get_total_cost_of_event()
+    {
         $sum = 0;
-        foreach($this->get_inventory_categories() as $c) {
+        foreach ($this->get_inventory_categories() as $c) {
             $sum = $sum + $this->get_total_cost_by_category($c->id);
         }
-        $amount = new \NumberFormatter( get_string('currency_locale', 'local_order'),
-            \NumberFormatter::CURRENCY );
+        $amount = new \NumberFormatter(get_string('currency_locale', 'local_order'),
+            \NumberFormatter::CURRENCY);
         return $amount->format($sum);
     }
 
@@ -524,7 +533,8 @@ class event extends crud
      * @param $vendor_id
      * @return name|string
      */
-    public function get_vendor_name($vendor_id) {
+    public function get_vendor_name($vendor_id)
+    {
         $VENDOR = new vendor($vendor_id);
         return $VENDOR->get_name();
     }
@@ -687,7 +697,8 @@ class event extends crud
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    public function get_data_for_pdf($inventory_category_id = 0) {
+    public function get_data_for_pdf($inventory_category_id = 0)
+    {
         $data = new \stdClass();
         // Sett the title for the page based on inventory category
         switch ($inventory_category_id) {

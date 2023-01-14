@@ -28,7 +28,10 @@ $string['delete_event'] = 'Delete event';
 $string['delete_event_help'] = 'Are you sure you want to delete this event? All data associated with this event will be 
 permanently deleted and unrecoverable.';
 $string['delete_inventory'] = 'Delete inventory item';
-$string['delete_inventory_help'] = 'Are you sure you want to delete this inventory item? All data associated with this event will be 
+$string['delete_inventory_help'] = 'Are you sure you want to delete this inventory item? All data associated with this inventory item will be 
+permanently deleted and unrecoverable.';
+$string['delete_organization'] = 'Delete organization';
+$string['delete_organization_help'] = 'Are you sure you want to delete this organization? All data associated with this organization will be 
 permanently deleted and unrecoverable.';
 $string['description'] = 'Description';
 $string['details'] = 'Details';

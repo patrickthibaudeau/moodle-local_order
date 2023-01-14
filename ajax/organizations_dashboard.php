@@ -2,14 +2,13 @@
 
 include_once('../../../config.php');
 
-use local_order\events;
+use local_order\organizations;
 
 global $DB, $USER;
 
 $context = context_system::instance();
 
 // get Values from Data
-$date_range = optional_param('daterange', '', PARAM_TEXT);
 $draw = optional_param('draw', 1, PARAM_INT);
 $start = optional_param('start', 0, PARAM_INT);
 $length = optional_param('length', 50, PARAM_INT);
@@ -50,10 +49,10 @@ if (isset($order[0]['column'])) {
     $orderDirection = 'ASC';
 }
 
-$EVENTS = new events();
+$ORGANIZATIONS = new organizations();
 
 // Get data
-$data = $EVENTS->get_datatable($date_range, $start, $end, $term, $orderColumn, $orderDirection);
+$data = $ORGANIZATIONS->get_datatable($start, $end, $term, $orderColumn, $orderDirection);
 
 // Create datatables object
 $params = [

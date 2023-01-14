@@ -53,7 +53,7 @@ if (isset($order[0]['column'])) {
 $INVENTORIES = new inventories();
 
 // Get data
-$data = $INVENTORIES->get_inventory_datatable($category_id, $start, $end, $term, $orderColumn, $orderDirection);
+$data = $INVENTORIES->get_datatable($category_id, $start, $end, $term, $orderColumn, $orderDirection);
 
 // Create datatables object
 $params = [
