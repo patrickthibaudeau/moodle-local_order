@@ -162,10 +162,10 @@ function init_event_inventory_items() {
 
                 // add vendors to event_inventory_name
                let modal =  $('#localOrderEditEventModal').modal('show');
-               modal.on('shown.bs.modal', function(){
-                   console.log('hello');
-                   selectSelects();
-               });
+               // modal.on('shown.bs.modal', function(){
+               //     console.log('hello');
+               //     selectSelects();
+               // });
             }
         });
     });
@@ -233,7 +233,6 @@ function init_event_inventory_items() {
     });
 
     // Make quantity availabe only when an inventory package is selected
-    $('#event_inventory_name').off();
     $('#event_inventory_name').on('select2:select', function () {
         if ($('#event_inventory_name').val() != 0) {
             $('#event_inventory_quantity').removeAttr('disabled');
