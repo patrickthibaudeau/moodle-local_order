@@ -101,7 +101,27 @@ function init_event_inventory_items() {
                     $('#event_inventory_name').append(newOption).trigger('change');
                 });
 
-                // add vendors to event_inventory_name
+
+                // Clear all options
+                $('#event_inventory_vendor')
+                    .find('option')
+                    .remove()
+                    .end();
+                $('#event_inventory_vendor').val(null).trigger('change');
+                // add vendors to event_inventory_vendor
+                let vendors = results.vendors;
+                let xselectOption = new Option('Select', 0, true, true);
+                $('#event_inventory_vendor').append(xselectOption).trigger('change');
+                let vendorId = '';
+                let vendorText = '';
+                $.each(vendors, function (key) {
+                    // Fill in values into variables
+                    vendorId = vendors[key]['id'];
+                    vendorText = vendors[key]['name'];
+                    // Add option to menu
+                    let newOption = new Option(vendorText, vendorId, true, false);
+                    $('#event_inventory_vendor').append(newOption).trigger('change');
+                });
 
                 $('#localOrderEditEventModal').modal('show');
             }
@@ -160,7 +180,33 @@ function init_event_inventory_items() {
                     $('#event_inventory_name').append(newOption).trigger('change');
                 });
 
-                // add vendors to event_inventory_name
+                // Clear all options
+                $('#event_inventory_vendor')
+                    .find('option')
+                    .remove()
+                    .end();
+                $('#event_inventory_vendor').val(null).trigger('change');
+                // add vendors to event_inventory_vendor
+                let vendors = results.vendors;
+                let xselectOption = new Option('Select', 0, true, true);
+                $('#event_inventory_vendor').append(xselectOption).trigger('change');
+                let vendorId = '';
+                let vendorText = '';
+                $.each(vendors, function (key) {
+                    // Fill in values into variables
+                    vendorId = vendors[key]['id'];
+                    vendorText = vendors[key]['name'];
+
+                    if (vendors[key]['selected'] == 'selected') {
+                        selected = true;
+                        selectedId = id;
+                    } else {
+                        selected = false;
+                    }
+                    // Add option to menu
+                    let newOption = new Option(vendorText, vendorId, true, selected);
+                    $('#event_inventory_vendor').append(newOption).trigger('change');
+                });
 
                 // Open modal for editing
                 let modal = $('#localOrderEditEventModal').modal('show');
