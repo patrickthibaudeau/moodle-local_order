@@ -1,4 +1,5 @@
 <?php
+
 namespace local_order;
 
 use local_order\event;
@@ -35,20 +36,34 @@ class event_form extends \moodleform
             'ajax' => 'local_order/organization_selector',
             'noselectionstring' => get_string('organization', 'local_order')
         ];
+
+        $organization_array = [];
+        if (isset($formdata->organization['id'])) {
+            $organization_array[$formdata->organization['id']] = $formdata->organization['name'];
+        }
+
         // Event type options
         $event_type_options = [
             'multiple' => false,
             'ajax' => 'local_order/event_type_selector',
             'noselectionstring' => get_string('event_type', 'local_order')
         ];
+
+        $event_type_array = [];
+        if (isset($formdata->eventtype['id'])) {
+            $event_type_array[$formdata->eventtype['id']] = $formdata->eventtype['name'];
+        }
+
         // Get buildings and rooms
         $BUILDINGS = new buildings();
         $buildings = $BUILDINGS->get_buildings_by_campus();
         // Rooms empty unless a room id exists. Otherwise, will dynamically be updated when building is selected
         $rooms = [];
-        if ($formdata->roomid) {
-            $ROOMS = new rooms();
+        $ROOMS = new rooms();
+        if (isset($formdata->roomid)) {
             $rooms = $ROOMS->get_rooms_by_building_floor($formdata->building);
+        } else {
+            $rooms = $ROOMS->get_select_array();
         }
 
         // Get inventory categories for pdf buttons
@@ -84,7 +99,7 @@ class event_form extends \moodleform
         $mform->addElement('html', '</div>');
         $mform->addElement('html', '<div class="col d-flex justify-content-end">');
 
-        $buttonarray=array();
+        $buttonarray = array();
         $buttonarray[] = $mform->createElement('html', $OUTPUT->render_from_template('local_order/pdf_buttons', $pdf_buttons));
         $buttonarray[] = $mform->createElement('submit', 'submitbutton', get_string('savechanges'));
         $buttonarray[] = $mform->createElement('cancel');
@@ -100,11 +115,11 @@ class event_form extends \moodleform
         $mform->addElement('html', '<div class="card">');
         $mform->addElement('html', '<div class="card-body">');
 
-        // Summary
-        $mform->addElement('text', 'name', get_string('title', 'local_order'), '');
-        $mform->addHelpButton('name', 'title', 'local_order');
-        $mform->setType('name', PARAM_TEXT);
-        $mform->addRule('name', get_string('required_field', 'local_order'), 'required');
+        // Name
+        $mform->addElement('text', 'title', get_string('title', 'local_order'), ['style' => 'width: 100%;']);
+        $mform->addHelpButton('title', 'title', 'local_order');
+        $mform->setType('title', PARAM_TEXT);
+//        $mform->addRule('name', get_string('required_field', 'local_order'), 'required');
         // code
         $mform->addElement('text', 'code', get_string('code', 'local_order'), ['style' => 'width: 40%;']);
         $mform->setType('code', PARAM_TEXT);
@@ -116,14 +131,15 @@ class event_form extends \moodleform
         $mform->setType('endtime', PARAM_INT);
 
         //Organization
-        $mform->addElement('autocomplete', 'organizationid', get_string('organization', 'local_order'), [], $organization_options);
+        $mform->addElement('autocomplete', 'organizationid', get_string('organization', 'local_order'),
+            $organization_array, $organization_options);
         $mform->setType('organizationid', PARAM_INT);
 
 
         // Event type
         $event_group = [];
-        $event_group[] =&  $mform->createElement('autocomplete', 'eventtypeid', '', [], $event_type_options);
-        $event_group[] =&  $mform->createElement('html', '<button type="button" 
+        $event_group[] =& $mform->createElement('autocomplete', 'eventtypeid', '', $event_type_array, $event_type_options);
+        $event_group[] =& $mform->createElement('html', '<button type="button" 
                                                 class="btn btn-link btn-add-event-type" style="margin-top: 1.8rem;">
                                 <i class="fa fa-plus"></i></button>');
         $mform->addGroup($event_group, 'event_array', get_string('event_type', 'local_order'),
@@ -141,7 +157,7 @@ class event_form extends \moodleform
         $mform->addElement('select', 'room', get_string('room', 'local_order'), $rooms);
         $mform->setType('room', PARAM_INT);
 
-        $mform->addElement('text', 'attendance', get_string('estimated_attendance', 'local_order'),  ['style' => 'width: 40%;']);
+        $mform->addElement('text', 'attendance', get_string('estimated_attendance', 'local_order'), ['style' => 'width: 40%;']);
         $mform->setType('attendance', PARAM_TEXT);
 
 
@@ -157,7 +173,7 @@ class event_form extends \moodleform
 
         // Print each inventory categories
         $mform->addElement('html', '<div id="event_inventory_container">');
-        $mform->addElement('html', $OUTPUT->render_from_template('local_order/edit_event_inventory', $formdata) );
+        $mform->addElement('html', $OUTPUT->render_from_template('local_order/edit_event_inventory', $formdata));
         $mform->addElement('html', '</div>'); // End event_inventory_container
 
         // Charge back Account
@@ -175,11 +191,11 @@ class event_form extends \moodleform
         $edit_modal->modal_id = "localOrderEditEvent";
         $edit_modal->class = "modal-xl";
         $edit_modal->title = get_string('edit_items', 'local_order');
-        $edit_modal->content =  $OUTPUT->render_from_template('local_order/event_inventory_form', []);
+        $edit_modal->content = $OUTPUT->render_from_template('local_order/event_inventory_form', []);
         $edit_modal->close_button_name = get_string('close', 'local_order');
         $edit_modal->action_button_name = get_string('save', 'local_order');
         $edit_modal->action_button = 'event-inventory-item-save';
-        $mform->addElement('html', $OUTPUT->render_from_template('local_order/modal', $edit_modal) );
+        $mform->addElement('html', $OUTPUT->render_from_template('local_order/modal', $edit_modal));
 
 
         $mform->addElement('html', '</div>'); // End div card-body
@@ -208,77 +224,10 @@ class event_form extends \moodleform
     {
         global $DB;
 
-        $errors = parent::validation($data, $files);
+//        $errors = parent::validation($data, $files);
 
-//        if (is_null($data['id'])) {
-//            $id = -1;
-//        } else {
-//            $id = $data['id'];
-//        }
-//
-//        if ($data['yulearncategoryid'] == 0) {
-//            $errors['yulearncategoryid'] = get_string('field_required', 'local_yulearn');
-//        }
-//
-//        if ($data['id'] < 1) {
-//            $sql = 'SELECT * FROM {yulearn_course} WHERE shortname = "'
-//                . trim($data['shortname']) . '" AND '
-//                . 'id != ' . $id;
-//            if ($foundcourses = $DB->get_records_sql($sql)) {
-//
-//                if (!empty($foundcourses)) {
-//                    foreach ($foundcourses as $foundcourse) {
-//                        $foundcoursenames[] = $foundcourse->fullname;
-//                    }
-//                    $foundcoursenamestring = implode(',', $foundcoursenames);
-//                    $errors['shortname'] = get_string('shortnametaken', '', $foundcoursenamestring);
-//                }
-//            }
-//
-//            if ($foundMoodleCourse = $DB->get_record('course', ['shortname' => trim($data['shortname'])])) {
-//                $errors['shortname'] = get_string('shortnametaken');
-//            }
-//
-//
-//            $sql = 'SELECT * FROM {yulearn_course} WHERE externalcode = "'
-//                . trim($data['externalcode']) . '" AND '
-//                . 'id != ' . $id;
-//            if ($foundcourses = $DB->get_records_sql($sql)) {
-//
-//                if (!empty($foundcourses)) {
-//                    foreach ($foundcourses as $foundcourse) {
-//                        $foundcoursenames[] = $foundcourse->fullname;
-//                    }
-//                    $foundcoursenamestring = implode(',', $foundcoursenames);
-//                    $errors['externalcode'] = get_string('externalcode_taken', 'local_yulearn', $foundcoursenamestring);
-//                }
-//            }
-//
-//            if ($data['hascertificate']) {
-//                if (!$data['certificatetemplateid']) {
-//                    $errors['certificatetemplateid'] = get_string('required', 'local_yulearn');
-//                }
-//            }
-//        }
-//
-//        // Certificate notifications
-//        for ($i = 0; $i < count($data['rnotificationruleid']); $i++) {
-//            if ($data['remailtemplateid'][$i] == 0) {
-//                $errors['remailtemplateid'][$i] = get_string('required', 'local_yulearn');
-//            }
-//        }
-//
-//        for ($i = 0; $i < count($data['remailtemplateid']); $i++) {
-//            if (isset($data['rnotificationruleid'])) {
-//                if ($data['rnotificationruleid'][$i] == 0) {
-//                    $errors['rnotificationruleid'][$i] = get_string('required', 'local_yulearn');
-//                }
-//            } else {
-//                $errors['rnotificationruleid'][$i]  = get_string('required', 'local_yulearn');
-//            }
-//        }
 
-        return $errors;
+//        return $errors;
     }
 
 }

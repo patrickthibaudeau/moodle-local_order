@@ -11,6 +11,7 @@ namespace local_order;
 use local_order\crud;
 use local_order\room;
 use local_order\vendor;
+use local_order\inventory_categories;
 
 include_once('../lib.php');
 
@@ -755,6 +756,49 @@ class event extends crud
         $data->inventory_items = $this->get_inventory_categories_with_items($inventory_category_id);
 
         return $data;
+    }
+
+    /**
+     * @param $data stdClass
+     * @return bool|int
+     * @throws \dml_exception
+     */
+    public function insert_record($data)
+    {
+        global $DB, $USER;
+
+        if ($data) {
+            if (!isset($data->timecreated)) {
+                $data->timecreated = time();
+            }
+
+            if (!isset($data->timemodified)) {
+                $data->timemodified = time();
+            }
+
+            //Set user
+            $data->usermodified = $USER->id;
+
+            $id = $DB->insert_record($this->table, $data);
+
+            // Create event inventory categories
+            $INVENTORY_CATEGORIES = new inventory_categories();
+            foreach($INVENTORY_CATEGORIES->get_records() as $ic) {
+                $params = new \stdClass();
+                $params->eventid  = $id;
+                $params->inventorycategoryid  = $ic->id;
+                $params->name  = $ic->name;
+                $params->usermodified  = $USER->id;
+                $params->timecreated  = time();
+                $params->timemodified  = time();
+                $DB->insert_record('order_event_inv_category', $params);
+            }
+
+            return $id;
+        } else {
+            error_log('No data provided');
+        }
+
     }
 
 }

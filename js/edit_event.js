@@ -37,6 +37,10 @@ $(document).ready(function () {
             url: M.cfg.wwwroot + "/local/order/ajax/get_rooms.php?id=" + id,
             dataType: "json",
             success: function (results) {
+                $('#id_room')
+                    .find('option')
+                    .remove()
+                    .end();
                 $.each(results, function (value, text) {
                     $('#id_room').append($('<option>', {
                         value: value,
