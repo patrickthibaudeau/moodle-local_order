@@ -45,6 +45,7 @@ $pdf->SetFont('times', '', 10);
 
 if ($id) {
     $EVENT = new event($id);
+    $date_name = date('Y-m-d H:i', $EVENT->get_starttime()) . ' - ' . date('H:i', $EVENT->get_endtime());
     $data = $EVENT->get_data_for_pdf($inventory_category_id);
     $html = $OUTPUT->render_from_template('local_order/pdf_order', $data);
     unset($EVENT);
@@ -53,6 +54,8 @@ if ($id) {
     $pdf->writeHTML($html, true, false, true, false, '');
     $pdf->lastPage();
 } else {
+    // Set document name
+    $date_name = str_replace('/', '-', $daterange);
     // Export all events based on date range
     $EVENTS = new events();
     $events = $EVENTS->get_event_ids_by_daterange($daterange);
@@ -70,4 +73,5 @@ if ($id) {
     }
 }
 
-$pdf->Output('order.pdf', 'I');
+
+$pdf->Output('event_order ' . $date_name . '.pdf', 'D');

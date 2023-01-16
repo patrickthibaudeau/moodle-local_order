@@ -12,7 +12,7 @@
         </td>
         <td style="vertical-align: top"><b>{{#str}}event, local_order{{/str}}: {{code}}</b>
             <hr>{{#str}}event_name, local_order{{/str}}: {{name}}
-            <br>{{#str}}charge_back_account, local_order{{/str}}: {{chargebackaccount}}
+            <br>{{#str}}chargeback_account, local_order{{/str}}: {{chargebackaccount}}
             {{#organization}}
                 <br>{{#str}}phone, core{{/str}}: {{phone}}
                 <br>{{#str}}email, core{{/str}}: {{email}}
@@ -24,7 +24,7 @@
         <td colspan="2"><b>{{#str}}booking_details, local_order{{/str}}</b>
             <hr><b>{{date}}</b>
             <br><b>{{start_time}} - {{end_time}} {{name}}</b>
-            <br><b>{{room}}</b>
+            <br><b>{{#str}}room, local_order{{/str}}: {{room}}</b>
             {{#setup_notes}}
                 <br><b>{{#str}}setup_notes, local_order{{/str}}</b>:
                 <br>{{setup_notes}}

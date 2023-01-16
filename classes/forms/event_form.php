@@ -163,7 +163,7 @@ class event_form extends \moodleform
         $mform->addElement('html', '</div>'); // End event_inventory_container
 
         // Charge back Account
-        $mform->addElement('text', 'chargebackaccount', get_string('charge_back_account', 'local_order'));
+        $mform->addElement('text', 'chargebackaccount', get_string('chargeback_account', 'local_order'));
         $mform->setType('chargebackaccount', PARAM_TEXT);
 
         $mform->addElement('textarea', 'setupnotes', get_string('setup_notes', 'local_order'),
