@@ -97,10 +97,8 @@ $(document).ready(function () {
         );
     });
 
-
-    // Click on row
-    // $('#order_my_request_table').on('click', 'tbody tr', function (){
-    //     var row = request_table.row($(this)).data();
-    //     window.location.href = wwwroot + "/local/order/details.php?id=" + row.id;   //full row of array data
-    // });
+    // Return to today's date
+    $('#local-order-reset-date').on('click', function(){
+        location.href = M.cfg.wwwroot + '/local/order/events/index.php';
+    });
 });
