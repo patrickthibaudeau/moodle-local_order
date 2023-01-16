@@ -41,7 +41,12 @@ class event_types {
 	        '' => get_string('select', 'local_order')
 	      ];
 	      foreach($this->results as $r) {
-	            $array[$r->id] = $r->name;
+                if (strlen($r->description) > 75) {
+                    $description = substr($r->description, 0, 75) . '...';
+                } else {
+                    $description = $r->description;
+                }
+	            $array[$r->id] = $description;
 	      }
 	    return $array;
 	}

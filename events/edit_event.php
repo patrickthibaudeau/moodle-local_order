@@ -36,6 +36,8 @@ if ($id) {
     $formdata->daterange = $date_range;
     $formdata->organization = [];
     $formdata->eventtype = [];
+    $formdata->starttime = date('Y/m/d H:i', round(time() / (15 * 60)) * (15 * 60));
+    $formdata->endtime = date('Y/m/d H:i', round(time() / (15 * 60)) * (15 * 60));
 }
 
 $mform = new \local_order\event_form(null, array('formdata' => $formdata));
@@ -50,13 +52,15 @@ if ($mform->is_cancelled()) {
     unset($data->title);
     $data->roomid = $data->room;
     unset($data->room);
+    $data->starttime = strtotime($data->starttime);
+    $data->endtime = strtotime($data->endtime);
 
-    if($data->eventtypename) {
-        $EVENTTYPE = new event();
+    if ($data->eventtypename && !$data->eventtypeid) {
+        $EVENTTYPE = new event_type();
         $event_params = new stdClass();
-        $event_params->description = $data->eventypename;
-        $event_id = $EVENTTYPE->insert_record($event_params);
-        $data->eventtypeid = $event_id;
+        $event_params->description = $data->eventtypename;
+        $event_type_id = $EVENTTYPE->insert_record($event_params);
+        $data->eventtypeid = $event_type_id;
         unset($data->eventtypename);
     }
 
@@ -68,6 +72,7 @@ if ($mform->is_cancelled()) {
     } else {
         $EVENT = new event();
         $event_id = $EVENT->insert_record($data);
+
         unset($EVENT);
         redirect($CFG->wwwroot . '/local/order/events/edit_event.php?id=' . $event_id . '&daterange=' . $data->daterange);
     }
@@ -102,7 +107,3 @@ $mform->display();
 //*** DISPLAY FOOTER ***
 //**********************
 echo $OUTPUT->footer();
-
-
-?>
-<?php

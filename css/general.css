@@ -16,7 +16,15 @@ img  {
 .local_order_card_top_image {
     height: 100px;
     width: 100%;
-    top 0;
+    top: 0;
     object-position: center;
     object-fit: cover;
 }
+
+/*.select2-selection {*/
+/*    overflow: hidden !important;*/
+/*}*/
+/*.select2-selection__rendered {*/
+/*    white-space: normal !important;*/
+/*    word-break: break-all !important;*/
+/*}*/

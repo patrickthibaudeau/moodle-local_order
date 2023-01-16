@@ -6,6 +6,7 @@ use local_order\event;
 use local_order\buildings;
 use local_order\rooms;
 use local_order\inventory_categories;
+use local_order\event_types;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -34,7 +35,7 @@ class event_form extends \moodleform
         $organization_options = [
             'multiple' => false,
             'ajax' => 'local_order/organization_selector',
-            'noselectionstring' => get_string('organization', 'local_order')
+            'noselectionstring' => get_string('select', 'local_order')
         ];
 
         $organization_array = [];
@@ -42,17 +43,8 @@ class event_form extends \moodleform
             $organization_array[$formdata->organization['id']] = $formdata->organization['name'];
         }
 
-        // Event type options
-        $event_type_options = [
-            'multiple' => false,
-            'ajax' => 'local_order/event_type_selector',
-            'noselectionstring' => get_string('event_type', 'local_order')
-        ];
-
-        $event_type_array = [];
-        if (isset($formdata->eventtype['id'])) {
-            $event_type_array[$formdata->eventtype['id']] = $formdata->eventtype['name'];
-        }
+        $EVENT_TYPES = new event_types();
+        $event_types = $EVENT_TYPES->get_select_array();
 
         // Get buildings and rooms
         $BUILDINGS = new buildings();
@@ -113,22 +105,22 @@ class event_form extends \moodleform
         // Form content for col-md-6
         // Create card
         $mform->addElement('html', '<div class="card">');
-        $mform->addElement('html', '<div class="card-body">');
+        $mform->addElement('html', '<div id="local-order-main-container" class="card-body">');
 
         // Name
         $mform->addElement('text', 'title', get_string('title', 'local_order'), ['style' => 'width: 100%;']);
         $mform->addHelpButton('title', 'title', 'local_order');
         $mform->setType('title', PARAM_TEXT);
-//        $mform->addRule('name', get_string('required_field', 'local_order'), 'required');
+        $mform->addRule('title', get_string('required_field', 'local_order'), 'required');
         // code
         $mform->addElement('text', 'code', get_string('code', 'local_order'), ['style' => 'width: 40%;']);
         $mform->setType('code', PARAM_TEXT);
         //Start time
-        $mform->addElement('date_time_selector', 'starttime', get_string('start_time', 'local_order'));
-        $mform->setType('starttime', PARAM_INT);
+        $mform->addElement('text', 'starttime', get_string('start_time', 'local_order'));
+        $mform->setType('starttime', PARAM_TEXT);
         //Start time
-        $mform->addElement('date_time_selector', 'endtime', get_string('end_time', 'local_order'));
-        $mform->setType('endtime', PARAM_INT);
+        $mform->addElement('text', 'endtime', get_string('end_time', 'local_order'));
+        $mform->setType('endtime', PARAM_TEXT);
 
         //Organization
         $mform->addElement('autocomplete', 'organizationid', get_string('organization', 'local_order'),
@@ -137,17 +129,11 @@ class event_form extends \moodleform
 
 
         // Event type
-        $event_group = [];
-        $event_group[] =& $mform->createElement('autocomplete', 'eventtypeid', '', $event_type_array, $event_type_options);
-        $event_group[] =& $mform->createElement('html', '<button type="button" 
-                                                class="btn btn-link btn-add-event-type" style="margin-top: 1.8rem;">
-                                <i class="fa fa-plus"></i></button>');
-        $mform->addGroup($event_group, 'event_array', get_string('event_type', 'local_order'),
-            array(' '), false);
-
+        $mform->addElement('select', 'eventtypeid', get_string('event_type', 'local_order'), $event_types);
         $mform->setType('eventtypeid', PARAM_INT);
+
         // Allow to add an event type if one is not available in the list
-        $mform->addElement('text', 'eventtypename', get_string('event_type', 'local_order'));
+        $mform->addElement('hidden', 'eventtypename');
         $mform->setType('eventtypename', PARAM_TEXT);
 
 

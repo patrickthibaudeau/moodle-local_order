@@ -1,7 +1,50 @@
 $(document).ready(function () {
-    // hide elements
-    $('#id_starttime_calendar').hide();
-    $('#id_endtime_calendar').hide();
+    $('#id_starttime').datetimepicker({
+        allowTimes:[
+            '06:00', '06:15', '06:30', '06:45',
+            '07:00', '07:15', '07:30', '07:45',
+            '08:00', '08:15', '08:30', '08:45',
+            '09:00', '09:15', '09:30', '09:45',
+            '10:00', '10:15', '10:30', '10:45',
+            '10:00', '10:15', '10:30', '10:45',
+            '11:00', '11:15', '11:30', '11:45',
+            '12:00', '12:15', '12:30', '12:45',
+            '13:00', '13:15', '13:30', '13:45',
+            '14:00', '14:15', '14:30', '14:45',
+            '15:00', '15:15', '15:30', '15:45',
+            '16:00', '16:15', '16:30', '16:45',
+            '17:00', '17:15', '17:30', '17:45',
+            '18:00', '18:15', '18:30', '18:45',
+            '19:00', '19:15', '19:30', '19:45',
+            '20:00', '20:15', '20:30', '20:45',
+            '21:00', '21:15', '21:30', '21:45',
+            '22:00', '22:15', '22:30', '22:45',
+            '23:00', '23:15', '23:30', '23:45',
+        ]
+    });
+    $('#id_endtime').datetimepicker({
+        allowTimes:[
+            '06:00', '06:15', '06:30', '06:45',
+            '07:00', '07:15', '07:30', '07:45',
+            '08:00', '08:15', '08:30', '08:45',
+            '09:00', '09:15', '09:30', '09:45',
+            '10:00', '10:15', '10:30', '10:45',
+            '10:00', '10:15', '10:30', '10:45',
+            '11:00', '11:15', '11:30', '11:45',
+            '12:00', '12:15', '12:30', '12:45',
+            '13:00', '13:15', '13:30', '13:45',
+            '14:00', '14:15', '14:30', '14:45',
+            '15:00', '15:15', '15:30', '15:45',
+            '16:00', '16:15', '16:30', '16:45',
+            '17:00', '17:15', '17:30', '17:45',
+            '18:00', '18:15', '18:30', '18:45',
+            '19:00', '19:15', '19:30', '19:45',
+            '20:00', '20:15', '20:30', '20:45',
+            '21:00', '21:15', '21:30', '21:45',
+            '22:00', '22:15', '22:30', '22:45',
+            '23:00', '23:15', '23:30', '23:45',
+        ]
+    });
     // Initiate select2 for inventory item
     $('#event_inventory_name').select2({
         theme: 'bootstrap4',
@@ -24,6 +67,27 @@ $(document).ready(function () {
     const building = $('#id_building').select2({
         theme: 'bootstrap4',
         placeholder: M.util.get_string('building_placeholder', 'local_order')
+    });
+
+    // initiate select2 for eventtype
+    $('#id_eventtypeid').select2({
+        theme: 'bootstrap4',
+        placeholder: M.util.get_string('event_type', 'local_order'),
+        tags: true,
+        createTag: function (params) {
+            var term = $.trim(params.term);
+
+            if (term === '') {
+                return null;
+            }
+            $('input[name="eventtypename"]').val(term);
+
+            return {
+                id: term,
+                text: term,
+                newTag: true // add additional parameters
+            }
+        }
     });
 
     // Build room menu on building selected
@@ -72,7 +136,7 @@ function init_event_inventory_items() {
      * Edit inventory items
      */
     $('.btn-inventory-add-item').off();
-    $('.btn-inventory-add-item').on('click', function () {
+    $('.btn-inventory-add-item').one('click', function () {
         let eventInventoryCategoryId = $(this).data('eventinventorycategoryid');
         let eventId = $(this).data('eventid');
         $.ajax({
@@ -82,6 +146,7 @@ function init_event_inventory_items() {
             success: function (results) {
                 // console.log(results.inventory);
                 // Add values to hidden fields
+                $('input[name="inventoryid"]').val(0);
                 $('input[name="eventid"]').val(eventId);
                 $('input[name="eventinventorycategoryid"]').val(eventInventoryCategoryId);
                 // Clear all options
@@ -220,7 +285,7 @@ function init_event_inventory_items() {
 
     // Save event inventory item
     $('.btn-event-inventory-item-save').off();
-    $('.btn-event-inventory-item-save').on('click', function () {
+    $('.btn-event-inventory-item-save').one('click', function () {
         let data = {
             id: $('input[name="inventoryid"]').val(),
             eventid: $('input[name="eventid"]').val(),
