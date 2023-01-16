@@ -29,6 +29,8 @@ if ($id) {
     $formdata->inventory_categories = $EVENT->get_inventory_categories_with_items();
     $formdata->event_total_cost = $EVENT->get_total_cost_of_event();
     $formdata->building = $ROOM->get_building_code();
+    $formdata->starttime = date('Y/m/d H:i', round($EVENT->get_starttime() / (15 * 60)) * (15 * 60));
+    $formdata->endtime = date('Y/m/d H:i', round($EVENT->get_endtime() / (15 * 60)) * (15 * 60));
 
 } else {
     $formdata = new stdClass();
