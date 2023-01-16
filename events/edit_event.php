@@ -52,8 +52,10 @@ if ($mform->is_cancelled()) {
     // Set proper fields
     $data->name = $data->title;
     unset($data->title);
-    $data->roomid = $data->room;
-    unset($data->room);
+    if (isset($data->room)) {
+        $data->roomid = $data->room;
+        unset($data->room);
+    }
     $data->starttime = strtotime($data->starttime);
     $data->endtime = strtotime($data->endtime);
 

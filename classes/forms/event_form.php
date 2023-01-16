@@ -53,7 +53,9 @@ class event_form extends \moodleform
         $rooms = [];
         $ROOMS = new rooms();
         if (isset($formdata->roomid)) {
-            $rooms = $ROOMS->get_rooms_by_building_floor($formdata->building);
+            if ($formdata->roomid) {
+                $rooms = $ROOMS->get_rooms_by_building_floor($formdata->building);
+            }
         } else {
             $rooms = $ROOMS->get_select_array();
         }
