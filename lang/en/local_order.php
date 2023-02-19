@@ -49,6 +49,7 @@ $string['edit_items'] = 'Edit items';
 $string['error_deleting'] = 'An error occured while deleting the the record.';
 $string['estimated_attendance'] = 'Estimated attendance';
 $string['event'] = 'Event';
+$string['event_code'] = 'Event code';
 $string['event_instructions'] = '<ol>
 <li>Make a copy of the downloaded <span class="local_order_event"></span> Excel provided.</li>
 <li>Drag and drop the file in the field below</li>

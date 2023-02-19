@@ -115,7 +115,7 @@ class event_form extends \moodleform
         $mform->setType('title', PARAM_TEXT);
         $mform->addRule('title', get_string('required_field', 'local_order'), 'required');
         // code
-        $mform->addElement('text', 'code', get_string('code', 'local_order'), ['style' => 'width: 40%;']);
+        $mform->addElement('text', 'code', get_string('event_code', 'local_order'), ['style' => 'width: 40%;']);
         $mform->setType('code', PARAM_TEXT);
         //Start time
         $mform->addElement('text', 'starttime', get_string('start_time', 'local_order'));
