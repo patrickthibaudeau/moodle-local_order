@@ -137,6 +137,7 @@ $string['vendor_used'] = 'This vendor cannot be deleted because it is assigned t
 $string['vendors'] = 'Vendors';
 $string['vendors_card_help'] = 'Manage vendors and their contacts.';
 $string['view'] = 'View';
+$string['work_order'] = 'Work order';
 
 //Capabilities
 $string['order:import'] = 'Import data';

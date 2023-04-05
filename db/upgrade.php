@@ -105,6 +105,19 @@ function xmldb_local_order_upgrade($oldversion)
         upgrade_plugin_savepoint(true, 2023011404, 'local', 'order');
     }
 
+    if ($oldversion < 2023040500) {
 
+        // Define field workorder to be added to order_event.
+        $table = new xmldb_table('order_event');
+        $field = new xmldb_field('workorder', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'chargebackaccount');
+
+        // Conditionally launch add field workorder.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Order savepoint reached.
+        upgrade_plugin_savepoint(true, 2023040500, 'local', 'order');
+    }
     return true;
 }

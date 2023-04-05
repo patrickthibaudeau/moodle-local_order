@@ -164,6 +164,10 @@ class event_form extends \moodleform
         $mform->addElement('html', $OUTPUT->render_from_template('local_order/edit_event_inventory', $formdata));
         $mform->addElement('html', '</div>'); // End event_inventory_container
 
+        // Work order
+        $mform->addElement('text', 'workorder', get_string('work_order', 'local_order'));
+        $mform->setType('workorder', PARAM_TEXT);
+
         // Charge back Account
         $mform->addElement('text', 'chargebackaccount', get_string('chargeback_account', 'local_order'));
         $mform->setType('chargebackaccount', PARAM_TEXT);

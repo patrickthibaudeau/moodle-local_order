@@ -117,6 +117,12 @@ class event extends crud
 
     /**
      *
+     * @var string
+     */
+    private $workorder;
+
+    /**
+     *
      * @var int
      */
     private $usermodified;
@@ -195,6 +201,7 @@ class event extends crud
         $this->setupnotes = $result->setupnotes ?? '';
         $this->adminnotes = $result->adminnotes ?? '';
         $this->chargebackaccount = $result->chargebackaccount ?? '';
+        $this->workorder = $result->workorder ?? '';
         $this->requirescatering = $result->requirescatering ?? 0;
         $this->othernotes = $result->othernotes ?? '';
         $this->usermodified = $result->usermodified ?? 0;
@@ -287,6 +294,14 @@ class event extends crud
     public function get_chargebackaccount()
     {
         return $this->chargebackaccount;
+    }
+
+    /**
+     * @return string - varchar (255)
+     */
+    public function get_workorder()
+    {
+        return $this->workorder;
     }
 
     /**
