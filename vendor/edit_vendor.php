@@ -34,6 +34,7 @@ if ($mform->is_cancelled()) {
 
     $contact = new stdClass();
     $contact->userid = $data->contact;
+    $contactprimarycontact = true;
 
     if ($data->id) {
         $VENDOR->update_record($data);
@@ -60,6 +61,7 @@ if ($mform->is_cancelled()) {
     $context);
 
 // Load JS
+$PAGE->requires->js('/local/order/js/edit_vendor.js', true);
 $PAGE->requires->css('/local/order/css/general.css');
 //**************** ******
 //*** DISPLAY HEADER ***

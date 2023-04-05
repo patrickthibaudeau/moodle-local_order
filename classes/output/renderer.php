@@ -59,4 +59,15 @@ class renderer extends \plugin_renderer_base {
         return $this->render_from_template('local_order/vendors_dashboard', $data);
     }
 
+    /**
+     * Returns a table of vendor contacts
+     * Used with vendor/edit_vendor.php
+     * @param \templatable $vendors
+     * @return type
+     */
+    public function render_vendor_contacts(\templatable $vendor) {
+        $data = $vendor->export_for_template($this);
+        return $this->render_from_template('local_order/vendor_contacts', $data);
+    }
+
 }

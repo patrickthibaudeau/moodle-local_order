@@ -36,6 +36,8 @@ permanently deleted and unrecoverable.';
 $string['delete_organization'] = 'Delete organization';
 $string['delete_organization_help'] = 'Are you sure you want to delete this organization? All data associated with this organization will be 
 permanently deleted and unrecoverable.';
+$string['delete_team_member'] = 'Delete team member';
+$string['delete_team_member_help'] = 'Are you sure you want to delete this team member?';
 $string['delete_vendor'] = 'Delete vendor';
 $string['delete_vendor_help'] = 'Are you sure you want to delete this vendor? All data associated with this vendor will be 
 permanently deleted and unrecoverable.';
@@ -119,11 +121,13 @@ $string['rooms'] = 'Rooms';
 $string['save'] = 'Save';
 $string['select'] = 'Select';
 $string['select_other_import'] = 'Please select another import type';
+$string['select_user'] = 'Select user';
 $string['setup_notes'] = 'Setup notes';
 $string['start_time'] = 'Start date/time';
 $string['status'] = 'Status';
 $string['subtotal'] = 'Subtotal';
 $string['table_must_have_data'] = 'The following tables must have data';
+$string['team_members'] = 'Team members';
 $string['title'] = 'Title';
 $string['title_help'] = 'Enter the title or name for the event';
 $string['today'] = 'Today';

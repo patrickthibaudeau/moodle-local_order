@@ -6,6 +6,8 @@ use local_order\inventory;
 use local_order\organization;
 use local_order\vendor;
 
+global $DB;
+
 $action = required_param('action', PARAM_TEXT);
 $id = required_param('id', PARAM_INT);
 
@@ -41,5 +43,9 @@ switch ($action) {
         } else {
             echo false;
         }
+        break;
+    case 'vendor_contact':
+        $DB->delete_records('order_vendor_contact', ['id' => $id]);
+        return true;
         break;
 }

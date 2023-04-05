@@ -90,10 +90,11 @@ class vendors {
                 From
                     {order_vendor} v Left Join
                     {order_vendor_contact} vc On v.id = vc.vendorid Left Join
-                    {user} u  On vc.userid = u.id";
+                    {user} u  On vc.userid = u.id
+                WHERE vc.primarycontact = 1";
 
         if ($term) {
-            $sql .= " WHERE (v.name LIKE '%$term%' ";
+            $sql .= " AND (v.name LIKE '%$term%' ";
             $sql .= " OR v.email LIKE '%$term%' ";
             $sql .= " OR v.phone LIKE '%$term%' ";
             $sql .= " OR u.firstname LIKE '%$term%' ";
