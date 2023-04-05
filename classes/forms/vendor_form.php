@@ -78,11 +78,14 @@ class vendor_form extends \moodleform
         $mform->addElement('html', '<div class="col-md-6">');
         $mform->addElement('html', '<div class="card">');
         $mform->addElement('html', '<div class="card-body">');
+        $mform->addElement('html', '<div id="vendor-contact-table-container">');
+
         $output = $PAGE->get_renderer('local_order');
         $vendor_contacts = new \local_order\output\vendor_contacts($formdata->id);
 
         $mform->addElement('html', $output->render_vendor_contacts($vendor_contacts));  //vendor_contacts
 
+        $mform->addElement('html', '</div>'); // vendor-contact-table-container
         $mform->addElement('html', '</div>'); // card-body
         $mform->addElement('html', '</div>'); // card
         $mform->addElement('html', '</div>'); // col-md-6

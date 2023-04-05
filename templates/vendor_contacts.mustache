@@ -18,7 +18,7 @@
                 </th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="tbody">
             {{#contacts}}
                 <tr id="row{{id}}">
                     <td>
@@ -70,7 +70,7 @@
 
                     </div>
                     <div class="col-3">
-                        <button type="button" id="save-user" class="btn btn-outline-primary btn-lg">
+                        <button type="button" id="btn-save-contact" data-vendorid="{{vendorid}}" class="btn btn-outline-primary btn-lg">
                             <i class="fa fa-floppy-o"></i>
                         </button>
                     </div>
