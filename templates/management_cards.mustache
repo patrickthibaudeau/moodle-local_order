@@ -17,42 +17,48 @@
             </a>
         </div>
     </div>
-    <div class="card">
-        <div class="local_order_image_container">
-            <img src="{{config.wwwroot}}/local/order/img/organization1.png" class="card-img-top local_order_card_top_image"
-                 alt="...">
+    {{^is_vendor}}
+        <div class="card">
+            <div class="local_order_image_container">
+                <img src="{{config.wwwroot}}/local/order/img/organization1.png"
+                     class="card-img-top local_order_card_top_image"
+                     alt="...">
+            </div>
+            <div class="card-body">
+                <h3 class="card-title">{{#str}}organizations, local_order{{/str}}</h3>
+                <p class="card-text">
+                    {{#str}}organizations_card_help, local_order{{/str}}
+                </p>
+            </div>
+            <div class="card-footer">
+                <a href="{{config.wwwroot}}/local/order/organization/index.php"
+                   class="btn btn-outline-primary float-right"
+                   title="{{#str}}view, local_order{{/str}} {{#str}}organizations, local_order{{/str}}">
+                    {{#str}}view, local_order{{/str}}
+                </a>
+            </div>
         </div>
-        <div class="card-body">
-            <h3 class="card-title">{{#str}}organizations, local_order{{/str}}</h3>
-            <p class="card-text">
-                {{#str}}organizations_card_help, local_order{{/str}}
-            </p>
+
+        <div class="card">
+            <div class="local_order_image_container">
+                <img src="{{config.wwwroot}}/local/order/img/vendor2.jpg"
+                     class="card-img-top local_order_card_top_image"
+                     alt="...">
+            </div>
+            <div class="card-body">
+                <h3 class="card-title">{{#str}}vendors, local_order{{/str}}</h3>
+                <p class="card-text">
+                    {{#str}}vendors_card_help, local_order{{/str}}
+                </p>
+            </div>
+            <div class="card-footer">
+                <a href="{{config.wwwroot}}/local/order/vendor/index.php" class="btn btn-outline-primary float-right"
+                   title="{{#str}}view, local_order{{/str}} {{#str}}vendors, local_order{{/str}}">
+                    {{#str}}view, local_order{{/str}}
+                </a>
+            </div>
         </div>
-        <div class="card-footer">
-            <a href="{{config.wwwroot}}/local/order/organization/index.php" class="btn btn-outline-primary float-right"
-               title="{{#str}}view, local_order{{/str}} {{#str}}organizations, local_order{{/str}}">
-                {{#str}}view, local_order{{/str}}
-            </a>
-        </div>
-    </div>
-    <div class="card">
-        <div class="local_order_image_container">
-            <img src="{{config.wwwroot}}/local/order/img/vendor2.jpg" class="card-img-top local_order_card_top_image"
-                 alt="...">
-        </div>
-        <div class="card-body">
-            <h3 class="card-title">{{#str}}vendors, local_order{{/str}}</h3>
-            <p class="card-text">
-                {{#str}}vendors_card_help, local_order{{/str}}
-            </p>
-        </div>
-        <div class="card-footer">
-            <a href="{{config.wwwroot}}/local/order/vendor/index.php" class="btn btn-outline-primary float-right"
-               title="{{#str}}view, local_order{{/str}} {{#str}}vendors, local_order{{/str}}">
-                {{#str}}view, local_order{{/str}}
-            </a>
-        </div>
-    </div>
+    {{/is_vendor}}
     <div class="card">
         <div class="local_order_image_container">
             <img src="{{config.wwwroot}}/local/order/img/inventory.jpg" class="card-img-top local_order_card_top_image"

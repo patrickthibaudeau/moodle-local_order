@@ -21,6 +21,7 @@ $(document).ready(function () {
             {"data": "title"},
             {"data": "organization"},
             {"data": "type"},
+            {"data": "workorder"},
             {"data": "date"},
             {"data": "start"},
             {"data": "end"},

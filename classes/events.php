@@ -86,7 +86,7 @@ class events
      */
     public function get_datatable($date_range, $start, $end, $term, $order_column = 'starttime', $order_direction = 'DESC')
     {
-        global $CFG, $DB, $OUTPUT, $PAGE;
+        global $CFG, $DB, $OUTPUT, $PAGE, $USER;
 
         $context = \context_system::instance();
         $PAGE->set_context($context);
@@ -96,24 +96,59 @@ class events
         $start_time = strtotime($date_range[0] . ' 00:00:00');
         $end_time = strtotime($date_range[1] . ' 23:59:59');
 
-        $sql = "Select
+        // Is user a vendor? If so, vendors can only see their own events.
+        $vendor_role = $DB->get_record('role', ['shortname' => 'vendor']);
+        if (user_has_role_assignment($USER->id, $vendor_role->id, $context->id)) {
+            // Get current user vendor contacts
+            $vendor_contacts = $DB->get_records('order_vendor_contact', ['userid' => $USER->id]);
+            $vendorids = "";
+            // Add each vendor id to the string
+            foreach ($vendor_contacts as $vc) {
+                $vendorids .= $vc->vendorid . ',';
+            }
+            // Remove last comma to prepare string for IN statement
+            $vendorids = rtrim($vendorids, ',');
+
+            $sql = "Select DISTINCT
+                        e.id,
+                        e.code,
+                        e.name As title,
+                        e.starttime,
+                        e.endtime,
+                        e.eventtype,
+                        e.workorder,
+                        o.name As organization
+                    From
+                        moodle.mdl_order_event e Inner Join
+                        moodle.mdl_order_organization o On o.id = e.organizationid Inner Join
+                        moodle.mdl_order_event_inv_category eic On eic.eventid = e.id Inner Join
+                        moodle.mdl_order_event_inventory ei On ei.eventcategoryid = eic.id
+                    Where 
+                        (e.starttime BETWEEN $start_time AND $end_time) 
+                        AND ei.vendorid IN ($vendorids)";
+        } else {
+            $sql = "Select
                     e.id,
                     e.code,
                     e.name as title,
                     e.starttime,
                     e.endtime,
                     e.eventtype,
+                    e.workorder,
                     o.name As organization
                 From
                     {order_event} e Inner Join
                     {order_organization} o On o.id = e.organizationid
                 Where
                     e.starttime BETWEEN $start_time AND $end_time";
+        }
+
 
         if ($term) {
             $sql .= " AND (e.name LIKE '%$term%' ";
             $sql .= " OR e.code LIKE '%$term%' ";
             $sql .= " OR e.eventtype LIKE '%$term%' ";
+            $sql .= " OR e.workorder LIKE '%$term%' ";
             $sql .= " OR o.name LIKE '%$term%') ";
         }
 
@@ -139,7 +174,9 @@ class events
                 $order_column = 'e.starttime';
                 break;
         };
+        $sql .= " Group by e.id";
         $sql .= " Order by $order_column $order_direction";
+
         $sql .= " LIMIT $start, $end";
 
         $results = $DB->get_recordset_sql($sql);
@@ -163,6 +200,7 @@ class events
             $events[$i]['start'] = $event_start_time;
             $events[$i]['end'] = $event_end_time;
             $events[$i]['type'] = $r->eventtype;
+            $events[$i]['workorder'] = $r->workorder;
             $events[$i]['organization'] = $r->organization;
             $events[$i]['actions'] = $OUTPUT->render_from_template('local_order/action_buttons', $actions);;
             $i++;
@@ -197,7 +235,8 @@ class events
      * @return array
      * @throws \dml_exception
      */
-    public function get_event_ids_by_daterange($date_range) {
+    public function get_event_ids_by_daterange($date_range)
+    {
         global $DB;
 
         $date_range = explode(' - ', $date_range);
@@ -206,7 +245,7 @@ class events
 
         $sql = "SELECT id FROM {order_event} WHERE starttime BETWEEN ? AND ? ORDER BY starttime";
 
-        return $DB->get_records_sql($sql,[$start_time, $end_time]);
+        return $DB->get_records_sql($sql, [$start_time, $end_time]);
     }
 
 }
