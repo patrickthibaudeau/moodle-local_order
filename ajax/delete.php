@@ -5,11 +5,14 @@ use local_order\event;
 use local_order\inventory;
 use local_order\organization;
 use local_order\vendor;
+use local_order\vendor_contact;
 
 global $DB;
 
 $action = required_param('action', PARAM_TEXT);
 $id = required_param('id', PARAM_INT);
+
+$context = context_system::instance();
 
 switch ($action) {
     case 'event':
@@ -45,6 +48,9 @@ switch ($action) {
         }
         break;
     case 'vendor_contact':
+        $vendor_contact = $DB->get_record('order_vendor_contact', ['id' => $id]);
+        $role = $DB->get_record('role', ['shortname' => 'vendor']);
+        role_unassign($role->id, $vendor_contact->userid, $context->id);
         $DB->delete_records('order_vendor_contact', ['id' => $id]);
         return true;
         break;

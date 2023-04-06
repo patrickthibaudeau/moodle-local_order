@@ -6,7 +6,8 @@ $(document).ready(function () {
 function init() {
     let wwwroot = M.cfg.wwwroot;
 
-    $('.btn-delete-contact').on('click', function () {
+    $('.btn-delete-contact').unbind().bind('click', function (e) {
+        e.preventDefault();
         let id = $(this).data('id');
         console.log(id);
 
@@ -37,6 +38,11 @@ function init() {
     $('.btn-add-new').on('click', function(e){
         e.preventDefault();
         $('.user-form').show();
+    });
+
+    $('.close-user-form').on('click', function(e){
+        e.preventDefault();
+        $('.user-form').hide();
     });
 }
 

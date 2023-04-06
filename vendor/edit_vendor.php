@@ -34,7 +34,7 @@ if ($mform->is_cancelled()) {
 
     $contact = new stdClass();
     $contact->userid = $data->contact;
-    $contactprimarycontact = true;
+    $contact->primarycontact = true;
 
     if ($data->id) {
         $VENDOR->update_record($data);

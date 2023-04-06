@@ -449,9 +449,9 @@ class vendor extends crud
     public function update_contact_record($data)
     {
         global $DB, $USER;
-
+        $context = \context_system::instance();
         // Get contact record
-        $record = $DB->get_record('order_vendor_contact', ['vendorid' => $data->vendorid]);
+        $record = $DB->get_record('order_vendor_contact', ['vendorid' => $data->vendorid, 'primarycontact' => 1]);
         $data->id = $record->id;
         if ($data) {
             // Set timemodified
@@ -463,6 +463,9 @@ class vendor extends crud
             $data->usermodified = $USER->id;
 
             $id = $DB->update_record('order_vendor_contact', $data);
+            // Add user to vendor role
+            $role = $DB->get_record('role', ['shortname' => 'vendor']);
+            role_assign($role->id, $data->userid, $context->id);
 
             return $id;
         } else {
@@ -496,7 +499,7 @@ class vendor extends crud
     public function insert_contact_record($data)
     {
         global $DB, $USER;
-
+        $context = \context_system::instance();
         if ($data) {
             // Set timemodified
             if (!isset($data->timemodified)) {
@@ -507,13 +510,17 @@ class vendor extends crud
             $data->usermodified = $USER->id;
 
             // Only add record if one doesn't exist for this organization. Otherwise, update the record
-            if (!$record = $DB->get_record('order_vendor_contact', ['vendorid' => $data->vendorid])) {
+            if (!$record = $DB->get_record('order_vendor_contact', ['vendorid' => $data->vendorid, 'primarycontact' => 1])) {
                 $id = $DB->insert_record('order_vendor_contact', $data);
             } else {
                 $data->id = $record->id;
                 $DB->update_record('order_vendor_contact', $data);
                 $id = $record->id;
             }
+            // Add user to vendor role
+            $role = $DB->get_record('role', ['shortname' => 'vendor']);
+            role_assign($role->id, $data->userid, $context->id);
+
             return $id;
         } else {
             error_log('No data provided');
