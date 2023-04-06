@@ -1,6 +1,12 @@
-<button type="button" class="btn btn-outline-primary btn-sm btn-edit-{{type}}"
-   data-id="{{id}}" {{attributes}} title="{{#str}}edit, local_order{{/str}}"><id class="fa fa-pencil"></id>
-</button>
-<button type="button" class="btn btn-outline-danger btn-sm btn-delete-{{type}}"
-   data-id="{{id}}" {{attributes}} title="{{#str}}delete, local_order{{/str}}"><id class="fa fa-trash"></id>
-</button>
+{{#can_edit}}
+    <button type="button" class="btn btn-outline-primary btn-sm btn-edit-{{type}}"
+            data-id="{{id}}" {{attributes}} title="{{#str}}edit, local_order{{/str}}">
+        <id class="fa fa-pencil"></id>
+    </button>
+{{/can_edit}}
+{{#can_delete}}
+    <button type="button" class="btn btn-outline-danger btn-sm btn-delete-{{type}}"
+            data-id="{{id}}" {{attributes}} title="{{#str}}delete, local_order{{/str}}">
+        <id class="fa fa-trash"></id>
+    </button>
+{{/can_delete}}

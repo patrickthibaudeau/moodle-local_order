@@ -462,6 +462,10 @@ class event extends crud
     public function get_inventory_items_by_category($event_category_id)
     {
         global $DB, $OUTPUT;
+        $context = \context_system::instance();
+        $can_edit = has_capability('local/order:event_edit', $context);
+        $can_delete = has_capability('local/order:event_delete', $context);
+
         $inventory = [];
         $i = 0;
         if ($inventory_items = $DB->get_records(TABLE_EVENT_INVENTORY, ['eventcategoryid' => $event_category_id])) {
@@ -474,7 +478,9 @@ class event extends crud
                     'id' => $item->id,
                     'type' => 'event-inventory-item',
                     'attributes' => 'data-eventid=' . $this->id
-                        . ' data-eventinventorycategoryid=' . $event_category_id
+                        . ' data-eventinventorycategoryid=' . $event_category_id,
+                    'can_edit' => $can_edit,
+                    'can_delete' => $can_delete,
                 ];
                 // format cost based on language currency
                 $item->cost_formatted = $amount->format($item->cost);

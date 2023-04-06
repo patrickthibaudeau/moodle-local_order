@@ -95,6 +95,8 @@ class events
         $date_range = explode(' - ', $date_range);
         $start_time = strtotime($date_range[0] . ' 00:00:00');
         $end_time = strtotime($date_range[1] . ' 23:59:59');
+        $can_edit = has_capability('local/order:event_edit', $context);
+        $can_delete = has_capability('local/order:event_delete', $context);
 
         // Is user a vendor? If so, vendors can only see their own events.
         $vendor_role = $DB->get_record('role', ['shortname' => 'vendor']);
@@ -192,7 +194,9 @@ class events
 
             $actions = [
                 'id' => $r->id,
-                'type' => 'event'
+                'type' => 'event',
+                'can_edit' => $can_edit,
+                'can_delete' => $can_delete
             ];
             $events[$i]['code'] = $r->code;
             $events[$i]['title'] = $r->title;

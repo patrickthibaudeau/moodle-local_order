@@ -119,5 +119,39 @@ function xmldb_local_order_upgrade($oldversion)
         // Order savepoint reached.
         upgrade_plugin_savepoint(true, 2023040500, 'local', 'order');
     }
+
+    if ($oldversion < 2023040600) {
+
+        // Define table order_event_inventory_hist to be created.
+        $table = new xmldb_table('order_event_inventory_hist');
+
+        // Adding fields to table order_event_inventory_hist.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('eventinventoryid', XMLDB_TYPE_INTEGER, '10', null, null, null, 0);
+        $table->add_field('eventcategoryid', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+        $table->add_field('vendorid', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+        $table->add_field('inventoryid', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+        $table->add_field('name', XMLDB_TYPE_CHAR, '255', null, null, null, null);
+        $table->add_field('description', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('quantity', XMLDB_TYPE_INTEGER, '7', null, null, null, '0');
+        $table->add_field('cost', XMLDB_TYPE_NUMBER, '12, 2', null, null, null, '0');
+        $table->add_field('roomid', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+        $table->add_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+        // Adding keys to table order_event_inventory_hist.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('usermodified', XMLDB_KEY_FOREIGN, ['usermodified'], 'user', ['id']);
+
+        // Conditionally launch create table for order_event_inventory_hist.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Order savepoint reached.
+        upgrade_plugin_savepoint(true, 2023040600, 'local', 'order');
+    }
+
     return true;
 }

@@ -79,6 +79,9 @@ class vendors {
         $PAGE->set_context($context);
         require_login(1, false);
 
+        $can_edit = has_capability('local/order:event_edit', $context);
+        $can_delete = has_capability('local/order:event_delete', $context);
+
 
         $sql = "Select
                     v.id,
@@ -131,7 +134,9 @@ class vendors {
         foreach ($results as $r) {
             $actions = [
                 'id' => $r->id,
-                'type' => 'vendor'
+                'type' => 'vendor',
+                'can_edit' => $can_edit,
+                'can_delete' => $can_delete
             ];
 
             if ($r->firstname && $r->lastname) {
