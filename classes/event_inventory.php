@@ -148,9 +148,42 @@ class event_inventory extends crud
         }
     }
 
-public function get_table(){
+    /**
+     * @param $data stdClass
+     * @return bool
+     * @throws \dml_exception
+     */
+    public function update_record($data)
+    {
+        global $DB, $USER;
+
+        //Get current record and save to history table
+        $current_record = $this->get_record();
+        $current_record->eventinventoryid = $current_record->id;
+        unset($current_record->id);
+        $DB->insert_record('order_event_inventory_hist', $current_record);
+
+        if ($data) {
+            // Set timemodified
+            if (!isset($data->timemodified)) {
+                $data->timemodified = time();
+            }
+
+            //Set user
+            $data->usermodified = $USER->id;
+
+            $id = $DB->update_record($this->table, $data);
+
+            return $id;
+        } else {
+            error_log('No data provided');
+        }
+    }
+
+    public function get_table()
+    {
         return $this->table;
-}
+    }
 
     /**
      * @return id - bigint (18)
