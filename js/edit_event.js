@@ -1,4 +1,40 @@
 $(document).ready(function () {
+    // Get event id
+    let id = $("input[name='id']").val();
+
+    if (window.history && window.history.pushState) {
+        window.history.pushState('', null, './');
+        $(window).on('popstate', function() {
+            // alert('Back button was pressed.');
+            alert('Sorry, you can\'t use the back button. You must either cancel or submit your changes');
+
+        });
+    }
+
+    addEventListener("unload", (event) => {});
+    onbeforeunload = (event) => {
+        $.ajax({
+            type: "POST",
+            url: M.cfg.wwwroot + "/local/order/ajax/revert_inventory_changes.php?id=" + id,
+            dataType: "html",
+            success: function(data) {
+                // do nothing. The changes were reverted.
+            }
+        });
+    };
+
+    $('#id_cancel').on('click', function(){
+        $.ajax({
+            type: "POST",
+            url: M.cfg.wwwroot + "/local/order/ajax/revert_inventory_changes.php?id=" + id,
+            dataType: "html",
+            success: function(data) {
+                // do nothing. The changes were reverted.
+            }
+        });
+    });
+
+
     $('#id_starttime').datetimepicker({
         allowTimes:[
             '06:00', '06:15', '06:30', '06:45',

@@ -71,12 +71,15 @@ if ($mform->is_cancelled()) {
     if ($data->id) {
         $EVENT = new event($data->id);
         $EVENT->update_record($data);
+        // remove all history for this record
+        $EVENT->delete_inventory_history();
         unset($EVENT);
         redirect($CFG->wwwroot . '/local/order/events/index.php?daterange=' . $data->daterange);
     } else {
         $EVENT = new event();
         $event_id = $EVENT->insert_record($data);
-
+        // remove all history for this record
+        $EVENT->delete_inventory_history();
         unset($EVENT);
         redirect($CFG->wwwroot . '/local/order/events/edit_event.php?id=' . $event_id . '&daterange=' . $data->daterange);
     }
@@ -97,7 +100,7 @@ if ($mform->is_cancelled()) {
 // Load JS
 $PAGE->requires->jquery();
 $PAGE->requires->jquery('ui');
-$PAGE->requires->js_call_amd('local_order/edit_event', 'init()');
+//$PAGE->requires->js_call_amd('local_order/edit_event', 'init()');
 $PAGE->requires->js('/local/order/js/edit_event.js', true);
 $PAGE->requires->css('/local/order/css/general.css');
 //**************** ******

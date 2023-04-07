@@ -533,6 +533,72 @@ class event extends crud
     }
 
     /**
+     * Deletes all inventory history. Used when updating or creating an event
+     * @return void
+     * @throws \dml_exception
+     */
+    public function delete_inventory_history() {
+        global $DB;
+        $DB->delete_records(TABLE_EVENT_INVENTORY_HISTORY, ['eventid' => $this->id]);
+    }
+
+    /**
+     * Reverts any changes to inventory items.
+     * @return void
+     * @throws \dml_exception
+     */
+    public function revert_inventory_changes() {
+        global $DB;
+        // Are there any changes to revert?
+        if ($changed_records = $DB->get_records(TABLE_EVENT_INVENTORY_HISTORY, ['eventid' => $this->id])) {
+            foreach ($changed_records as $history) {
+                // Does the record exist still, if not, it has been deleted, so restore it.
+               if ($updated_record = $DB->get_record(TABLE_EVENT_INVENTORY, ['id' => $history->eventinventoryid])) {
+                   // If timemodified is different, revert updated record data to history data, otherwise, delete the record
+                   if ($history->timemodified != $updated_record->timemodified) {
+                       $params = new \stdClass();
+                       $params->id = $updated_record->id;
+                       $params->vendorid = $history->vendorid;
+                       $params->inventoryid = $history->inventoryid;
+                       $params->name = $history->name;
+                       $params->description = $history->description;
+                       $params->quantity = $history->quantity;
+                       $params->cost = $history->cost;
+                       $params->roomid = $history->roomid;
+                       $params->usermodified = $history->usermodified;
+                       $DB->update_record(TABLE_EVENT_INVENTORY, $params);
+                       // Delete history record
+                       $DB->delete_records(TABLE_EVENT_INVENTORY_HISTORY, ['id' => $history->id]);
+                   } else {
+                       // inventory item is new, so delete it
+                       $DB->delete_records(TABLE_EVENT_INVENTORY, ['id' => $history->eventinventoryid]);
+                       // Delete history record
+                       $DB->delete_records(TABLE_EVENT_INVENTORY_HISTORY, ['id' => $history->id]);
+                   }
+               } else {
+                   // Restore the deleted record
+                   $params = new \stdClass();
+                   $params->eventcategoryid = $history->eventcategoryid;
+                   $params->vendorid = $history->vendorid;
+                   $params->inventoryid = $history->inventoryid;
+                   $params->name = $history->name;
+                   $params->description = $history->description;
+                   $params->quantity = $history->quantity;
+                   $params->cost = $history->cost;
+                   $params->roomid = $history->roomid;
+                   $params->usermodified = $history->usermodified;
+                   $params->timecreated = $history->timecreated;
+                   $params->timemodified = $history->timemodified;
+                   $DB->insert_record(TABLE_EVENT_INVENTORY, $params);
+                   // Delete history record
+                   $DB->delete_records(TABLE_EVENT_INVENTORY_HISTORY, ['id' => $history->id]);
+               }
+
+            }
+        }
+
+    }
+    /**
      * Return total cost of inventory items in category
      * @param $event_category_id
      * @return float|mixed

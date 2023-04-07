@@ -121,9 +121,12 @@ class event_inventory extends crud
             $this->id = $id;
             parent::set_id($this->id);
             $result = $this->get_record($this->table, $this->id);
+            $event_category = $DB->get_record('order_event_inv_category', ['id' => $result->eventcategoryid]);
+            $this->eventid = $event_category->eventid;
         } else {
             $result = new \stdClass();
             $this->id = 0;
+            $this->eventid = 0;
             parent::set_id($this->id);
         }
 
@@ -150,6 +153,44 @@ class event_inventory extends crud
 
     /**
      * @param $data stdClass
+     * @return bool|int
+     * @throws \dml_exception
+     */
+    public function insert_record($data)
+    {
+        global $DB, $USER;
+
+        if ($data) {
+            if (!isset($data->timecreated)) {
+                $data->timecreated = time();
+            }
+
+            if (!isset($data->timemodified)) {
+                $data->timemodified = time();
+            }
+
+            //Set user
+            $data->usermodified = $USER->id;
+
+            $id = $DB->insert_record($this->table, $data);
+
+            // Now insert into history table
+            $NEW_RECORD = new event_inventory($id);
+            $new_record = $NEW_RECORD->get_record();
+            unset($new_record->id);
+            $new_record->eventinventoryid = $id;
+            $new_record->eventid = $NEW_RECORD->get_eventid();
+            $DB->insert_record('order_event_inventory_hist', $new_record);
+
+            return $id;
+        } else {
+            error_log('No data provided');
+        }
+
+    }
+
+    /**
+     * @param $data stdClass
      * @return bool
      * @throws \dml_exception
      */
@@ -158,10 +199,7 @@ class event_inventory extends crud
         global $DB, $USER;
 
         //Get current record and save to history table
-        $current_record = $this->get_record();
-        $current_record->eventinventoryid = $current_record->id;
-        unset($current_record->id);
-        $DB->insert_record('order_event_inventory_hist', $current_record);
+        $this->create_history_record();
 
         if ($data) {
             // Set timemodified
@@ -180,6 +218,34 @@ class event_inventory extends crud
         }
     }
 
+    /**
+     * @param $id int
+     * @return void
+     * @throws \dml_exception
+     */
+    public function delete_record()
+    {
+        global $DB;
+        //Get current record and save to history table
+        $this->create_history_record();
+
+        if ($this->id) {
+            $DB->delete_records($this->table, ['id' => $this->id]);
+        } else {
+            error_log('No id number provided');
+        }
+
+    }
+
+    private function create_history_record() {
+        global $DB;
+        $current_record = $this->get_record();
+        $current_record->eventinventoryid = $current_record->id;
+        $current_record->eventid = $this->eventid;
+        unset($current_record->id);
+        $DB->insert_record('order_event_inventory_hist', $current_record);
+    }
+
     public function get_table()
     {
         return $this->table;
@@ -191,6 +257,14 @@ class event_inventory extends crud
     public function get_id()
     {
         return $this->id;
+    }
+
+    /**
+     * @return eventid - bigint (18)
+     */
+    public function get_eventid()
+    {
+        return $this->eventid;
     }
 
     /**
