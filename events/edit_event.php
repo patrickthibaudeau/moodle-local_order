@@ -14,7 +14,9 @@ global $CFG, $OUTPUT, $SESSION, $PAGE, $DB, $COURSE, $USER;
 require_login(1, false);
 $context = context_system::instance();
 
-$date_range = required_param('daterange', PARAM_TEXT);
+$date_range = optional_param('daterange',
+    date('Y/m/d H:i', round(time() / (15 * 60)) * (15 * 60)) . ' - '
+    . date('Y/m/d H:i', round(time() / (15 * 60)) * (15 * 60)), PARAM_TEXT);
 $id = optional_param('id', 0, PARAM_INT);
 
 $EVENT = new event($id);
@@ -74,6 +76,11 @@ if ($mform->is_cancelled()) {
             $data->status = $EVENT::STATUS_PENDING;
         }
         $EVENT->update_record($data);
+        // Send notification to organizer
+        if ($data->status == $EVENT::STATUS_PENDING) {
+            $EVENT->send_notification_to_organizer();
+            $EVENT->send_notification_to_vendors_event_pending();
+        }
         // remove all history for this record
         $EVENT->delete_inventory_history();
         unset($EVENT);
@@ -98,7 +105,7 @@ if ($mform->is_cancelled()) {
     $mform->set_data($mform);
 }
 
-\local_order\base::page($CFG->wwwroot . '/local/order/events//index.php',
+\local_order\base::page($CFG->wwwroot . '/local/order/events/edit_event.php?id=' . $id . '&daterange=' . $date_range,
     get_string('event', 'local_order'),
     '',
     $context);

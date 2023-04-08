@@ -59,7 +59,14 @@ $string['event_instructions'] = '<ol>
 </ol>';
 $string['event_name'] = 'Event name';
 $string['event_order'] = 'Event order';
+$string['event_pending_state'] = 'Event {$a->name} state: PENDING';
+$string['event_pending_state_message'] = 'Event <b><a href="{$a->url}">{$a->name}</a></b> has been changed to PENDING.'
+    . ' Please verify the event page prior to proceeding'
+    . '<br><br><b>Items changed:</b><br>{$a->changes}';
 $string['event_type'] = 'Event type';
+$string['event_updated_by_vendor'] = 'Event {$a->name} updated by vendor';
+$string['event_updated_by_vendor_message'] = 'Event <b><a href="{$a->url}">{$a->name}</a></b> has been updated by {$a->fullname}.'
+. '<br><br><b>Items changed:</b><br>{$a->changes}';
 $string['events'] = 'Events';
 $string['events_card_help'] = 'View, edit, add and print out event information.';
 $string['field_required'] = 'This field is required';

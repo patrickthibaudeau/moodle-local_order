@@ -316,7 +316,7 @@ class event extends crud
     public function get_status()
     {
         $status = '';
-        switch($this->status) {
+        switch ($this->status) {
             case self::STATUS_NEW:
                 $status = get_string('status_new', 'local_order');
                 break;
@@ -574,7 +574,8 @@ class event extends crud
      * @return void
      * @throws \dml_exception
      */
-    public function delete_inventory_history() {
+    public function delete_inventory_history()
+    {
         global $DB;
         $DB->delete_records(TABLE_EVENT_INVENTORY_HISTORY, ['eventid' => $this->id]);
     }
@@ -584,57 +585,59 @@ class event extends crud
      * @return void
      * @throws \dml_exception
      */
-    public function revert_inventory_changes() {
+    public function revert_inventory_changes()
+    {
         global $DB;
         // Are there any changes to revert?
         if ($changed_records = $DB->get_records(TABLE_EVENT_INVENTORY_HISTORY, ['eventid' => $this->id])) {
             foreach ($changed_records as $history) {
                 // Does the record exist still, if not, it has been deleted, so restore it.
-               if ($updated_record = $DB->get_record(TABLE_EVENT_INVENTORY, ['id' => $history->eventinventoryid])) {
-                   // If timemodified is different, revert updated record data to history data, otherwise, delete the record
-                   if ($history->timemodified != $updated_record->timemodified) {
-                       $params = new \stdClass();
-                       $params->id = $updated_record->id;
-                       $params->vendorid = $history->vendorid;
-                       $params->inventoryid = $history->inventoryid;
-                       $params->name = $history->name;
-                       $params->description = $history->description;
-                       $params->quantity = $history->quantity;
-                       $params->cost = $history->cost;
-                       $params->roomid = $history->roomid;
-                       $params->usermodified = $history->usermodified;
-                       $DB->update_record(TABLE_EVENT_INVENTORY, $params);
-                       // Delete history record
-                       $DB->delete_records(TABLE_EVENT_INVENTORY_HISTORY, ['id' => $history->id]);
-                   } else {
-                       // inventory item is new, so delete it
-                       $DB->delete_records(TABLE_EVENT_INVENTORY, ['id' => $history->eventinventoryid]);
-                       // Delete history record
-                       $DB->delete_records(TABLE_EVENT_INVENTORY_HISTORY, ['id' => $history->id]);
-                   }
-               } else {
-                   // Restore the deleted record
-                   $params = new \stdClass();
-                   $params->eventcategoryid = $history->eventcategoryid;
-                   $params->vendorid = $history->vendorid;
-                   $params->inventoryid = $history->inventoryid;
-                   $params->name = $history->name;
-                   $params->description = $history->description;
-                   $params->quantity = $history->quantity;
-                   $params->cost = $history->cost;
-                   $params->roomid = $history->roomid;
-                   $params->usermodified = $history->usermodified;
-                   $params->timecreated = $history->timecreated;
-                   $params->timemodified = $history->timemodified;
-                   $DB->insert_record(TABLE_EVENT_INVENTORY, $params);
-                   // Delete history record
-                   $DB->delete_records(TABLE_EVENT_INVENTORY_HISTORY, ['id' => $history->id]);
-               }
+                if ($updated_record = $DB->get_record(TABLE_EVENT_INVENTORY, ['id' => $history->eventinventoryid])) {
+                    // If timemodified is different, revert updated record data to history data, otherwise, delete the record
+                    if ($history->timemodified != $updated_record->timemodified) {
+                        $params = new \stdClass();
+                        $params->id = $updated_record->id;
+                        $params->vendorid = $history->vendorid;
+                        $params->inventoryid = $history->inventoryid;
+                        $params->name = $history->name;
+                        $params->description = $history->description;
+                        $params->quantity = $history->quantity;
+                        $params->cost = $history->cost;
+                        $params->roomid = $history->roomid;
+                        $params->usermodified = $history->usermodified;
+                        $DB->update_record(TABLE_EVENT_INVENTORY, $params);
+                        // Delete history record
+                        $DB->delete_records(TABLE_EVENT_INVENTORY_HISTORY, ['id' => $history->id]);
+                    } else {
+                        // inventory item is new, so delete it
+                        $DB->delete_records(TABLE_EVENT_INVENTORY, ['id' => $history->eventinventoryid]);
+                        // Delete history record
+                        $DB->delete_records(TABLE_EVENT_INVENTORY_HISTORY, ['id' => $history->id]);
+                    }
+                } else {
+                    // Restore the deleted record
+                    $params = new \stdClass();
+                    $params->eventcategoryid = $history->eventcategoryid;
+                    $params->vendorid = $history->vendorid;
+                    $params->inventoryid = $history->inventoryid;
+                    $params->name = $history->name;
+                    $params->description = $history->description;
+                    $params->quantity = $history->quantity;
+                    $params->cost = $history->cost;
+                    $params->roomid = $history->roomid;
+                    $params->usermodified = $history->usermodified;
+                    $params->timecreated = $history->timecreated;
+                    $params->timemodified = $history->timemodified;
+                    $DB->insert_record(TABLE_EVENT_INVENTORY, $params);
+                    // Delete history record
+                    $DB->delete_records(TABLE_EVENT_INVENTORY_HISTORY, ['id' => $history->id]);
+                }
 
             }
         }
 
     }
+
     /**
      * Return total cost of inventory items in category
      * @param $event_category_id
@@ -666,6 +669,106 @@ class event extends crud
         $amount = new \NumberFormatter(get_string('currency_locale', 'local_order'),
             \NumberFormatter::CURRENCY);
         return $amount->format($sum);
+    }
+
+    /**
+     * @return array
+     * @throws \dml_exception
+     */
+    private function get_inventory_changes() {
+        global $DB;
+        $history = $DB->get_records(TABLE_EVENT_INVENTORY_HISTORY, ['eventid' => $this->id]);
+        $changes = [];
+        $i = 0;
+        foreach ($history as $change) {
+            $changes[$i] = $DB->get_record(TABLE_EVENT_INVENTORY, ['id' => $change->eventinventoryid]);
+            $i++;
+        }
+        return $changes;
+    }
+
+    /**
+     * Send email to organizer to notify them that an event has been updated
+     * @return void
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
+    public function send_notification_to_organizer()
+    {
+        global $USER, $DB, $CFG, $OUTPUT;
+        // Get saved event data
+        $changes = ['changes' => $this->get_inventory_changes()];
+        $EVENT = new event($this->id);
+        $orgranizer = $DB->get_record('user', ['username' => $CFG->local_order_organizer_account]);
+        $subject = get_string('event_updated_by_vendor', 'local_order', ['name' => $EVENT->get_name()]);
+        $message = get_string('event_updated_by_vendor_message', 'local_order',
+            [
+                'name' => $EVENT->get_name(),
+                'url' => $CFG->wwwroot . '/local/order/events/edit_event.php?id=' . $EVENT->id,
+                'fullname' => fullname($USER),
+                'changes' => $OUTPUT->render_from_template('local_order/inventory_changes', $changes)
+            ]);
+        email_to_user($orgranizer, null, $subject, $message);
+    }
+
+    /**
+     * Send notification to all vendors associated with this event to notify them that an event has been updated and is
+     * now in pending state
+     * @return void
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
+    public function send_notification_to_vendors_event_pending()
+    {
+        global $USER, $DB, $CFG, $OUTPUT;
+        // Get saved event data
+        $changes = ['changes' => $this->get_inventory_changes()];
+
+        $subject = get_string('event_pending_state', 'local_order', ['name' => $this->name]);
+        $message = get_string('event_pending_state_message', 'local_order',
+            [
+                'name' => $this->get_name(),
+                'url' => $CFG->wwwroot . '/local/order/events/edit_event.php?id=' . $this->id,
+                'changes' => $OUTPUT->render_from_template('local_order/inventory_changes', $changes)
+            ]);
+        $event_vendors = $this->get_all_vendors();
+        foreach($event_vendors as $vendor) {
+            $vendor_user = $DB->get_record('user', ['id' => $vendor->userid]);
+            email_to_user($vendor_user, null, $subject, $message);
+        }
+    }
+
+    /**
+     * Return all event vendors and the vendor primary contact
+     * @return array
+     * @throws \dml_exception
+     */
+    public function get_all_vendors() {
+        global $DB;
+        $sql = "Select Distinct
+                    ov.id,
+                    ov.name,
+                    ov.shortname,
+                    ovc.userid,
+                    u.username,
+                    u.firstname,
+                    u.lastname,
+                    u.email,
+                    u.mailformat,
+                    u.maildigest,
+                    u.maildisplay
+                From
+                    moodle.mdl_order_event_inventory oei Inner Join
+                    moodle.mdl_order_event_inv_category oeic On oei.eventcategoryid = oeic.id Inner Join
+                    moodle.mdl_order_vendor ov On ov.id = oei.vendorid Inner Join
+                    moodle.mdl_order_vendor_contact ovc On ovc.vendorid = ov.id Inner Join
+                    moodle.mdl_user u On u.id = ovc.userid
+                Where
+                    ovc.primarycontact = 1 And
+                    oeic.eventid = ?;";
+        $results = $DB->get_records_sql($sql, [$this->id]);
+
+        return $results;
     }
 
     /**
@@ -907,14 +1010,14 @@ class event extends crud
 
             // Create event inventory categories
             $INVENTORY_CATEGORIES = new inventory_categories();
-            foreach($INVENTORY_CATEGORIES->get_records() as $ic) {
+            foreach ($INVENTORY_CATEGORIES->get_records() as $ic) {
                 $params = new \stdClass();
-                $params->eventid  = $id;
-                $params->inventorycategoryid  = $ic->id;
-                $params->name  = $ic->name;
-                $params->usermodified  = $USER->id;
-                $params->timecreated  = time();
-                $params->timemodified  = time();
+                $params->eventid = $id;
+                $params->inventorycategoryid = $ic->id;
+                $params->name = $ic->name;
+                $params->usermodified = $USER->id;
+                $params->timecreated = time();
+                $params->timemodified = time();
                 $DB->insert_record('order_event_inv_category', $params);
             }
 

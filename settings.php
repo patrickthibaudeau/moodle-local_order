@@ -15,7 +15,7 @@ if ($hassiteconfig) {
     ));
     // Sample text
     $settings->add(new admin_setting_configtext(
-        'local_order_org_email',
+        'local_order_organizer_account',
         get_string('organizer_account', 'local_order'),
         get_string('organizer_account_help', 'local_order'),
         '',
