@@ -45,6 +45,18 @@ $capabilities = array(
             'manager' => CAP_ALLOW,
         )
     ),
+    /**
+     * Events capabilties
+     */
+    // Change event status
+    'local/order:event_change_status' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'manager' => CAP_ALLOW,
+        )
+    ),
     'local/order:event_view_own' => array(
         'riskbitmask' => RISK_SPAM,
         'captype' => 'read',

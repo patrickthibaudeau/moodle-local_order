@@ -3,6 +3,7 @@ $string['actions'] = 'Actions';
 $string['add'] = 'Add';
 $string['admin_notes'] = 'Admin notes';
 $string['all'] = 'All';
+$string['approve'] = 'Approve';
 $string['audio_visual_order'] = 'Audio/Visual Order';
 $string['booking_details'] = 'Booking details';
 $string['building'] = 'Building';
@@ -51,6 +52,9 @@ $string['edit_items'] = 'Edit items';
 $string['error_deleting'] = 'An error occured while deleting the the record.';
 $string['estimated_attendance'] = 'Estimated attendance';
 $string['event'] = 'Event';
+$string['event_approved_state'] = 'Event {$a->name} state: APPROVED';
+$string['event_approved_state_message'] = 'Event <b><a href="{$a->url}">{$a->name}</a></b> has been APPROVED.'
+    . ' Please verify the event page to make sure you adjsut to any changes that may have been made to the event.';
 $string['event_code'] = 'Event code';
 $string['event_instructions'] = '<ol>
 <li>Make a copy of the downloaded <span class="local_order_event"></span> Excel provided.</li>
@@ -160,6 +164,7 @@ $string['order:event_view'] = 'View all events';
 $string['order:event_view_own'] = 'Can only view own events';
 $string['order:event_edit'] = 'Create/Edit events';
 $string['order:event_delete'] = 'Delete events';
+$string['order:event_change_status'] = 'Update status';
 $string['order:inventory_view'] = 'View inventory items';
 $string['order:inventory_edit'] = 'Create/Edit inventory items';
 $string['order:inventory_delete'] = 'Delete inventory items';

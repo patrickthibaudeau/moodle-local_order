@@ -739,6 +739,29 @@ class event extends crud
     }
 
     /**
+     * Send notification to all vendors associated with this event to notify them that an event has been updated and is
+     * now in pending state
+     * @return void
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
+    public function send_notification_to_vendors_event_approved()
+    {
+        global $USER, $DB, $CFG, $OUTPUT;
+        $subject = get_string('event_approved_state', 'local_order', ['name' => $this->name]);
+        $message = get_string('event_approved_state_message', 'local_order',
+            [
+                'name' => $this->get_name(),
+                'url' => $CFG->wwwroot . '/local/order/events/edit_event.php?id=' . $this->id
+            ]);
+        $event_vendors = $this->get_all_vendors();
+        foreach($event_vendors as $vendor) {
+            $vendor_user = $DB->get_record('user', ['id' => $vendor->userid]);
+            email_to_user($vendor_user, null, $subject, $message);
+        }
+    }
+
+    /**
      * Return all event vendors and the vendor primary contact
      * @return array
      * @throws \dml_exception

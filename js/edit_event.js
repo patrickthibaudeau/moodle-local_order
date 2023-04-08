@@ -11,16 +11,29 @@ $(document).ready(function () {
         });
     }
 
+    // Make sure that revert inventory changes do not happen if the save changes or approve buttons are clicked.
+    let submitButtonClicked = false;
+    $('#id_submitbutton').on('click', function() {
+        submitButtonClicked = true;
+    });
+
+    $('#id_approvebutton').on('click', function() {
+        submitButtonClicked = true;
+    });
+
     addEventListener("unload", (event) => {});
     onbeforeunload = (event) => {
-        $.ajax({
-            type: "POST",
-            url: M.cfg.wwwroot + "/local/order/ajax/revert_inventory_changes.php?id=" + id,
-            dataType: "html",
-            success: function(data) {
-                // do nothing. The changes were reverted.
-            }
-        });
+        if (!submitButtonClicked) {
+            $.ajax({
+                type: "POST",
+                url: M.cfg.wwwroot + "/local/order/ajax/revert_inventory_changes.php?id=" + id,
+                dataType: "html",
+                success: function(data) {
+                    // do nothing. The changes were reverted.
+                }
+            });
+        }
+
     };
 
     $('#id_cancel').on('click', function(){
@@ -172,7 +185,7 @@ function init_event_inventory_items() {
      * Edit inventory items
      */
     $('.btn-inventory-add-item').off();
-    $('.btn-inventory-add-item').one('click', function () {
+    $('.btn-inventory-add-item').on('click', function () {
         let eventInventoryCategoryId = $(this).data('eventinventorycategoryid');
         let eventId = $(this).data('eventid');
         $.ajax({

@@ -70,16 +70,28 @@ if ($mform->is_cancelled()) {
         unset($data->eventtypename);
     }
 
+
     if ($data->id) {
         $EVENT = new event($data->id);
-        if (!has_capability('local/order:event_view', $context)) {
+        if (!has_capability('local/order:event_change_status', $context)) {
             $data->status = $EVENT::STATUS_PENDING;
+        }
+        // Update status to approved if approved button clicked
+        $send_approve_message = false;
+        if (isset($data->approvebutton)) {
+            $data->status = $EVENT::STATUS_APPROVED;
+            $send_approve_message = true;
+
         }
         $EVENT->update_record($data);
         // Send notification to organizer
         if ($data->status == $EVENT::STATUS_PENDING) {
             $EVENT->send_notification_to_organizer();
             $EVENT->send_notification_to_vendors_event_pending();
+        }
+
+        if ($send_approve_message == true) {
+            $EVENT->send_notification_to_vendors_event_approved();
         }
         // remove all history for this record
         $EVENT->delete_inventory_history();

@@ -94,7 +94,7 @@ class event_form extends \moodleform
 
         //Status display
         $status_display = '';
-        switch($formdata->status) {
+        switch ($formdata->status) {
             case 0:
                 $status_display = '<div class="alert alert-info w-100 d-flex justify-content-center">'
                     . get_string('status_new', 'local_order') . '</div>';
@@ -121,7 +121,7 @@ class event_form extends \moodleform
         $mform->addElement('html', '<div class="col d-flex justify-content-start">');
         $mform->addElement('html', '<span style="font-size: 1.5rem; font-weight:500;">'
             . get_string('event', 'local_order')
-            . '</span>'      );
+            . '</span>');
         $mform->addElement('html', '</div>');
         $mform->addElement('html', '<div class="col d-flex justify-content-center">');
         $mform->addElement('html', $status_display);
@@ -129,6 +129,13 @@ class event_form extends \moodleform
         $mform->addElement('html', '<div class="col d-flex justify-content-end">');
 
         $buttonarray = array();
+        if (has_capability('local/order:event_change_status', $context)) {
+            if ($formdata->status == 2) {
+                $buttonarray[] = $mform->createElement('submit',
+                    'approvebutton',
+                    get_string('approve', 'local_order'));
+            }
+        }
         $buttonarray[] = $mform->createElement('html', $OUTPUT->render_from_template('local_order/pdf_buttons', $pdf_buttons));
         $buttonarray[] = $mform->createElement('submit', 'submitbutton', get_string('savechanges'));
         $buttonarray[] = $mform->createElement('cancel');
