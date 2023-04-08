@@ -70,6 +70,9 @@ if ($mform->is_cancelled()) {
 
     if ($data->id) {
         $EVENT = new event($data->id);
+        if (!has_capability('local/order:event_view', $context)) {
+            $data->status = $EVENT::STATUS_PENDING;
+        }
         $EVENT->update_record($data);
         // remove all history for this record
         $EVENT->delete_inventory_history();
@@ -77,6 +80,9 @@ if ($mform->is_cancelled()) {
         redirect($CFG->wwwroot . '/local/order/events/index.php?daterange=' . $data->daterange);
     } else {
         $EVENT = new event();
+        if (!has_capability('local/order:event_view', $context)) {
+            $data->status = $EVENT::STATUS_NEW;
+        }
         $event_id = $EVENT->insert_record($data);
         // remove all history for this record
         $EVENT->delete_inventory_history();

@@ -18,6 +18,13 @@ include_once('../lib.php');
 class event extends crud
 {
 
+    /**
+     * Define the status of the event
+     */
+    const STATUS_APPROVED = 1;
+    const STATUS_PENDING = 2;
+    const STATUS_CANCELLED = 3;
+    const STATUS_NEW = 0;
 
     /**
      *
@@ -36,6 +43,12 @@ class event extends crud
      * @var string
      */
     private $name;
+
+    /**
+     *
+     * @var int
+     */
+    private $status;
 
     /**
      *
@@ -190,6 +203,7 @@ class event extends crud
 
         $this->organizationid = $result->organizationid ?? 0;
         $this->name = $result->name ?? '';
+        $this->status = $result->status ?? 0;
         $this->code = $result->code ?? '';
         $this->starttime = $result->starttime ?? 0;
         $this->endtime = $result->endtime ?? 0;
@@ -294,6 +308,29 @@ class event extends crud
     public function get_chargebackaccount()
     {
         return $this->chargebackaccount;
+    }
+
+    /**
+     * @return string - varchar (255)
+     */
+    public function get_status()
+    {
+        $status = '';
+        switch($this->status) {
+            case self::STATUS_NEW:
+                $status = get_string('status_new', 'local_order');
+                break;
+            case self::STATUS_APPROVED:
+                $status = get_string('status_approved', 'local_order');
+                break;
+            case self::STATUS_PENDING:
+                $status = get_string('status_pending', 'local_order');
+                break;
+            case self::STATUS_CANCELLED:
+                $status = get_string('status_rej', 'local_order');
+                break;
+        }
+        return $status;
     }
 
     /**

@@ -21,6 +21,7 @@ $(document).ready(function () {
             {"data": "title"},
             {"data": "organization"},
             {"data": "type"},
+            {"data": "status"},
             {"data": "workorder"},
             {"data": "date"},
             {"data": "start"},
@@ -30,9 +31,9 @@ $(document).ready(function () {
         'columnDefs': [
             {
                 "searchable": false,
-                "targets": [4, 5, 6]
+                "targets": [7, 8, 9]
             }],
-        'order': [[4, ' asc']],
+        'order': [[6, ' asc']],
         // buttons: [
         //     'excelHtml5',
         // ],

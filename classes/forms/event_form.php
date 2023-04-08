@@ -24,6 +24,8 @@ class event_form extends \moodleform
         // Create form object
         $mform = &$this->_form;
 
+        $context = \context_system::instance();
+
         // Prepare data for select menu options
         // User menu
         $user_options = [
@@ -76,6 +78,13 @@ class event_form extends \moodleform
             'inventory_categories' => $inventory_categories
         ];
 
+        $status_array = [
+            0 => get_string('status_new', 'local_order'),
+            1 => get_string('status_approved', 'local_order'),
+            2 => get_string('status_pending', 'local_order'),
+            3 => get_string('status_cancelled', 'local_order'),
+        ];
+
         // event id
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
@@ -83,13 +92,39 @@ class event_form extends \moodleform
         $mform->addElement('hidden', 'daterange');
         $mform->setType('daterange', PARAM_TEXT);
 
+        //Status display
+        $status_display = '';
+        switch($formdata->status) {
+            case 0:
+                $status_display = '<div class="alert alert-info w-100 d-flex justify-content-center">'
+                    . get_string('status_new', 'local_order') . '</div>';
+                break;
+            case 1:
+                $status_display = '<div class="alert alert-success w-100 d-flex justify-content-center">'
+                    . get_string('status_approved', 'local_order') . '</div>';
+                break;
+            case 2:
+                $status_display = '<div class="alert alert-warning w-100 d-flex justify-content-center">'
+                    . get_string('status_pending', 'local_order') . '</div>';
+                break;
+            case 3:
+                $status_display = '<div class="alert alert-danger w-100 d-flex justify-content-center">'
+                    . get_string('status_cancelled', 'local_order') . '</div>';
+                break;
+        }
+
         $mform->addElement('html', '<div class="container-fluid">');
         /**
          * Button row
          */
         $mform->addElement('html', '<div class="row">');
         $mform->addElement('html', '<div class="col d-flex justify-content-start">');
-        $mform->addElement('html', '<h4>' . get_string('event', 'local_order') . '</h4>');
+        $mform->addElement('html', '<span style="font-size: 1.5rem; font-weight:500;">'
+            . get_string('event', 'local_order')
+            . '</span>'      );
+        $mform->addElement('html', '</div>');
+        $mform->addElement('html', '<div class="col d-flex justify-content-center">');
+        $mform->addElement('html', $status_display);
         $mform->addElement('html', '</div>');
         $mform->addElement('html', '<div class="col d-flex justify-content-end">');
 
@@ -117,6 +152,11 @@ class event_form extends \moodleform
         // code
         $mform->addElement('text', 'code', get_string('event_code', 'local_order'), ['style' => 'width: 40%;']);
         $mform->setType('code', PARAM_TEXT);
+        if (has_capability('local/order:event_view', $context)) {
+            // Status
+            $mform->addElement('select', 'status', get_string('status', 'local_order'), $status_array);
+            $mform->setType('status', PARAM_INT);
+        }
         //Start time
         $mform->addElement('text', 'starttime', get_string('start_time', 'local_order'));
         $mform->setType('starttime', PARAM_TEXT);

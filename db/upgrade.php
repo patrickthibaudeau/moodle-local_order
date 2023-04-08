@@ -168,5 +168,19 @@ function xmldb_local_order_upgrade($oldversion)
         upgrade_plugin_savepoint(true, 2023040700, 'local', 'order');
     }
 
+    if ($oldversion < 2023040701) {
+
+        // Define field status to be added to order_event.
+        $table = new xmldb_table('order_event');
+        $field = new xmldb_field('status', XMLDB_TYPE_INTEGER, '2', null, null, null, '0', 'name');
+
+        // Conditionally launch add field status.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Order savepoint reached.
+        upgrade_plugin_savepoint(true, 2023040701, 'local', 'order');
+    }
     return true;
 }

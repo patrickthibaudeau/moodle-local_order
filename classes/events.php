@@ -115,6 +115,7 @@ class events
                         e.id,
                         e.code,
                         e.name As title,
+                        e.status,
                         e.starttime,
                         e.endtime,
                         e.eventtype,
@@ -133,6 +134,7 @@ class events
                     e.id,
                     e.code,
                     e.name as title,
+                    e.status,   
                     e.starttime,
                     e.endtime,
                     e.eventtype,
@@ -145,9 +147,28 @@ class events
                     e.starttime BETWEEN $start_time AND $end_time";
         }
 
+        $status = null;
+        switch (strtolower($term)) {
+            case (preg_match('/^app/', strtolower($term))? true : false):
+                $status = 1;
+                break;
+            case (preg_match('/^pen/', strtolower($term))? true : false):
+                $status = 2;
+                break;
+            case (preg_match('/^canc/', strtolower($term))? true : false):
+                $status = 3;
+                break;
+            case (preg_match('/^new/', strtolower($term))? true : false):
+                $status = 0;
+                break;
+        };
 
         if ($term) {
             $sql .= " AND (e.name LIKE '%$term%' ";
+            $sql .= " OR e.status LIKE '%$term%' ";
+            if ($status) {
+                $sql .= " OR e.status = $status ";
+            }
             $sql .= " OR e.code LIKE '%$term%' ";
             $sql .= " OR e.eventtype LIKE '%$term%' ";
             $sql .= " OR e.workorder LIKE '%$term%' ";
@@ -198,8 +219,25 @@ class events
                 'can_edit' => $can_edit,
                 'can_delete' => $can_delete
             ];
+
+            $status = '';
+            switch ($r->status) {
+                case 0:
+                    $status = get_string('status_new', 'local_order');
+                    break;
+                case 1:
+                    $status = get_string('status_approved', 'local_order');
+                    break;
+                case 2:
+                    $status = get_string('status_pending', 'local_order');
+                    break;
+                case 3:
+                    $status = get_string('status_rej', 'local_order');
+                    break;
+            }
             $events[$i]['code'] = $r->code;
             $events[$i]['title'] = $r->title;
+            $events[$i]['status'] = $status;
             $events[$i]['date'] = $event_start_date;
             $events[$i]['start'] = $event_start_time;
             $events[$i]['end'] = $event_end_time;
