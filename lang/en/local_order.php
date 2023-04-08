@@ -107,6 +107,9 @@ $string['organization_instructions'] = '<ol>
 <li>Rename all fields as follow: name, firstname,lastname,emai,phone1,phone2</li>
 <li>Save the file and upload below.</li>
 </ol>';
+$string['organizer_account'] = 'Organizer account (username)';
+$string['organizer_account_help'] = 'Enter the username of the account that should be used to receive all emails by '
+    . 'vendors when changes are made to an event';
 $string['other_notes'] = 'Other notes';
 $string['pluginname'] = 'Ordering System';
 $string['quantity'] = 'Quantity';
@@ -129,6 +132,7 @@ $string['status_approved'] = 'Approved';
 $string['status_cancelled'] = 'Cancelled';
 $string['status_new'] = 'New';
 $string['status_pending'] = 'Pending';
+$string['settings'] = 'Settings';
 $string['subtotal'] = 'Subtotal';
 $string['table_must_have_data'] = 'The following tables must have data';
 $string['team_members'] = 'Team members';

@@ -7,23 +7,20 @@ if ($hassiteconfig) {
     $settings = new admin_settingpage('local_order', get_string('pluginname', 'local_order'));
     $ADMIN->add('localplugins',$settings );
 
-    // SAMPLE heading
-//    $settings->add(new admin_setting_heading(
-//        'halo_setting',
-//        get_string('halo_settings', 'local_order'),
-//        ''
-//    ));
+    //heading
+    $settings->add(new admin_setting_heading(
+        'local_order_setting',
+        get_string('settings', 'local_order'),
+        ''
+    ));
     // Sample text
-//    $settings->add(new admin_setting_configtext(
-//        'halo_tenant',
-//        get_string('tenant', 'local_order'),
-//        get_string('tenant_help', 'local_order'),
-//        '',
-//        PARAM_TEXT
-//    ));
-
-
-
+    $settings->add(new admin_setting_configtext(
+        'local_order_org_email',
+        get_string('organizer_account', 'local_order'),
+        get_string('organizer_account_help', 'local_order'),
+        '',
+        PARAM_TEXT
+    ));
 }
 
 
