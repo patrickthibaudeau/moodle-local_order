@@ -50,6 +50,7 @@ if (!$id) {
         $first_row = $IMPORT->get_first_row();
         $clean_columns = $IMPORT->clean_column_names();
         $rows = $IMPORT->get_rows();
+
         //Remove file
         unlink($full_path);
         echo $OUTPUT->header();

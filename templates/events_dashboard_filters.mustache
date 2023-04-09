@@ -26,6 +26,26 @@
                 today, local_order{{/str}}</button>
         </div>
     </div>
+
+    <div class="col-auto">
+        <div class="input-group mb-2">
+            <select class="form-control" name="building" id="local-order-building-filter">
+                {{#buildings}}
+                    <optgroup label="{{campus}}">
+                        {{#campus_buildings}}
+                            <option value="{{id}}">{{name}}</option>
+                        {{/campus_buildings}}
+                    </optgroup>
+                {{/buildings}}
+            </select>
+        </div>
+    </div>
+    <div class="col-auto">
+        <div class="input-group mb-2">
+            <select class="form-control" name="room" id="local-order-room-filter">
+            </select>
+        </div>
+    </div>
 </div>
 <div class="row">
     <div class="col-12">

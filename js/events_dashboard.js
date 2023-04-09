@@ -103,4 +103,49 @@ $(document).ready(function () {
     $('#local-order-reset-date').on('click', function(){
         location.href = M.cfg.wwwroot + '/local/order/events/index.php';
     });
+
+    //Building filter
+    // Initiate select2 for building
+    const building = $('#local-order-building-filter').select2({
+        theme: 'bootstrap4',
+        placeholder: M.util.get_string('building_placeholder', 'local_order')
+    });
+
+    // Build room menu on building selected
+    building.on('select2:select', function (e) {
+        let data = e.params.data;
+        let id = data.id;
+        // Empty list
+        $('#id_room').empty();
+        $.ajax({
+            type: "POST",
+            url: M.cfg.wwwroot + "/local/order/ajax/get_rooms.php?id=" + id,
+            dataType: "json",
+            success: function (results) {
+                $('#local-order-room-filter')
+                    .find('option')
+                    .remove()
+                    .end();
+                // Add empty option
+                $('#local-order-room-filter').append($('<option>', {
+                    value: '',
+                    text: ''
+                }));
+                $.each(results, function (value, text) {
+                    $('#local-order-room-filter').append($('<option>', {
+                        value: value,
+                        text: text
+                    }));
+                });
+            }
+        });
+    });
+
+    $('#local-order-room-filter').on('change', function(){
+        let roomId = $(this).val();
+        let buildingId = $('#local-order-building-filter').val();
+        let dateRange = $('#local_order_events_daterange').val();
+        location.href = M.cfg.wwwroot + "/local/order/ajax/get_rooms.php?daterange==" + dateRange + "&roomid=" + roomId
+        + '&buildingid=' + buildingId;
+    });
 });

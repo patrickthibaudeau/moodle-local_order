@@ -182,5 +182,82 @@ function xmldb_local_order_upgrade($oldversion)
         // Order savepoint reached.
         upgrade_plugin_savepoint(true, 2023040701, 'local', 'order');
     }
+
+    if ($oldversion < 2023040900) {
+
+        // Define field costcentre to be added to order_organization.
+        $table = new xmldb_table('order_organization');
+        $field = new xmldb_field('costcentre', XMLDB_TYPE_INTEGER, '10', null, null, null, '0', 'website');
+
+        // Conditionally launch add field costcentre.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field fund to be added to order_organization.
+        $table = new xmldb_table('order_organization');
+        $field = new xmldb_field('fund', XMLDB_TYPE_INTEGER, '10', null, null, null, '0', 'costcentre');
+
+        // Conditionally launch add field fund.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field activitycode to be added to order_organization.
+        $table = new xmldb_table('order_organization');
+        $field = new xmldb_field('activitycode', XMLDB_TYPE_CHAR, '25', null, null, null, null, 'fund');
+
+        // Conditionally launch add field activitycode.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Order savepoint reached.
+        upgrade_plugin_savepoint(true, 2023040900, 'local', 'order');
+    }
+
+    if ($oldversion < 2023040901) {
+
+        // Define field ccemail to be added to order_organization.
+        $table = new xmldb_table('order_organization');
+        $field = new xmldb_field('ccemail', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'email');
+
+        // Conditionally launch add field ccemail.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Order savepoint reached.
+        upgrade_plugin_savepoint(true, 2023040901, 'local', 'order');
+    }
+
+    if ($oldversion < 2023040902) {
+
+        // Define table order_room_basic to be created.
+        $table = new xmldb_table('order_room_basic');
+
+        // Adding fields to table order_room_basic.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('building_name', XMLDB_TYPE_CHAR, '255', null, null, null, null);
+        $table->add_field('building_shortname', XMLDB_TYPE_CHAR, '10', null, null, null, null);
+        $table->add_field('name', XMLDB_TYPE_CHAR, '255', null, null, null, null);
+        $table->add_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+        // Adding keys to table order_room_basic.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('usermodified', XMLDB_KEY_FOREIGN, ['usermodified'], 'user', ['id']);
+
+        // Conditionally launch create table for order_room_basic.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Order savepoint reached.
+        upgrade_plugin_savepoint(true, 2023040902, 'local', 'order');
+    }
+
+
     return true;
 }

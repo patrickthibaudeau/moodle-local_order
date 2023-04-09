@@ -21,6 +21,7 @@ use local_order\organization;
 use local_order\organizations;
 use local_order\vendors;
 use local_order\inventory_categories;
+use local_order\buildings;
 
 class events_dashboard implements \renderable, \templatable {
 
@@ -44,6 +45,7 @@ class events_dashboard implements \renderable, \templatable {
     public function export_for_template(\renderer_base $output) {
         global $USER, $CFG, $DB;
 
+        $BUILDINGS = new buildings();
         $INVENTORY_CATEGORIES = new inventory_categories();
         $inventory_categories_records = $INVENTORY_CATEGORIES->get_records();
         $inventory_categories = [];
@@ -67,9 +69,10 @@ class events_dashboard implements \renderable, \templatable {
         $data = [
             'daterange' => $this->date_range,
             'inventory_categories' => $inventory_categories,
-            'event_modal' => $modal
+            'event_modal' => $modal,
+            'buildings' => $BUILDINGS->get_buildings_by_campus_for_template()
         ];
-
+//print_object($data);
         return $data;
     }
 

@@ -505,6 +505,9 @@ class import
         global $CFG, $DB, $USER;
 
         // Make sure the columns exist
+        if (!in_array('code', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=name');
+        }
         if (!in_array('name', $columns)) {
             redirect($CFG->wwwroot . '/local/order/import/index.php?err=name');
         }
@@ -531,8 +534,11 @@ class import
         $phone1 = 0;
         $phone2 = 0;
         // Set the proper key value for the columns
-        foreach ($columns as $key => $name) {
-            switch ($name) {
+        foreach ($columns as $key => $column_name) {
+            switch ($column_name) {
+                case 'code':
+                    $code = $key;
+                    break;
                 case 'name':
                     $organization = $key;
                     break;
@@ -545,34 +551,50 @@ class import
                 case 'email':
                     $email = $key;
                     break;
+                case 'ccemail':
+                    $ccemail = $key;
+                    break;
                 case 'phone1':
                     $phone1 = $key;
                     break;
                 case 'phone2':
                     $phone2 = $key;
                     break;
+                case 'costcentre':
+                    $costcentre = $key;
+                    break;
+                case 'fund':
+                    $fund = $key;
+                    break;
+                case 'activitycode':
+                    $activitycode = $key;
+                    break;
             }
         }
 
         // Import campus data if it doesn;t already exists.
         for ($i = 1; $i < count($rows) - 1; $i++) {
-            $fields = explode(' - ', $rows[$i][$organization]);
-            if (count($fields) == 2) {
-                $code = trim($fields[0]);
-                $name = trim($fields[1]);
-            } else {
-                $code = '';
-                $name = trim($fields[0]);
-            }
+//            $fields = explode(' - ', $rows[$i][$organization]);
+//            if (count($fields) == 2) {
+//                $code = trim($fields[0]);
+//                $name = trim($fields[1]);
+//            } else {
+//                $code = '';
+//                $name = trim($fields[0]);
+//            }
 
 
             if (!$found = $DB->get_record(TABLE_ORGANIZATION, ['name' => $name])) {
                 // Insert into table
                 $params = new \stdClass();
-                $params->name = $name;
-                $params->code = $code;
+                $params->name = trim($rows[$i][$organization]);
+                $params->code = trim($rows[$i][$code]);;
                 $params->phone = trim($rows[$i][$phone1]);
                 $params->email = trim($rows[$i][$email]);
+                $params->ccemail = trim($rows[$i][$ccemail]);
+                $params->costcentre = trim($rows[$i][$costcentre]);
+                $params->fund = trim($rows[$i][$fund]);
+                $params->activitycode = trim($rows[$i][$activitycode]);
                 $params->timecreated = time();
                 $params->timemodified = time();
                 $params->usermodified = $USER->id;
@@ -604,15 +626,16 @@ class import
                         $contact = new \stdClass();
                         $contact->organizationid = $organizationid;
                         $contact->userid = $user_id;
-                        $params->timecreated = time();
-                        $params->timemodified = time();
-                        $params->usermodified = $USER->id;
+                        $contact->primarycontact = 1;
+                        $contact->timecreated = time();
+                        $contact->timemodified = time();
+                        $contact->usermodified = $USER->id;
 
                         $DB->insert_record(TABLE_ORGANIZATION_CONTACT, $contact);
                     }
 
                 }
-                notification::success('Organization ' . $name . ' has been added.');
+                notification::success('Organization ' . $params->name . ' has been added.');
             } else {
                 // Update organization phone. Must do it here because the first record for the organization
                 // may not have the phone number available
@@ -626,7 +649,7 @@ class import
                     $found->email = trim($rows[$i][$email]);
                     $DB->update_record(TABLE_ORGANIZATION, $found);
                 }
-                notification::WARNING('Organization ' . $name . ' already exists.');
+                notification::WARNING('Organization ' . $found->name . ' already exists.');
             }
         }
 
@@ -652,19 +675,19 @@ class import
         if (!in_array('Registrant ID', $columns)) {
             redirect($CFG->wwwroot . '/local/order/import/index.php?err=Registrant&nbsp;ID');
         }
-        if (!in_array('Assoc.', $columns)) {
+        if (!in_array('organizationid', $columns)) {
             redirect($CFG->wwwroot . '/local/order/import/index.php?err=Assoc');
         }
-        if (!in_array('Request title', $columns)) {
+        if (!in_array('Event Title', $columns)) {
             redirect($CFG->wwwroot . '/local/order/import/index.php?err=Request&nbsp;title');
         }
-        if (!in_array('Date', $columns)) {
+        if (!in_array('Request Date', $columns)) {
             redirect($CFG->wwwroot . '/local/order/import/index.php?err=Date');
         }
-        if (!in_array('Start', $columns)) {
+        if (!in_array('Event start time', $columns)) {
             redirect($CFG->wwwroot . '/local/order/import/index.php?err=Start');
         }
-        if (!in_array('End', $columns)) {
+        if (!in_array('Event end time', $columns)) {
             redirect($CFG->wwwroot . '/local/order/import/index.php?err=End');
         }
         if (!in_array('Allocated room', $columns)) {
@@ -675,7 +698,7 @@ class import
         }
         // Set the proper column key
         $registration_id = -1;
-        $assoc = -1;
+        $organizationid = -1;
         $title = -1;
         $date = -1;
         $start = -1;

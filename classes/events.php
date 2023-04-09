@@ -84,7 +84,7 @@ class events
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    public function get_datatable($date_range, $start, $end, $term, $order_column = 'starttime', $order_direction = 'DESC')
+    public function get_datatable($date_range, $room_id = null, $start, $end, $term, $order_column = 'starttime', $order_direction = 'DESC')
     {
         global $CFG, $DB, $OUTPUT, $PAGE, $USER;
 
@@ -173,6 +173,10 @@ class events
             $sql .= " OR e.eventtype LIKE '%$term%' ";
             $sql .= " OR e.workorder LIKE '%$term%' ";
             $sql .= " OR o.name LIKE '%$term%') ";
+        }
+
+        if ($room_id) {
+            $sql .= " AND e.roomid=$room_id ";
         }
 
         $total_found = count($DB->get_records_sql($sql));

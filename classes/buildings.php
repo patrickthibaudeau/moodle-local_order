@@ -80,4 +80,31 @@ class buildings {
         return $campus_buildings;
     }
 
+    /**
+     * Returns an multidimensional array with campuses and their buildings
+     * @return array
+     * @throws \dml_exception
+     */
+    public function get_buildings_by_campus_for_template() {
+        global $DB;
+
+        $buildings_array = $this->get_buildings_by_campus();
+        $buildings_list = [];
+        $i = 0;
+        foreach($buildings_array as $campus => $buildings) {
+            $buildings_list[$i]['campus'] = $campus;
+            $x = 0;
+            $campus_buildings = [];
+            foreach($buildings as $id => $name) {
+                $campus_buildings[$x]['id'] = $id;
+                $campus_buildings[$x]['name'] = $name;
+                $x++;
+            }
+            $buildings_list[$i]['campus_buildings'] = $campus_buildings;
+            $i++;
+        }
+
+        return $buildings_list;
+    }
+
 }
