@@ -418,8 +418,8 @@ class vendor extends crud
                     u.lastname,
                     u.email
                 From
-                    moodle.mdl_order_vendor_contact ovc Inner Join
-                    moodle.mdl_user u On u.id = ovc.userid
+                    {order_vendor_contact} ovc Inner Join
+                    {user} u On u.id = ovc.userid
                 WHERE 
                     ovc.vendorid = ? AND ovc.primarycontact = 0
                 ORDER BY 

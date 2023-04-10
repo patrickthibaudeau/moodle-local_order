@@ -781,11 +781,11 @@ class event extends crud
                     u.maildigest,
                     u.maildisplay
                 From
-                    moodle.mdl_order_event_inventory oei Inner Join
-                    moodle.mdl_order_event_inv_category oeic On oei.eventcategoryid = oeic.id Inner Join
-                    moodle.mdl_order_vendor ov On ov.id = oei.vendorid Inner Join
-                    moodle.mdl_order_vendor_contact ovc On ovc.vendorid = ov.id Inner Join
-                    moodle.mdl_user u On u.id = ovc.userid
+                    {order_event_inventory} oei Inner Join
+                    {order_event_inv_category} oeic On oei.eventcategoryid = oeic.id Inner Join
+                    {order_vendor} ov On ov.id = oei.vendorid Inner Join
+                    {order_vendor_contact} ovc On ovc.vendorid = ov.id Inner Join
+                    {user} u On u.id = ovc.userid
                 Where
                     ovc.primarycontact = 1 And
                     oeic.eventid = ?;";
