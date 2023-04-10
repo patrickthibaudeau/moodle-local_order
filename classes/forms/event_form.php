@@ -3,7 +3,7 @@
 namespace local_order;
 
 use local_order\event;
-use local_order\buildings;
+use local_order\room_basics;
 use local_order\rooms;
 use local_order\inventory_categories;
 use local_order\event_types;
@@ -49,18 +49,10 @@ class event_form extends \moodleform
         $event_types = $EVENT_TYPES->get_select_array();
 
         // Get buildings and rooms
-        $BUILDINGS = new buildings();
-        $buildings = $BUILDINGS->get_buildings_by_campus();
         // Rooms empty unless a room id exists. Otherwise, will dynamically be updated when building is selected
         $rooms = [];
-        $ROOMS = new rooms();
-        if (isset($formdata->roomid)) {
-            if ($formdata->roomid) {
-                $rooms = $ROOMS->get_rooms_by_building_floor($formdata->building);
-            }
-        } else {
-            $rooms = $ROOMS->get_select_array();
-        }
+        $ROOMS = new room_basics();
+        $rooms = $ROOMS->get_rooms_for_form();
 
         // Get inventory categories for pdf buttons
         $INVENTORY_CATEGORIES = new inventory_categories();
@@ -186,11 +178,9 @@ class event_form extends \moodleform
         $mform->setType('eventtypename', PARAM_TEXT);
 
 
-        $mform->addElement('selectgroups', 'building', get_string('building', 'local_order'), $buildings);
-        $mform->addHelpButton('building', 'building', 'local_order');
+        $mform->addElement('selectgroups', 'roomid', get_string('room', 'local_order'), $rooms);
+        $mform->setType('roomid', PARAM_INT);
 
-        $mform->addElement('select', 'room', get_string('room', 'local_order'), $rooms);
-        $mform->setType('room', PARAM_INT);
 
         $mform->addElement('text', 'attendance', get_string('estimated_attendance', 'local_order'), ['style' => 'width: 40%;']);
         $mform->setType('attendance', PARAM_TEXT);

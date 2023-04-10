@@ -141,4 +141,41 @@ class room_basics {
         return $room_list;
     }
 
+    public function get_rooms_for_form() {
+        global $DB;
+
+        $data = [];
+        $buildings_sql = "SELECT DISTINCT
+                    id,  
+                    building_name, 
+                    building_shortname
+                FROM
+                    {order_room_basic}
+                ORDER BY 
+                    building_name";
+        $builldings = $DB->get_records_sql($buildings_sql);
+
+
+        foreach($builldings as $building) {
+            $rooms_sql = "SELECT 
+                            id,
+                            name,
+                            building_shortname 
+                        FROM 
+                            {order_room_basic} 
+                        WHERE 
+                            building_shortname = ? 
+                        ORDER BY name";
+            $rooms = $DB->get_records_sql($rooms_sql, [$building->building_shortname]);
+            $rooms_array = [];
+            foreach($rooms as $r) {
+                $rooms_array[$r->id] = $r->building_shortname . ' ' . $r->name;
+            }
+            $data[$building->building_name] = $rooms_array;
+
+        }
+
+        return $data;
+    }
+
 }

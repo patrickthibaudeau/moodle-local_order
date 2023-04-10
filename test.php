@@ -21,9 +21,10 @@ $context = context_system::instance();
 //**********************
 echo $OUTPUT->header();
 
-$ROOMS = new rooms();
-
-print_object($ROOMS->get_rooms_by_building_floor(352));
+$ROOMS = new room_basics();
+$BUILDINGS = new buildings();
+print_object($ROOMS->get_rooms_for_form());
+//print_object($BUILDINGS->get_buildings_by_campus());
 
 //$events = $DB->get_records(TABLE_EVENT, []);
 //

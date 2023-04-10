@@ -106,14 +106,9 @@ $(document).ready(function () {
         placeholder: 'Vendor',
         dropdownParent: $('#localOrderEditEventModal')
     });
-    // Initiate select2 for room
-    $('#id_room').select2({
-        theme: 'bootstrap4',
-        width: '500px',
-        placeholder: M.util.get_string('room_placeholder', 'local_order')
-    })
+
     // Initiate select2 for building
-    const building = $('#id_building').select2({
+    const building = $('#id_roomid').select2({
         theme: 'bootstrap4',
         placeholder: M.util.get_string('building_placeholder', 'local_order')
     });
@@ -139,30 +134,6 @@ $(document).ready(function () {
         }
     });
 
-    // Build room menu on building selected
-    building.on('select2:select', function (e) {
-        let data = e.params.data;
-        let id = data.id;
-        // Empty list
-        $('#id_room').empty();
-        $.ajax({
-            type: "POST",
-            url: M.cfg.wwwroot + "/local/order/ajax/get_rooms.php?id=" + id,
-            dataType: "json",
-            success: function (results) {
-                $('#id_room')
-                    .find('option')
-                    .remove()
-                    .end();
-                $.each(results, function (value, text) {
-                    $('#id_room').append($('<option>', {
-                        value: value,
-                        text: text
-                    }));
-                });
-            }
-        });
-    });
     // Initialize all events for innventory items
     init_event_inventory_items();
 
