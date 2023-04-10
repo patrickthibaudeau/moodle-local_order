@@ -87,21 +87,14 @@ class vendors {
                     v.id,
                     v.name,
                     v.email,
-                    v.phone,
-                    u.firstname,
-                    u.lastname
+                    v.phone
                 From
-                    {order_vendor} v Left Join
-                    {order_vendor_contact} vc On v.id = vc.vendorid Left Join
-                    {user} u  On vc.userid = u.id
-                WHERE vc.primarycontact = 1";
+                    {order_vendor} v";
 
         if ($term) {
-            $sql .= " AND (v.name LIKE '%$term%' ";
+            $sql .= " WHERE (v.name LIKE '%$term%' ";
             $sql .= " OR v.email LIKE '%$term%' ";
-            $sql .= " OR v.phone LIKE '%$term%' ";
-            $sql .= " OR u.firstname LIKE '%$term%' ";
-            $sql .= " OR u.lastname LIKE '%$term%') ";
+            $sql .= " OR v.phone LIKE '%$term%') ";
         }
 
         $total_found = count($DB->get_records_sql($sql));
@@ -139,15 +132,10 @@ class vendors {
                 'can_delete' => $can_delete
             ];
 
-            if ($r->firstname && $r->lastname) {
-                $contact = $r->lastname . ', ' . $r->firstname;
-            } else {
-                $contact = '-';
-            }
+
 
             $organization[$i]['id'] = $r->id;
             $organization[$i]['name'] = $r->name;
-            $organization[$i]['contact'] = $contact;
             $organization[$i]['email'] = $r->email;
             $organization[$i]['phone'] = $r->phone;
             $organization[$i]['actions'] = $OUTPUT->render_from_template('local_order/action_buttons', $actions);;

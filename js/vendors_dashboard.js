@@ -13,7 +13,6 @@ $(document).ready(function () {
         'deferRender': true,
         "columns": [
             {"data": "name"},
-            {"data": "contact"},
             {"data": "email"},
             {"data": "phone"},
             {"data": "actions"},
@@ -21,7 +20,7 @@ $(document).ready(function () {
         'columnDefs': [
             {
                 "searchable": false,
-                "targets": [4]
+                "targets": [3]
             }],
         'order': [[0, ' asc']],
         // buttons: [
