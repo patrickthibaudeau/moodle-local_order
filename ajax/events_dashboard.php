@@ -10,7 +10,8 @@ $context = context_system::instance();
 
 // get Values from Data
 $date_range = optional_param('daterange', '', PARAM_TEXT);
-$room_id = optional_param('roomid', '', PARAM_INT);
+$building = optional_param('building', '', PARAM_TEXT);
+$room = optional_param('room', '', PARAM_TEXT);
 $draw = optional_param('draw', 1, PARAM_INT);
 $start = optional_param('start', 0, PARAM_INT);
 $length = optional_param('length', 50, PARAM_INT);
@@ -54,8 +55,7 @@ if (isset($order[0]['column'])) {
 $EVENTS = new events();
 
 // Get data
-$data = $EVENTS->get_datatable($date_range, $room_id $start, $end, $term, $orderColumn, $orderDirection);
-
+$data = $EVENTS->get_datatable($date_range, $building, $room, $start, $end, $term, $orderColumn, $orderDirection);
 // Create datatables object
 $params = [
     "draw" => $draw,

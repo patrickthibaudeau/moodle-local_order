@@ -84,7 +84,7 @@ class events
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    public function get_datatable($date_range, $room_id = null, $start, $end, $term, $order_column = 'starttime', $order_direction = 'DESC')
+    public function get_datatable($date_range, $building, $room = null, $start, $end, $term, $order_column = 'starttime', $order_direction = 'DESC')
     {
         global $CFG, $DB, $OUTPUT, $PAGE, $USER;
 
@@ -118,14 +118,17 @@ class events
                         e.status,
                         e.starttime,
                         e.endtime,
-                        e.eventtype,
+                        e.setuptype,
                         e.workorder,
+                        rb.building_shortname,
+                        rb.name as room_name,
                         o.name As organization
                     From
-                        moodle.mdl_order_event e Inner Join
-                        moodle.mdl_order_organization o On o.id = e.organizationid Inner Join
-                        moodle.mdl_order_event_inv_category eic On eic.eventid = e.id Inner Join
-                        moodle.mdl_order_event_inventory ei On ei.eventcategoryid = eic.id
+                        {order_event} e Inner Join
+                        {order_organization} o On o.id = e.organizationid Inner Join
+                        {order_event_inv_category} eic On eic.eventid = e.id Inner Join
+                        {order_event_inventory} ei On ei.eventcategoryid = eic.id Left JOIN 
+                        {order_room_basic} rb On rb.id = e.roomid                       
                     Where 
                         (e.starttime BETWEEN $start_time AND $end_time) 
                         AND ei.vendorid IN ($vendorids)";
@@ -137,12 +140,15 @@ class events
                     e.status,   
                     e.starttime,
                     e.endtime,
-                    e.eventtype,
+                    e.setuptype,
                     e.workorder,
+                    rb.building_shortname,
+                    rb.name as room_name,
                     o.name As organization
                 From
                     {order_event} e Inner Join
-                    {order_organization} o On o.id = e.organizationid
+                    {order_organization} o On o.id = e.organizationid Left JOIN 
+                    {order_room_basic} rb On rb.id = e.roomid
                 Where
                     e.starttime BETWEEN $start_time AND $end_time";
         }
@@ -169,14 +175,20 @@ class events
             if ($status) {
                 $sql .= " OR e.status = $status ";
             }
+            $sql .= " OR rb.building_shortname LIKE '%$term%' ";
+            $sql .= " OR rb.name LIKE '%$term%' ";
             $sql .= " OR e.code LIKE '%$term%' ";
-            $sql .= " OR e.eventtype LIKE '%$term%' ";
+            $sql .= " OR e.setuptype LIKE '%$term%' ";
             $sql .= " OR e.workorder LIKE '%$term%' ";
             $sql .= " OR o.name LIKE '%$term%') ";
         }
 
-        if ($room_id) {
-            $sql .= " AND e.roomid=$room_id ";
+        if ($building) {
+            $sql .= " AND rb.building_shortname='$building' ";
+        }
+
+        if ($room) {
+            $sql .= " AND rb.name='$room' ";
         }
 
         $total_found = count($DB->get_records_sql($sql));
@@ -192,7 +204,7 @@ class events
                 $order_column = 'e.endtime';
                 break;
             case 'type':
-                $order_column = 'e.eventtype';
+                $order_column = 'e.setuptype';
                 break;
             case 'organization':
                 $order_column = 'o.name';
@@ -245,8 +257,9 @@ class events
             $events[$i]['date'] = $event_start_date;
             $events[$i]['start'] = $event_start_time;
             $events[$i]['end'] = $event_end_time;
-            $events[$i]['type'] = $r->eventtype;
+            $events[$i]['type'] = $r->setuptype;
             $events[$i]['workorder'] = $r->workorder;
+            $events[$i]['room'] = $r->building_shortname . ' ' . $r->room_name;
             $events[$i]['organization'] = $r->organization;
             $events[$i]['actions'] = $OUTPUT->render_from_template('local_order/action_buttons', $actions);;
             $i++;

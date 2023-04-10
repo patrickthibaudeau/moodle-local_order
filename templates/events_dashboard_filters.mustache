@@ -30,12 +30,11 @@
     <div class="col-auto">
         <div class="input-group mb-2">
             <select class="form-control" name="building" id="local-order-building-filter">
+                <option value=""></option>
                 {{#buildings}}
-                    <optgroup label="{{campus}}">
-                        {{#campus_buildings}}
-                            <option value="{{id}}">{{name}}</option>
-                        {{/campus_buildings}}
-                    </optgroup>
+                    <option value="{{building_shortname}}" {{#selected}}selected{{/selected}}>
+                        {{building_name}} ({{building_shortname}})
+                    </option>
                 {{/buildings}}
             </select>
         </div>
@@ -43,6 +42,12 @@
     <div class="col-auto">
         <div class="input-group mb-2">
             <select class="form-control" name="room" id="local-order-room-filter">
+                <option value=""></option>
+                {{#rooms}}
+                    <option value="{{name}}" {{#selected}}selected{{/selected}}>
+                       {{building_shortname}} {{name}}
+                    </option>
+                {{/rooms}}
             </select>
         </div>
     </div>

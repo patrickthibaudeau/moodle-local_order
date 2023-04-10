@@ -21,7 +21,7 @@ use local_order\organization;
 use local_order\organizations;
 use local_order\vendors;
 use local_order\inventory_categories;
-use local_order\buildings;
+use local_order\room_basics;
 
 class events_dashboard implements \renderable, \templatable {
 
@@ -30,8 +30,10 @@ class events_dashboard implements \renderable, \templatable {
      */
     private $date_range;
 
-    public function __construct($date_range) {
+    public function __construct($date_range, $building_shortname = null, $room_name = null) {
         $this->date_range = $date_range;
+        $this->building_shortname = $building_shortname;
+        $this->room_name = $room_name;
     }
 
     /**
@@ -45,7 +47,12 @@ class events_dashboard implements \renderable, \templatable {
     public function export_for_template(\renderer_base $output) {
         global $USER, $CFG, $DB;
 
-        $BUILDINGS = new buildings();
+        $BUILDINGS = new room_basics();
+        $template_rooms = [];
+        if ($this->room_name) {
+            $ROOMS = new room_basics();
+            $template_rooms = $ROOMS->get_rooms_based_on_building_for_template($this->building_shortname, $this->room_name);
+        }
         $INVENTORY_CATEGORIES = new inventory_categories();
         $inventory_categories_records = $INVENTORY_CATEGORIES->get_records();
         $inventory_categories = [];
@@ -70,9 +77,10 @@ class events_dashboard implements \renderable, \templatable {
             'daterange' => $this->date_range,
             'inventory_categories' => $inventory_categories,
             'event_modal' => $modal,
-            'buildings' => $BUILDINGS->get_buildings_by_campus_for_template()
+            'rooms' => $template_rooms,
+            'buildings' => $BUILDINGS->get_buildings_for_template($this->building_shortname),
         ];
-//print_object($data);
+
         return $data;
     }
 

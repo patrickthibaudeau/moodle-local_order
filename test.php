@@ -7,6 +7,7 @@ use local_order\organization;
 use local_order\event;
 use local_order\buildings;
 use local_order\rooms;
+use local_order\room_basics;
 
 // CHECK And PREPARE DATA
 global $CFG, $OUTPUT, $SESSION, $PAGE, $DB, $COURSE, $USER;
@@ -22,7 +23,7 @@ echo $OUTPUT->header();
 
 $ROOMS = new rooms();
 
-print_object($ROOMS->get_rooms_by_building_floor(304));
+print_object($ROOMS->get_rooms_by_building_floor(352));
 
 //$events = $DB->get_records(TABLE_EVENT, []);
 //

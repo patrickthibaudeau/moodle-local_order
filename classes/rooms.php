@@ -7,7 +7,7 @@
  */
 namespace local_order;
 
-require_once('../lib.php');
+//require_once('../lib.php');
 
 class rooms {
 
