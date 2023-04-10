@@ -693,7 +693,7 @@ class import
         if (!in_array('Allocated room', $columns)) {
             redirect($CFG->wwwroot . '/local/order/import/index.php?err=Allocated&nbsp;room');
         }
-        if (!in_array('This room request requires a catering order?', $columns)) {
+        if (!in_array('Catering', $columns)) {
             redirect($CFG->wwwroot . '/local/order/import/index.php?err=This&nbsp;room&nbsp;request&nbsp;requires&nbsp;a&nbsp;catering&nbsp;order?');
         }
         // Set the proper column key
@@ -715,25 +715,25 @@ class import
                 case 'Registrant ID':
                     $registration_id = $key;
                     break;
-                case 'Assoc.':
-                    $assoc = $key;
+                case 'organizationid':
+                    $organizationid = $key;
                     break;
-                case 'Request title':
+                case 'Event Title':
                     $title = $key;
                     break;
-                case 'Date':
+                case 'Request Date':
                     $date = $key;
                     break;
-                case 'Start':
+                case 'Event start time':
                     $start = $key;
                     break;
-                case 'End':
+                case 'Event end time':
                     $end = $key;
                     break;
                 case 'Allocated room':
                     $room = $key;
                     break;
-                case 'This room request requires a catering order?':
+                case 'Catering':
                     $catering = $key;
                     break;
                 case 'Event-type':
@@ -765,21 +765,16 @@ class import
         $current_timezone = date_default_timezone_get();
         // Set timezone based on value from form
         date_default_timezone_set($timezone);
+ob_start();
 
+;
         // Loop through all events
         for ($i = 1; $i < count($rows) - 1; $i++) {
             // Prepare all event data
             // Get organization id
-            $fields = explode(' - ', $rows[$i][$assoc]);
-            if (count($fields) == 2) {
-                $code = trim($fields[0]);
-                $name = trim($fields[1]);
-            } else {
-                $code = '';
-                $name = trim($fields[0]);
-            }
+            $code = trim($rows[$i][$organizationid]);
             // get organization
-            $organization = $DB->get_record(TABLE_ORGANIZATION, ['name' => $name]);
+            $organization = $DB->get_record(TABLE_ORGANIZATION, ['code' => $code]);
 
             // Convert date to array
             $date_array = explode('/', $rows[$i][$date]);
@@ -827,6 +822,36 @@ class import
                 $setup_notes_data = trim($rows[$i][$setup_notes]);
             }
 
+            // Room if exists
+            $roomid = 0;
+            $room_name = '';
+            if ($room != -1) {
+                $room_title = trim($rows[$i][$room]);
+                $room_array = explode('-', $room_title);
+                // Get rid of building name
+                unset($room_array[0]);
+                // Get acronym and room number
+                $room_acrm_number = explode(' ', $room_array[1]);
+                $number_of_fields = count($room_acrm_number);
+                $building_shortname = $room_acrm_number[0];
+                if ($number_of_fields > 2) {
+                    // Iterate through room numbers starting at 1
+                    for($x = 1; $x < $number_of_fields; $x++) {
+                        // Add room number to building name
+                        $room_name .= ' ' . $room_acrm_number[$x];
+                    }
+                } else {
+                    $room_name = $room_acrm_number[1];
+                }
+                print_object($building_shortname . ' ' . $room_name);
+                // Get room record from order_room_basic table
+                if ($room_data = $DB->get_record(TABLE_ROOM_BASIC, [
+                    'building_shortname' => trim($building_shortname),
+                    'name' => trim($room_name)])) {
+                    $roomid = $room_data->id;
+                }
+            }
+
             // create event object
             $event = new \stdClass();
             $event->organizationid = $organization->id;
@@ -834,10 +859,12 @@ class import
             $event->code = trim($rows[$i][$registration_id]);
             $event->starttime = $start_time;
             $event->endtime = $end_time;
+            $event->roomid = $roomid;
             $event->eventtype = $event_type_data;
             $event->attendance = $attendance_data;
             $event->setuptype = $setup_type_data;
             $event->setupnotes = $setup_notes_data;
+
 
             // Check to see if the event already exists
             if (!$found = $DB->get_record(TABLE_EVENT, ['code' => trim($rows[$i][$registration_id])])) {
@@ -847,68 +874,71 @@ class import
                 $event->id = $event_id;
                 $DB->update_record(TABLE_EVENT, $event);
             }
-
+            ob_flush();
+            flush();
+// Event inventory will be imported in a different way
             // Check to see if event inventory category exists
-            if (!$event_inventory_category = $DB->get_record(TABLE_EVENT_INVENTORY_CATEGORY,
-                ['eventid' => $event_id, 'inventorycategoryid' => $type])) {
-                // Get inventory category
-                $inventory_category = $DB->get_record(TABLE_INVENTORY_CATEGORY, ['id' => $type]);
-                // Get admin notes
-                $admin_notes = '';
-                $notes = '';
-                foreach ($columns as $key => $name) {
-                    if ($name == 'Admin notes - ' . strtolower($inventory_category->name)) {
-                        $admin_notes = trim($rows[$i][$key]);
-                    }
-
-                    if ($type == 1 && $name == 'Custom Audio Visual Comments - Questions') {
-                        $notes = trim($rows[$i][$key]);
-                    }
-
-                    if ($type == 3 && $name == 'Custom Furnishing Comments - Questions') {
-                        $notes = trim($rows[$i][$key]);
-                    }
-                }
-                // Create event inventory category object and capture the id
-                $eic_params = new \stdClass();
-                $eic_params->eventid = $event_id;
-                $eic_params->inventorycategoryid = $type;
-                $eic_params->name = $inventory_category->name;
-                $eic_params->notes = $notes;
-                $eic_params->adminnotes = $admin_notes;
-                $eic_params->timecreated = time();
-                $eic_params->timemodified = time();
-                $eic_params->usermodified = $USER->id;
-
-                $event_inventory_category_id = $DB->insert_record(TABLE_EVENT_INVENTORY_CATEGORY, $eic_params);
-            } else {
-                $event_inventory_category_id = $event_inventory_category->id;
-            }
-
-            // Finally import all inventory items
-            foreach ($inventory_items as $items) {
-                $variable = '_' . $items->code;
-                $event_inventory = new \stdClass();
-                if (trim($rows[$i][$$variable])) {
-                    $event_inventory_array = [
-                        'eventcategoryid' => $event_inventory_category_id,
-                        'inventoryid' => $items->id
-                    ];
-                    // Add inventory item if data exists for it.
-                    if (!$event_inventory_item = $DB->get_record(TABLE_EVENT_INVENTORY, $event_inventory_array)) {
-                        $event_inventory->eventcategoryid = $event_inventory_category_id;
-                        $event_inventory->inventoryid = $items->id;
-                        $event_inventory->name = $items->name;
-                        $event_inventory->description = trim($rows[$i][$$variable]);
-                        $event_inventory->timecreated = time();
-                        $event_inventory->timemodified = time();
-                        $event_inventory->usermodified = $USER->id;
-                        $DB->insert_record(TABLE_EVENT_INVENTORY, $event_inventory);
-                    }
-                }
-                unset($event_inventory);
-            }
+//            if (!$event_inventory_category = $DB->get_record(TABLE_EVENT_INVENTORY_CATEGORY,
+//                ['eventid' => $event_id, 'inventorycategoryid' => $type])) {
+//                // Get inventory category
+//                $inventory_category = $DB->get_record(TABLE_INVENTORY_CATEGORY, ['id' => $type]);
+//                // Get admin notes
+//                $admin_notes = '';
+//                $notes = '';
+//                foreach ($columns as $key => $name) {
+//                    if ($name == 'Admin notes - ' . strtolower($inventory_category->name)) {
+//                        $admin_notes = trim($rows[$i][$key]);
+//                    }
+//
+//                    if ($type == 1 && $name == 'Custom Audio Visual Comments - Questions') {
+//                        $notes = trim($rows[$i][$key]);
+//                    }
+//
+//                    if ($type == 3 && $name == 'Custom Furnishing Comments - Questions') {
+//                        $notes = trim($rows[$i][$key]);
+//                    }
+//                }
+//                // Create event inventory category object and capture the id
+//                $eic_params = new \stdClass();
+//                $eic_params->eventid = $event_id;
+//                $eic_params->inventorycategoryid = $type;
+//                $eic_params->name = $inventory_category->name;
+//                $eic_params->notes = $notes;
+//                $eic_params->adminnotes = $admin_notes;
+//                $eic_params->timecreated = time();
+//                $eic_params->timemodified = time();
+//                $eic_params->usermodified = $USER->id;
+//
+//                $event_inventory_category_id = $DB->insert_record(TABLE_EVENT_INVENTORY_CATEGORY, $eic_params);
+//            } else {
+//                $event_inventory_category_id = $event_inventory_category->id;
+//            }
+//
+//            // Finally import all inventory items
+//            foreach ($inventory_items as $items) {
+//                $variable = '_' . $items->code;
+//                $event_inventory = new \stdClass();
+//                if (trim($rows[$i][$$variable])) {
+//                    $event_inventory_array = [
+//                        'eventcategoryid' => $event_inventory_category_id,
+//                        'inventoryid' => $items->id
+//                    ];
+//                    // Add inventory item if data exists for it.
+//                    if (!$event_inventory_item = $DB->get_record(TABLE_EVENT_INVENTORY, $event_inventory_array)) {
+//                        $event_inventory->eventcategoryid = $event_inventory_category_id;
+//                        $event_inventory->inventoryid = $items->id;
+//                        $event_inventory->name = $items->name;
+//                        $event_inventory->description = trim($rows[$i][$$variable]);
+//                        $event_inventory->timecreated = time();
+//                        $event_inventory->timemodified = time();
+//                        $event_inventory->usermodified = $USER->id;
+//                        $DB->insert_record(TABLE_EVENT_INVENTORY, $event_inventory);
+//                    }
+//                }
+//                unset($event_inventory);
+//            }
         }
+        ob_clean();
         // reset timezone to the default time zone.
         date_default_timezone_set($current_timezone);
         return true;

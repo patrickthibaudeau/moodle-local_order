@@ -18,6 +18,7 @@ define("TABLE_INVENTORY_CATEGORY", "order_inventory_category");
 define("TABLE_ORGANIZATION", "order_organization");
 define("TABLE_ORGANIZATION_CONTACT", "order_organization_contact");
 define("TABLE_ROOM", "order_room");
+define("TABLE_ROOM_BASIC", "order_room_basic");
 define("TABLE_ROOM_TYPE", "order_room_type");
 define("TABLE_SET_TYPE", "order_setup_type");
 define("TABLE_VENDOR", "order_vendor");
