@@ -8,6 +8,7 @@ use core\notification;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use local_order\inventories;
+use local_order\inventory_categories;
 
 class import
 {
@@ -670,6 +671,9 @@ class import
         $INVENTORIES = new inventories();
         // get all inventory items
         $inventory_items = $INVENTORIES->get_records_by_category($type);
+        // Get inventory categories. Will be used to create event inventory categories.
+        $INVENTORY_CATEGORIES = new inventory_categories();
+        $inventory_categories = $INVENTORY_CATEGORIES->get_records();
 
         // Make sure the columns exist
         if (!in_array('Registrant ID', $columns)) {
@@ -764,10 +768,8 @@ class import
         // Store Current timezone
         $current_timezone = date_default_timezone_get();
         // Set timezone based on value from form
-        date_default_timezone_set($timezone);
-ob_start();
-
-;
+        date_default_timezone_set($timezone);;
+        ob_start();
         // Loop through all events
         for ($i = 1; $i < count($rows) - 1; $i++) {
             // Prepare all event data
@@ -828,51 +830,65 @@ ob_start();
             if ($room != -1) {
                 $room_title = trim($rows[$i][$room]);
                 $room_array = explode('-', $room_title);
-                // Get rid of building name
-                unset($room_array[0]);
-                // Get acronym and room number
-                $room_acrm_number = explode(' ', $room_array[1]);
-                $number_of_fields = count($room_acrm_number);
-                $building_shortname = $room_acrm_number[0];
-                if ($number_of_fields > 2) {
-                    // Iterate through room numbers starting at 1
-                    for($x = 1; $x < $number_of_fields; $x++) {
-                        // Add room number to building name
-                        $room_name .= ' ' . $room_acrm_number[$x];
+                if (isset($room_array[1])) {
+                    // Get rid of building name
+                    unset($room_array[0]);
+                    // Get acronym and room number
+                    $room_acrm_number = explode(' ', $room_array[1]);
+                    $number_of_fields = count($room_acrm_number);
+                    $building_shortname = $room_acrm_number[0];
+                    if ($number_of_fields > 2) {
+                        // Iterate through room numbers starting at 1
+                        for ($x = 1; $x < $number_of_fields; $x++) {
+                            // Add room number to building name
+                            $room_name .= ' ' . $room_acrm_number[$x];
+                        }
+                    } else {
+                        $room_name = $room_acrm_number[1];
                     }
-                } else {
-                    $room_name = $room_acrm_number[1];
-                }
-                print_object($building_shortname . ' ' . $room_name);
-                // Get room record from order_room_basic table
-                if ($room_data = $DB->get_record(TABLE_ROOM_BASIC, [
-                    'building_shortname' => trim($building_shortname),
-                    'name' => trim($room_name)])) {
-                    $roomid = $room_data->id;
+                    // Get room record from order_room_basic table
+                    if ($room_data = $DB->get_record(TABLE_ROOM_BASIC, [
+                        'building_shortname' => trim($building_shortname),
+                        'name' => trim($room_name)])) {
+                        $roomid = $room_data->id;
+                    }
                 }
             }
 
             // create event object
-            $event = new \stdClass();
-            $event->organizationid = $organization->id;
-            $event->name = trim($rows[$i][$title]);
-            $event->code = trim($rows[$i][$registration_id]);
-            $event->starttime = $start_time;
-            $event->endtime = $end_time;
-            $event->roomid = $roomid;
-            $event->eventtype = $event_type_data;
-            $event->attendance = $attendance_data;
-            $event->setuptype = $setup_type_data;
-            $event->setupnotes = $setup_notes_data;
+            // Only create if there is data
+            if (trim($rows[$i][$title]) != '' && trim($rows[$i][$registration_id]) != '') {
+                $event = new \stdClass();
+                $event->organizationid = $organization->id;
+                $event->name = trim($rows[$i][$title]);
+                $event->code = trim($rows[$i][$registration_id]);
+                $event->starttime = $start_time;
+                $event->endtime = $end_time;
+                $event->roomid = $roomid;
+                $event->status = 1; // Approved
+                $event->eventtype = $event_type_data;
+                $event->attendance = $attendance_data;
+                $event->setuptype = $setup_type_data;
+                $event->setupnotes = $setup_notes_data;
 
 
-            // Check to see if the event already exists
-            if (!$found = $DB->get_record(TABLE_EVENT, ['code' => trim($rows[$i][$registration_id])])) {
-                $event_id = $DB->insert_record(TABLE_EVENT, $event);
-            } else {
-                $event_id = $found->id;
-                $event->id = $event_id;
-                $DB->update_record(TABLE_EVENT, $event);
+                // Check to see if the event already exists
+                if (!$found = $DB->get_record(TABLE_EVENT, ['code' => trim($rows[$i][$registration_id])])) {
+                    $event_id = $DB->insert_record(TABLE_EVENT, $event);
+                    // Create event inventory categories
+                    foreach ($inventory_categories as $ic) {
+                        $event_inventory_category = new \stdClass();
+                        $event_inventory_category->eventid = $event_id;
+                        $event_inventory_category->inventorycategoryid = $ic->id;
+                        $event_inventory_category->name = $ic->name;
+                        $DB->insert_record(TABLE_EVENT_INVENTORY_CATEGORY, $event_inventory_category);
+                    }
+                    notification::success('Event ' . $event->name . ' (' . $event->code . ') has been imported.');
+                } else {
+                    $event_id = $found->id;
+                    $event->id = $event_id;
+                    $DB->update_record(TABLE_EVENT, $event);
+                }
             }
             ob_flush();
             flush();
