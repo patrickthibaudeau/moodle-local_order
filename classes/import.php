@@ -534,6 +534,10 @@ class import
         $email = 0;
         $phone1 = 0;
         $phone2 = 0;
+        $ccemail = 0;
+        $costcentre = 0;
+        $fund = 0;
+        $activitycode = 0;
         // Set the proper key value for the columns
         foreach ($columns as $key => $column_name) {
             switch ($column_name) {

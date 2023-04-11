@@ -1,5 +1,6 @@
 <?php
 $string['actions'] = 'Actions';
+$string['activitycode'] = 'Activity Code';
 $string['add'] = 'Add';
 $string['admin_notes'] = 'Admin notes';
 $string['all'] = 'All';
@@ -21,11 +22,13 @@ $string['campuses'] = 'Campuses';
 $string['cannot_delete'] = 'Cannot delete';
 $string['category'] = 'Category';
 $string['catering_order'] = 'Catering order';
+$string['ccemail'] = 'CC Email';
 $string['chargeback_account'] = 'Chargeback account';
 $string['close'] = 'Close';
 $string['contact'] = 'Contact';
 $string['code'] = 'Code';
 $string['cost'] = 'Cost';
+$string['costcentre'] = 'Cost Centre';
 $string['currency_locale'] = 'en_CA';
 $string['delete'] = 'Delete';
 $string['delete_event'] = 'Delete event';
@@ -74,6 +77,7 @@ $string['event_updated_by_vendor_message'] = 'Event <b><a href="{$a->url}">{$a->
 $string['events'] = 'Events';
 $string['events_card_help'] = 'View, edit, add and print out event information.';
 $string['field_required'] = 'This field is required';
+$string['financial_information'] = 'Financial Information';
 $string['file'] = 'File';
 $string['file_help'] = 'The importer only accepts excel files';
 $string['filters'] = 'Filters';
@@ -81,6 +85,7 @@ $string['floor'] = 'Floor';
 $string['floor_import'] = 'Floor Import';
 $string['floors'] = 'Floors';
 $string['furnishing'] = 'Furnishing';
+$string['fund'] = 'Fund';
 $string['furnishing_order'] = 'Furnishing order';
 $string['home'] = 'Home';
 $string['import'] = 'Import';

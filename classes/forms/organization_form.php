@@ -64,6 +64,9 @@ class organization_form extends \moodleform
         // Email
         $mform->addElement('text', 'email', get_string('email', 'core'));
         $mform->setType('email', PARAM_TEXT);
+// ccemail
+        $mform->addElement('text', 'ccemail', get_string('ccemail', 'local_order'));
+        $mform->setType('ccemail', PARAM_TEXT);
 
         // Email
         $mform->addElement('text', 'phone', get_string('phone', 'core'));
@@ -74,6 +77,25 @@ class organization_form extends \moodleform
         $mform->addElement('html', '</div>'); //card-body"
         $mform->addElement('html', '</div>'); //card"
         $mform->addElement('html', '</div>'); //col-md-6"
+        // Second column
+        $mform->addElement('html', '<div class="col-md-6">');
+        $mform->addElement('html', '<div class="card">');
+        $mform->addElement('html', '<div class="card-body">');
+
+        $mform->addElement('html', '<h3>' .
+            get_string('financial_information', 'local_order') . '</h3>');
+
+        $mform->addElement('text', 'costcentre', get_string('costcentre', 'local_order'));
+        $mform->setType('costcentre', PARAM_INT);
+        $mform->addElement('text', 'fund', get_string('fund', 'local_order'));
+        $mform->setType('fund', PARAM_INT);
+        $mform->addElement('text', 'activitycode', get_string('activitycode', 'local_order'));
+        $mform->setType('activitycode', PARAM_TEXT);
+
+        $mform->addElement('html', '</div>'); //card-body"
+        $mform->addElement('html', '</div>'); //card"
+        $mform->addElement('html', '</div>'); //col-md-6"
+
         $mform->addElement('html', '</div>'); //row
         $mform->addElement('html', '</div>'); //container-fluid
 
