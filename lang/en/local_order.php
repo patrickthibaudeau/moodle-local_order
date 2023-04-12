@@ -113,10 +113,10 @@ $string['number_of_organizations'] = 'Number of organizations';
 $string['number_of_users'] = 'Number of users';
 $string['number_of_vendors'] = 'Number of vendors';
 $string['order'] = 'Order';
-$string['organization'] = 'Organization';
-$string['organization_used'] = 'This organization cannot be deleted because it is assigned to and event';
-$string['organizations'] = 'Organizations';
-$string['organizations_card_help'] = 'Manage organizations and their contacts.';
+$string['organization'] = 'Association';
+$string['organization_used'] = 'This association cannot be deleted because it is assigned to and event';
+$string['organizations'] = 'Associations';
+$string['organizations_card_help'] = 'Manage associations and their contacts.';
 $string['organization_instructions'] = '<ol>
 <li>Make a copy of a downloaded Excel provided.</li>
 <li>Remove all columns except: Assoc., First name, Last name, Email, Phone-Office, Phone-mobile</li>
