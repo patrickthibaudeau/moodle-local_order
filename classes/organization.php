@@ -84,6 +84,24 @@ class organization extends crud {
 	 */
 	private $website;
 
+    /**
+     *
+     *@var int
+     */
+    private $costcentre;
+
+    /**
+     *
+     *@var int
+     */
+    private $fund;
+
+    /**
+     *
+     *@var string
+     */
+    private $activitycode;
+
 	/**
 	 *
 	 *@var int
@@ -153,6 +171,9 @@ class organization extends crud {
 		$this->phone = $result->phone ?? '';
 		$this->email = $result->email ?? '';
 		$this->website = $result->website ?? '';
+        $this->costcentre = $result->costcentre ?? 0;
+        $this->fund = $result->fund ?? 0;
+        $this->activitycode = $result->activitycode ?? '';
 		$this->usermodified = $result->usermodified ?? 0;
 		$this->timecreated = $result->timecreated ?? 0;
           $this->timecreated_hr = '';
@@ -193,6 +214,27 @@ class organization extends crud {
 	public function get_code(){
 		return $this->code;
 	}
+
+    /**
+     * @return int
+     */
+    public function get_costcentre(){
+        return $this->costcentre;
+    }
+
+    /**
+     * @return int
+     */
+    public function get_fund(){
+        return $this->fund;
+    }
+
+    /**
+     * @return string
+     */
+    public function get_activitycode(){
+        return $this->activitycode;
+    }
 
 	/**
 	 * @return description - longtext (-1)

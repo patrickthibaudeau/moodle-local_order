@@ -7,6 +7,7 @@ use local_order\room_basics;
 use local_order\rooms;
 use local_order\inventory_categories;
 use local_order\event_types;
+use local_order\setup_types;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -47,6 +48,9 @@ class event_form extends \moodleform
 
         $EVENT_TYPES = new event_types();
         $event_types = $EVENT_TYPES->get_select_array();
+
+        $SETUP_TYPES = new setup_types();
+        $setup_types = $SETUP_TYPES->get_select_array();
 
         // Get buildings and rooms
         // Rooms empty unless a room id exists. Otherwise, will dynamically be updated when building is selected
@@ -168,10 +172,15 @@ class event_form extends \moodleform
             $organization_array, $organization_options);
         $mform->setType('organizationid', PARAM_INT);
 
+        $financialarray[] = $mform->createElement('html', '<span class="badge badge-success">'. $formdata->costcentre . '</span> - ');
+        $financialarray[] = $mform->createElement('html','<span class="badge badge-info">'.  $formdata->fund . '</span> - ');
+        $financialarray[] = $mform->createElement('html','<span class="badge badge-warning">'. $formdata->activitycode . '</span>');
+        $mform->addGroup($financialarray, 'financialar', get_string('financials', 'local_order'), ' ', false);
+
 
         // Event type
-        $mform->addElement('select', 'eventtypeid', get_string('event_type', 'local_order'), $event_types);
-        $mform->setType('eventtypeid', PARAM_INT);
+        $mform->addElement('select', 'setuptype', get_string('event_setup', 'local_order'), $setup_types);
+        $mform->setType('setuptype', PARAM_TEXT);
 
         // Allow to add an event type if one is not available in the list
         $mform->addElement('hidden', 'eventtypename');

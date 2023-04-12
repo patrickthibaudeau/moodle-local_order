@@ -41,7 +41,7 @@ class setup_types {
 	        '' => get_string('select', 'local_order')
 	      ];
 	      foreach($this->results as $r) {
-	            $array[$r->id] = $r->name;
+	            $array[$r->code] = $r->code;
 	      }
 	    return $array;
 	}

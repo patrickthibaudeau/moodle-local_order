@@ -294,6 +294,17 @@ class event extends crud
 
     }
 
+    public function get_organization_budget_codes()
+    {
+        global $DB;
+        $ORGANIZATION = new organization($this->organizationid);
+        $codes = new \stdClass();
+        $codes->costcentre = $ORGANIZATION->get_costcentre();
+        $codes->fund = $ORGANIZATION->get_fund();
+        $codes->activitycode = $ORGANIZATION->get_activitycode();
+        return $codes;
+    }
+
     /**
      * @return name - varchar (255)
      */
@@ -675,7 +686,8 @@ class event extends crud
      * @return array
      * @throws \dml_exception
      */
-    private function get_inventory_changes() {
+    private function get_inventory_changes()
+    {
         global $DB;
         $history = $DB->get_records(TABLE_EVENT_INVENTORY_HISTORY, ['eventid' => $this->id]);
         $changes = [];
@@ -732,7 +744,7 @@ class event extends crud
                 'changes' => $OUTPUT->render_from_template('local_order/inventory_changes', $changes)
             ]);
         $event_vendors = $this->get_all_vendors();
-        foreach($event_vendors as $vendor) {
+        foreach ($event_vendors as $vendor) {
             $vendor_user = $DB->get_record('user', ['id' => $vendor->userid]);
             email_to_user($vendor_user, null, $subject, $message);
         }
@@ -755,7 +767,7 @@ class event extends crud
                 'url' => $CFG->wwwroot . '/local/order/events/edit_event.php?id=' . $this->id
             ]);
         $event_vendors = $this->get_all_vendors();
-        foreach($event_vendors as $vendor) {
+        foreach ($event_vendors as $vendor) {
             $vendor_user = $DB->get_record('user', ['id' => $vendor->userid]);
             email_to_user($vendor_user, null, $subject, $message);
         }
@@ -766,7 +778,8 @@ class event extends crud
      * @return array
      * @throws \dml_exception
      */
-    public function get_all_vendors() {
+    public function get_all_vendors()
+    {
         global $DB;
         $sql = "Select Distinct
                     ov.id,
