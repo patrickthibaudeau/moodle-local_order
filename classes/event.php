@@ -9,7 +9,7 @@
 namespace local_order;
 
 use local_order\crud;
-use local_order\room;
+use local_order\room_basic;
 use local_order\vendor;
 use local_order\inventory_categories;
 
@@ -405,7 +405,7 @@ class event extends crud
 
     public function get_room_details()
     {
-        $ROOM = new room($this->roomid);
+        $ROOM = new room_basic($this->roomid);
 
         return $ROOM->get_full_name();
     }

@@ -293,7 +293,7 @@ class events
      * @return array
      * @throws \dml_exception
      */
-    public function get_event_ids_by_daterange($date_range)
+    public function get_event_ids_by_daterange($date_range, $building = null, $room = null, $status = -1, $organization = -1)
     {
         global $DB;
 
@@ -301,7 +301,29 @@ class events
         $start_time = strtotime($date_range[0] . ' 00:00:00');
         $end_time = strtotime($date_range[1] . ' 23:59:59');
 
-        $sql = "SELECT id FROM {order_event} WHERE starttime BETWEEN ? AND ? ORDER BY starttime";
+        $sql = "SELECT 
+                    e.id 
+                FROM 
+                    {order_event} e Left JOIN 
+                    {order_room_basic} rb On rb.id = e.roomid 
+                WHERE starttime BETWEEN $start_time AND $end_time ";
+
+        if ($status != -1) {
+            $sql .= " AND e.status = $status ";
+        }
+
+        if ($building) {
+            $sql .= " AND rb.building_shortname='$building' ";
+        }
+
+        if ($room) {
+            $sql .= " AND rb.name = '$room' ";
+        }
+
+        if ($organization > 0) {
+            $sql .= " AND e.organizationid = $organization ";
+        }
+    $sql .= " ORDER BY e.starttime ASC";
 
         return $DB->get_records_sql($sql, [$start_time, $end_time]);
     }

@@ -99,9 +99,14 @@ console.log(dateRange);
     // Download PDF button
     $('.btn-local-order-export-pdf').on('click', function(){
         let inventoryCategoryId = $(this).data('inventorycategory');
+        let room = $('#local-order-room-filter').val();
+        let building = $('#local-order-building-filter').val();
+        let status = $('#local-order-status-filter').val();
+        let org = $('#local-order-organization-filter').val();
         let dateRange = $('#local_order_events_daterange').val();
         window.open(
-            M.cfg.wwwroot + '/local/order/export/pdf.php?icid=' + inventoryCategoryId  + '&daterange=' + dateRange,
+            M.cfg.wwwroot + '/local/order/export/pdf.php?icid=' + inventoryCategoryId  + '&daterange=' + dateRange
+            + '&room=' + room + '&building=' + building + '&status=' + status + '&organization=' + org,
             '_blank'
         );
     });
@@ -183,10 +188,6 @@ console.log(dateRange);
     });
 
     $('#clear-filters').on('click', function(){
-        // $('#local-order-room-filter').val('');
-        // $('#local-order-building-filter').val('');
-        // $('#local-order-status-filter').val('');
-        // $('#local-order-organization-filter').val('');
         let dateRange = $('#local_order_events_daterange').val();
         location.href = M.cfg.wwwroot + "/local/order/events/index.php?daterange=" + dateRange;
 

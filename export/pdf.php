@@ -14,7 +14,10 @@ $PAGE->set_context($context);
 $id = optional_param('id', 0, PARAM_INT);
 $inventory_category_id = optional_param('icid', 0, PARAM_INT);
 $daterange = optional_param('daterange', date('m/d/Y - m/d/Y', time()), PARAM_TEXT); // event id
-
+$building = optional_param('building', '', PARAM_TEXT);
+$room = optional_param('room', '', PARAM_TEXT);
+$status = optional_param('status', -1, PARAM_INT);
+$organization = optional_param('organization', -1, PARAM_INT);
 // Set up PDF
 
 $pdf = new TCPDF('P', 'in', 'letter', true, 'UTF-8', false);
@@ -58,7 +61,7 @@ if ($id) {
     $date_name = str_replace('/', '-', $daterange);
     // Export all events based on date range
     $EVENTS = new events();
-    $events = $EVENTS->get_event_ids_by_daterange($daterange);
+    $events = $EVENTS->get_event_ids_by_daterange($daterange, $building, $room, $status, $organization);
     // loop through events
     foreach ($events as $e) {
         $EVENT = new event($e->id);
