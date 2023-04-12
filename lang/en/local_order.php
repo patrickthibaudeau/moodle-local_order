@@ -173,6 +173,7 @@ $string['order:event_change_status'] = 'Update status';
 $string['order:inventory_view'] = 'View inventory items';
 $string['order:inventory_edit'] = 'Create/Edit inventory items';
 $string['order:inventory_delete'] = 'Delete inventory items';
+$string['order:inventory_add'] = 'Add inventory items';
 $string['order:organization_view'] = 'View organizations';
 $string['order:organization_edit'] = 'Create/Edit organizations';
 $string['order:organization_delete'] = 'Delete organizations';

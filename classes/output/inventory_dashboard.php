@@ -42,6 +42,8 @@ class inventory_dashboard implements \renderable, \templatable
     {
         global $USER, $CFG, $DB;
 
+        $context = \context_system::instance();
+
         $modal = [
             'modal_id' => 'inventoryDelete',
             'title' => get_string('delete_inventory', 'local_order'),
@@ -76,7 +78,8 @@ class inventory_dashboard implements \renderable, \templatable
             'inventory_modal' => $modal,
             'alert_modal' => $alert_modal,
             'category_id' => $this->category_id,
-            'categories' => $categories
+            'categories' => $categories,
+            'can_add' => has_capability('local/order:inventory_add', $context)
         ];
 
         return $data;

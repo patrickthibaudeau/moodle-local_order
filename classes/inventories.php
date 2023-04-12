@@ -85,8 +85,9 @@ class inventories
         $PAGE->set_context($context);
         require_login(1, false);
 
-        $can_edit = has_capability('local/order:event_edit', $context);
-        $can_delete = has_capability('local/order:event_delete', $context);
+        $can_edit = has_capability('local/order:inventory_edit', $context);
+        $can_delete = has_capability('local/order:inventory_delete', $context);
+        $can_add = has_capability('local/order:inventory_add', $context);
 
         $sql = "Select
                     i.id,
@@ -147,7 +148,8 @@ class inventories
                 'id' => $r->id,
                 'type' => 'inventory',
                 'can_edit' => $can_edit,
-                'can_delete' => $can_delete
+                'can_delete' => $can_delete,
+                'can_add' => $can_add,
             ];
             $inventory[$i]['id'] = $r->id;
             $inventory[$i]['name'] = $r->name;

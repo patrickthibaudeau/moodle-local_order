@@ -2,15 +2,18 @@
     <div class="col">
         <h3 class="card-title">{{#str}}filters, local_order{{/str}}</h3>
     </div>
-    <div class="col d-flex justify-content-end">
-        <div class="form-group fitem">
-            <button class="btn btn-outline-primary btn-add-new">{{#str}}new, local_order{{/str}}</button>
+    {{#can_add}}
+        <div class="col d-flex justify-content-end">
+            <div class="form-group fitem">
+                <button class="btn btn-outline-primary btn-add-new">{{#str}}new, local_order{{/str}}</button>
+            </div>
         </div>
-    </div>
+    {{/can_add}}
 </div>
 <div class="form-row align-items-center">
     <div class="col-auto">
-        <label class="sr-only" for="local_order_inventory_category">{{#str}}inventory_category, local_order{{/str}}</label>
+        <label class="sr-only" for="local_order_inventory_category">{{#str}}
+            inventory_category, local_order{{/str}}</label>
         <div class="input-group mb-2">
             <select id="local_order_inventory_category" class="form-control">
                 {{#categories}}

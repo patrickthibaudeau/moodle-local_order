@@ -84,6 +84,15 @@ $capabilities = array(
             'user' => CAP_ALLOW
         )
     ),
+    'local/order:event_delete' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'manager' => CAP_ALLOW,
+            'user' => CAP_ALLOW
+        )
+    ),
     /**
      * Inventory capabilties
      * Also include event_types and setup_types
@@ -105,6 +114,14 @@ $capabilities = array(
         )
     ),
     'local/order:inventory_delete' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'manager' => CAP_ALLOW
+        )
+    ),
+    'local/order:inventory_add' => array(
         'riskbitmask' => RISK_SPAM,
         'captype' => 'read',
         'contextlevel' => CONTEXT_SYSTEM,
