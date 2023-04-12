@@ -11,7 +11,7 @@ global $CFG, $OUTPUT, $SESSION, $PAGE, $DB, $COURSE, $USER;
 require_login(1, false);
 $context = context_system::instance();
 
-$default_date_range = date('m/d/Y', time()) . ' - ' . date('m/d/Y', time());
+$default_date_range = date('m/d/Y', strtotime('05/14/2023')) . ' - ' . date('m/d/Y', strtotime('06/10/2023'));
 
 $date_range = optional_param('daterange', $default_date_range, PARAM_TEXT);
 $building = optional_param('building',null, PARAM_TEXT);
