@@ -760,14 +760,19 @@ class import
         }
 
         // get keys for inventory items (from inventory table) and create dynamic variables
+
         foreach ($inventory_items as $items) {
             foreach ($columns as $key => $name) {
-                if (trim($items->name) == trim($name)) {
+
+                $name = strtolower(str_replace(' ', '_', $name));
+//                echo $name .  '<br>';
+                if (trim($items->code) == trim($name)) {
                     $variable = '_' . $items->code;
                     $$variable = $key;
                 }
             }
         }
+
 
         // Store Current timezone
         $current_timezone = date_default_timezone_get();
@@ -936,7 +941,8 @@ class import
 //
 //            // Finally import all inventory items
 //            foreach ($inventory_items as $items) {
-//                $variable = '_' . $items->code;
+//
+//                $variable = $items->code;
 //                $event_inventory = new \stdClass();
 //                if (trim($rows[$i][$$variable])) {
 //                    $event_inventory_array = [
@@ -952,7 +958,8 @@ class import
 //                        $event_inventory->timecreated = time();
 //                        $event_inventory->timemodified = time();
 //                        $event_inventory->usermodified = $USER->id;
-//                        $DB->insert_record(TABLE_EVENT_INVENTORY, $event_inventory);
+//                        print_object($event_inventory);
+////                        $DB->insert_record(TABLE_EVENT_INVENTORY, $event_inventory);
 //                    }
 //                }
 //                unset($event_inventory);
@@ -963,6 +970,103 @@ class import
         date_default_timezone_set($current_timezone);
         return true;
     }
+
+
+    /**
+     * @param $columns array
+     * @param $rows array
+     * @param $type int 1 = AV, 2 = Catering, 3 = Furnishing
+     * @param $timezone string
+     * @return void
+     */
+    public function event_inventory($columns, $rows, $type, $timezone)
+    {
+        global $CFG, $DB, $USER;
+
+        $INVENTORIES = new inventories();
+        // get all inventory items
+        $inventory_items = $INVENTORIES->get_records_by_category($type);
+        // Get inventory categories. Will be used to create event inventory categories.
+        $INVENTORY_CATEGORIES = new inventory_categories();
+        $inventory_categories = $INVENTORY_CATEGORIES->get_records();
+
+        // Make sure the columns exist
+        if (!in_array('Registrant ID', $columns)) {
+            redirect($CFG->wwwroot . '/local/order/import/index.php?err=Registrant&nbsp;ID');
+        }
+
+        // Set the proper column key
+        $registration_id = -1;
+        // Set the proper key value for the columns
+        foreach ($columns as $key => $name) {
+            switch ($name) {
+                case 'Registrant ID':
+                    $registration_id = $key;
+                    break;
+            }
+        }
+
+        // get keys for inventory items (from inventory table) and create dynamic variables
+
+        foreach ($inventory_items as $items) {
+            foreach ($columns as $key => $name) {
+                $name = strtolower(str_replace(' ', '_', $name));
+                if (trim($items->code) == trim($name)) {
+                    $variable = '_' . $items->code;
+                    $$variable = $key;
+                }
+            }
+        }
+
+        ob_start();
+        // Loop through all events
+        for ($i = 1; $i < count($rows) - 1; $i++) {
+
+            $found = $DB->get_record(TABLE_EVENT, ['code' => trim($rows[$i][$registration_id])]);
+            $event_id = $found->id;
+
+            ob_flush();
+            flush();
+// Event inventory will be imported in a different way
+            // Check to see if event inventory category exists
+            $event_inventory_category = $DB->get_record(TABLE_EVENT_INVENTORY_CATEGORY,
+                ['eventid' => $event_id, 'inventorycategoryid' => $type]);
+
+            $event_inventory_category_id = $event_inventory_category->id;
+
+
+            // Finally import all inventory items
+            foreach ($inventory_items as $items) {
+
+                $variable = $items->code;
+                $event_inventory = new \stdClass();
+                if (trim($rows[$i][$$variable])) {
+                    $event_inventory_array = [
+                        'eventcategoryid' => $event_inventory_category_id,
+                        'inventoryid' => $items->id
+                    ];
+                    // Add inventory item if data exists for it.
+                    if (!$event_inventory_item = $DB->get_record(TABLE_EVENT_INVENTORY, $event_inventory_array)) {
+                        $event_inventory->eventcategoryid = $event_inventory_category_id;
+                        $event_inventory->inventoryid = $items->id;
+                        $event_inventory->name = $items->name;
+                        $event_inventory->description = trim($rows[$i][$$variable]);
+                        $event_inventory->timecreated = time();
+                        $event_inventory->timemodified = time();
+                        $event_inventory->usermodified = $USER->id;
+                        print_object($event_inventory);
+//                        $DB->insert_record(TABLE_EVENT_INVENTORY, $event_inventory);
+                    }
+                }
+                unset($event_inventory);
+            }
+        }
+        ob_clean();
+        // reset timezone to the default time zone.
+        date_default_timezone_set($current_timezone);
+        return true;
+    }
+
 
     private function random_password()
     {

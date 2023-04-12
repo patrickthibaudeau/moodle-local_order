@@ -30,8 +30,8 @@ class import_form extends \moodleform
             'floor' => 'Floor',
             'room_type' => 'Room type',
             'room' => 'Room',
-            'event' => 'Event'
-        ];
+            'event' => 'Event',
+            'event_inventory' => 'Event inventory',];
 
         $timezones = timezone_identifiers_list();
         $timezones_select = [];
@@ -71,9 +71,17 @@ class import_form extends \moodleform
         $inventory_categories = $INVENTORY_CATEGORIES->get_select_array();
         $mform->addElement('select', 'inventory_category', get_string('inventory_category', 'local_order'), $inventory_categories);
         $mform->setType('inventory_category', PARAM_INT);
-        if ($import == 'inventory' || $import == 'event') {
-            $mform->addRule('inventory_category', get_string('required_field', 'local_order'), 'required');
+        switch ($import) {
+            case 'event':
+            case 'event_inventory':
+            case  'inventory':
+                $mform->addRule('inventory_category', get_string('required_field', 'local_order'), 'required');
+                break;
+
         }
+//        if ($import == 'inventory' || $import == 'event' || $import == 'event_inventory') {
+//            $mform->addRule('inventory_category', get_string('required_field', 'local_order'), 'required');
+//        }
         $mform->addHelpButton('inventory_category', 'inventory_category', 'local_order');
 
 

@@ -44,7 +44,7 @@ export const init = () => {
 
     // on import type change, display or hide the menu
     $('#id_import_type').on('change', function() {
-        if ($('#id_import_type').val() == 'event' || $('#id_import_type').val() == 'inventory') {
+        if ($('#id_import_type').val() == 'event' || $('#id_import_type').val() == 'event_inventory' || $('#id_import_type').val() == 'inventory') {
             $('#fitem_id_inventory_category').show();
             $('#local_order_inventory_instructions').hide();
             $('#local_order_event_instructions').hide();
