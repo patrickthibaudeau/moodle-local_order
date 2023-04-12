@@ -175,7 +175,7 @@ class event_form extends \moodleform
         $financialarray[] = $mform->createElement('html', '<span class="badge badge-success">'. $formdata->costcentre . '</span> - ');
         $financialarray[] = $mform->createElement('html','<span class="badge badge-info">'.  $formdata->fund . '</span> - ');
         $financialarray[] = $mform->createElement('html','<span class="badge badge-warning">'. $formdata->activitycode . '</span>');
-        $mform->addGroup($financialarray, 'financialar', get_string('financials', 'local_order'), ' ', false);
+        $mform->addGroup($financialarray, 'financialar', '<b>' . get_string('financials', 'local_order') . '</b>', ' ', false);
 
 
         // Event type
