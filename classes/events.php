@@ -75,16 +75,22 @@ class events
 
     /**
      * @param $date_range
+     * @param $building
+     * @param $room
+     * @param $status
+     * @param $organization
      * @param $start
      * @param $end
      * @param $term
      * @param $order_column
      * @param $order_direction
-     * @return \stdClass
+     * @return void
      * @throws \coding_exception
      * @throws \dml_exception
+     * @throws \moodle_exception
+     * @throws \require_login_exception
      */
-    public function get_datatable($date_range, $building, $room = null, $start, $end, $term, $order_column = 'starttime', $order_direction = 'DESC')
+    public function get_datatable($date_range, $building, $room = null, $status = -1, $organization = -1, $start, $end, $term, $order_column = 'starttime', $order_direction = 'DESC')
     {
         global $CFG, $DB, $OUTPUT, $PAGE, $USER;
 
@@ -153,22 +159,6 @@ class events
                     e.starttime BETWEEN $start_time AND $end_time";
         }
 
-        $status = null;
-        switch (strtolower($term)) {
-            case (preg_match('/^app/', strtolower($term))? true : false):
-                $status = 1;
-                break;
-            case (preg_match('/^pen/', strtolower($term))? true : false):
-                $status = 2;
-                break;
-            case (preg_match('/^canc/', strtolower($term))? true : false):
-                $status = 3;
-                break;
-            case (preg_match('/^new/', strtolower($term))? true : false):
-                $status = 0;
-                break;
-        };
-
         if ($term) {
             $sql .= " AND (e.name LIKE '%$term%' ";
             $sql .= " OR e.status LIKE '%$term%' ";
@@ -181,6 +171,14 @@ class events
             $sql .= " OR e.setuptype LIKE '%$term%' ";
             $sql .= " OR e.workorder LIKE '%$term%' ";
             $sql .= " OR o.name LIKE '%$term%') ";
+        } else {
+            if ($status != -1) {
+                $sql .= " AND e.status = $status ";
+            }
+        }
+
+        if ($organization > 0) {
+            $sql .= " AND e.organizationid = $organization ";
         }
 
         if ($building) {
@@ -191,6 +189,7 @@ class events
             $sql .= " AND rb.name='$room' ";
         }
 
+//        $sql .= " ORDER BY $order_column $order_direction";
         $total_found = count($DB->get_records_sql($sql));
 
         switch ($order_column) {

@@ -29,6 +29,28 @@
 
     <div class="col-auto">
         <div class="input-group mb-2">
+            <select class="form-control refresh-change" name="status" id="local-order-organization-filter">
+                <option value=""></option>
+                {{#organizations}}
+                    <option value="{{value}}" {{#selected}}selected{{/selected}}>{{text}}</option>
+                {{/organizations}}
+            </select>
+        </div>
+    </div>
+</div>
+<div class="form-row align-items-center">
+    <div class="col-auto">
+        <div class="input-group mb-2">
+            <select class="form-control refresh-change w-100" name="status" id="local-order-status-filter">
+                <option value=""></option>
+                {{#statuses}}
+                    <option value="{{value}}" {{selected}}>{{text}}</option>
+                {{/statuses}}
+            </select>
+        </div>
+    </div>
+    <div class="col-auto">
+        <div class="input-group mb-2">
             <select class="form-control" name="building" id="local-order-building-filter">
                 <option value=""></option>
                 {{#buildings}}
@@ -41,7 +63,7 @@
     </div>
     <div class="col-auto">
         <div class="input-group mb-2">
-            <select class="form-control" name="room" id="local-order-room-filter">
+            <select class="form-control  refresh-change" name="room" id="local-order-room-filter">
                 <option value=""></option>
                 {{#rooms}}
                     <option value="{{name}}" {{#selected}}selected{{/selected}}>
@@ -49,6 +71,13 @@
                     </option>
                 {{/rooms}}
             </select>
+        </div>
+    </div>
+    <div class="col-auto">
+        <div class="input-group mb-2">
+            <button class="btn btn-outline-primary" id="clear-filters">
+                {{#str}}clear_filters, local_order{{/str}}
+            </button>
         </div>
     </div>
 </div>

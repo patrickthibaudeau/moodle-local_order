@@ -178,4 +178,35 @@ class organizations
 
     }
 
+    /**
+     * return organizations for template
+     * @param $organization
+     * @return array
+     * @throws \dml_exception
+     */
+    public function get_organizations_for_template($organization) {
+        global $DB;
+        $sql = "Select 
+                    id, 
+                    name
+                From 
+                    {order_organization}
+                Where
+                    deleted = 0
+                ORDER BY name";
+        $results = $DB->get_records_sql($sql);
+        $organizations = [];
+        $i = 0;
+        foreach ($results as $r) {
+            $organizations[$i]['text'] = $r->name;
+            $organizations[$i]['value'] = $r->id;
+            if ($organization == $r->id) {
+                $organizations[$i]['selected'] = true;
+            }
+            $i++;
+        }
+
+        return $organizations;
+    }
+
 }

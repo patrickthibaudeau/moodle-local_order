@@ -7,7 +7,9 @@ $(document).ready(function () {
     let dateRange = $('#local_order_events_daterange').val();
     let selectedBuilding = $('#local-order-building-filter').val();
     let room = $('#local-order-room-filter').val();
-
+    let currentStatus = $('#local-order-status-filter').val();
+    let currentOrg = $('#local-order-organization-filter').val();
+console.log(dateRange);
     let eventsTable = $('#local_order_events_table').DataTable({
         // dom: 'Blfprtip',
         dom: 'lfprtip',
@@ -15,7 +17,8 @@ $(document).ready(function () {
         "serverSide": true,
         "ajax": {
             "url": wwwroot + "/local/order/ajax/events_dashboard.php?daterange=" + dateRange
-                + "&building=" + selectedBuilding + "&room=" + room,
+                + "&building=" + selectedBuilding + "&room=" + room + "&status=" + currentStatus
+                + "&organization=" + currentOrg,
             "type": "POST"
         },
         'deferRender': true,
@@ -115,6 +118,19 @@ $(document).ready(function () {
         placeholder: M.util.get_string('building_placeholder', 'local_order')
     });
 
+
+    // Initiate select2 for status
+    const status = $('#local-order-status-filter').select2({
+        theme: 'bootstrap4',
+        placeholder: 'Status'
+    });
+
+    // Initiate select2 for status
+    const organization = $('#local-order-organization-filter').select2({
+        theme: 'bootstrap4',
+        placeholder: M.util.get_string('organization', 'local_order')
+    });
+
     // Build room menu on building selected
     building.on('select2:select', function (e) {
         let data = e.params.data;
@@ -145,20 +161,34 @@ $(document).ready(function () {
                 $('#local-order-room-filter').on('change', function(){
                     let room = $(this).val();
                     let building = $('#local-order-building-filter').val();
+                    let status = $('#local-order-status-filter').val();
+                    let org = $('#local-order-organization-filter').val();
                     let dateRange = $('#local_order_events_daterange').val();
                     location.href = M.cfg.wwwroot + "/local/order/events/index.php?daterange==" + dateRange + "&room=" + room
-                        + '&building=' + building;
+                        + '&building=' + building + '&status=' + status + '&organization=' + org;
                 });
             }
         });
     });
 
-    $('#local-order-room-filter').off();
-    $('#local-order-room-filter').on('change', function(){
-        let room = $(this).val();
+    $('.refresh-change').off();
+    $('.refresh-change').on('change', function(){
+        let room = $('#local-order-room-filter').val();
         let building = $('#local-order-building-filter').val();
+        let status = $('#local-order-status-filter').val();
+        let org = $('#local-order-organization-filter').val();
         let dateRange = $('#local_order_events_daterange').val();
-        location.href = M.cfg.wwwroot + "/local/order/events/index.php?daterange==" + dateRange + "&room=" + room
-            + '&building=' + building;
+        location.href = M.cfg.wwwroot + "/local/order/events/index.php?daterange=" + dateRange + "&room=" + room
+            + '&building=' + building + '&status=' + status + '&organization=' + org;
+    });
+
+    $('#clear-filters').on('click', function(){
+        // $('#local-order-room-filter').val('');
+        // $('#local-order-building-filter').val('');
+        // $('#local-order-status-filter').val('');
+        // $('#local-order-organization-filter').val('');
+        let dateRange = $('#local_order_events_daterange').val();
+        location.href = M.cfg.wwwroot + "/local/order/events/index.php?daterange=" + dateRange;
+
     });
 });
