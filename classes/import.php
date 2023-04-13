@@ -982,7 +982,7 @@ class import
     public function event_inventory($columns, $rows, $type, $timezone)
     {
         global $CFG, $DB, $USER;
-
+        raise_memory_limit(MEMORY_UNLIMITED);
         $INVENTORIES = new inventories();
         // get all inventory items
         $inventory_items = $INVENTORIES->get_records_by_category($type);
@@ -1010,7 +1010,7 @@ class import
         }
 
         // get keys for inventory items (from inventory table) and create dynamic variables
-
+        ob_start();
         foreach ($inventory_items as $items) {
             foreach ($columns as $key => $name) {
                 if (trim($items->name) == trim($name)) {
@@ -1018,7 +1018,7 @@ class import
                     $variable = '_' . $items->name;
                     $$variable = $key;
 
-                    // Do the import work here
+// Do the import work here
                     for ($i = 1; $i < count($rows) - 1; $i++) {
 
                         if ($found = $DB->get_record(TABLE_EVENT, ['code' => trim($rows[$i][$registration_id])])) {
@@ -1041,7 +1041,7 @@ class import
                                         'eventcategoryid' => $event_inventory_category_id,
                                         'inventoryid' => $items->id
                                     ];
-//                                    echo 'The variable is ' . $$variable . '<br>';
+
                                     $inventoryid = $items->id;
                                     $inventory_name = $items->name;
                                     $quantity = 1;
@@ -1077,7 +1077,8 @@ class import
                                         if ($DB->insert_record(TABLE_EVENT_INVENTORY, $event_inventory)) {
                                             notification::success('Inventory item added: ' . $inventory_name);
                                         }
-
+                                    } else {
+                                        notification::warning('Inventory item already exists: ' . $inventory_name);
                                     }
                                     ob_flush();
                                     flush();
@@ -1087,58 +1088,11 @@ class import
                             }
                         }
                     }
-
-
                 }
             }
         }
-        raise_memory_limit(MEMORY_UNLIMITED);
-        ob_start();
-        // Loop through all events
-        for ($i = 1; $i < count($rows) - 1; $i++) {
-
-            if ($found = $DB->get_record(TABLE_EVENT, ['code' => trim($rows[$i][$registration_id])])) {
-                $event_id = $found->id;
 
 
-// Event inventory will be imported in a different way
-                // Check to see if event inventory category exists
-                $event_inventory_category = $DB->get_record(TABLE_EVENT_INVENTORY_CATEGORY,
-                    ['eventid' => $event_id, 'inventorycategoryid' => $type]);
-
-                $event_inventory_category_id = $event_inventory_category->id;
-
-                // Finally import all inventory items
-                foreach ($inventory_items as $items) {
-
-                    $event_inventory = new \stdClass();
-                    if (null !== trim($rows[$i][$$variable])) {
-                        if (trim($rows[$i][$$variable])) {
-                            $event_inventory_array = [
-                                'eventcategoryid' => $event_inventory_category_id,
-                                'inventoryid' => $items->id
-                            ];
-                            echo 'The variable is ' . $$variable . '<br>';
-                            // Add inventory item if data exists for it.
-                            if (!$event_inventory_item = $DB->get_record(TABLE_EVENT_INVENTORY, $event_inventory_array)) {
-                                $event_inventory->eventcategoryid = $event_inventory_category_id;
-                                $event_inventory->inventoryid = $items->id;
-                                $event_inventory->name = $items->name;
-                                $event_inventory->description = trim($rows[$i][$$variable]);
-                                $event_inventory->timecreated = time();
-                                $event_inventory->timemodified = time();
-                                $event_inventory->usermodified = $USER->id;
-                                print_object($event_inventory);
-//                        $DB->insert_record(TABLE_EVENT_INVENTORY, $event_inventory);
-                            }
-                        }
-                        ob_flush();
-                        flush();
-                        unset($event_inventory);
-                    }
-                }
-            }
-        }
         ob_clean();
         raise_memory_limit(MEMORY_STANDARD);
         // reset timezone to the default time zone.
