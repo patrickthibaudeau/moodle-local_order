@@ -79,6 +79,11 @@ class import_form extends \moodleform
                 break;
 
         }
+
+        $mform->addElement('text', 'section', get_string('section', 'local_order'), ['maxlength' => 100]);
+        $mform->setType('section', PARAM_TEXT);
+        $mform->addHelpButton('section', 'section', 'local_order');
+
 //        if ($import == 'inventory' || $import == 'event' || $import == 'event_inventory') {
 //            $mform->addRule('inventory_category', get_string('required_field', 'local_order'), 'required');
 //        }

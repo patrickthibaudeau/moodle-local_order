@@ -979,7 +979,7 @@ class import
      * @param $timezone string
      * @return void
      */
-    public function event_inventory($columns, $rows, $type, $timezone)
+    public function event_inventory($columns, $rows, $type, $section)
     {
         global $CFG, $DB, $USER;
         raise_memory_limit(MEMORY_UNLIMITED);
@@ -1039,7 +1039,8 @@ class import
                                 if (trim($rows[$i][$$variable])) {
                                     $event_inventory_array = [
                                         'eventcategoryid' => $event_inventory_category_id,
-                                        'inventoryid' => $items->id
+                                        'inventoryid' => $items->id,
+                                        'section' => $section
                                     ];
 
                                     $inventoryid = $items->id;
@@ -1066,6 +1067,7 @@ class import
                                     if (!$event_inventory_item = $DB->get_record(TABLE_EVENT_INVENTORY, $event_inventory_array)) {
                                         $event_inventory->eventcategoryid = $event_inventory_category_id;
                                         $event_inventory->inventoryid = $inventoryid;
+                                        $event_inventory->section = $section;
                                         $event_inventory->name = $inventory_name;
                                         $event_inventory->description = $description;
                                         $event_inventory->quantity = $quantity;

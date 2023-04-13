@@ -153,6 +153,9 @@ $string['status_approved'] = 'Approved';
 $string['status_cancelled'] = 'Cancelled';
 $string['status_new'] = 'New';
 $string['status_pending'] = 'Pending';
+$string['section'] = 'Section';
+$string['section_help'] = '(optional) Create a section to separate related inventory items. For example, if you have 2 meals, '
+ . 'you can enter Meal 1 for the first import file, Meal 2 for the second import file. Otherwise, duplicate items cannot be imported';
 $string['settings'] = 'Settings';
 $string['subtotal'] = 'Subtotal';
 $string['table_must_have_data'] = 'The following tables must have data';

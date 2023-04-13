@@ -109,7 +109,7 @@ if (!$id) {
                     get_string('import', 'local_order') . '</a>';
                 break;
             case 'event_inventory':
-                $IMPORT->event_inventory($first_row, $rows, $data->inventory_category, $data->timezone);
+                $IMPORT->event_inventory($first_row, $rows, $data->inventory_category, $data->section);
                 echo '<a href="' . $CFG->wwwroot . '/local/order/import/index.php?import=event_inventory" class="btn btn-primary">' .
                     get_string('import', 'local_order') . '</a>';
                 break;
