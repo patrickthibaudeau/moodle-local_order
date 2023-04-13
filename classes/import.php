@@ -1003,6 +1003,9 @@ class import
                 case 'Registrant ID':
                     $registration_id = $key;
                     break;
+                case 'AV Package':
+                    $av_package = $key;
+                    break;
             }
         }
 
@@ -1010,58 +1013,134 @@ class import
 
         foreach ($inventory_items as $items) {
             foreach ($columns as $key => $name) {
-                $name = strtolower(str_replace(' ', '_', $name));
-                if (trim($items->code) == trim($name)) {
-                    $variable = '_' . $items->code;
+                if (trim($items->name) == trim($name)) {
+                    echo $items->name . ' - ' . $name . '<br>';
+                    $variable = '_' . $items->name;
                     $$variable = $key;
+
+                    // Do the import work here
+                    for ($i = 1; $i < count($rows) - 1; $i++) {
+
+                        if ($found = $DB->get_record(TABLE_EVENT, ['code' => trim($rows[$i][$registration_id])])) {
+                            $event_id = $found->id;
+
+
+// Event inventory will be imported in a different way
+                            // Check to see if event inventory category exists
+                            $event_inventory_category = $DB->get_record(TABLE_EVENT_INVENTORY_CATEGORY,
+                                ['eventid' => $event_id, 'inventorycategoryid' => $type]);
+
+                            $event_inventory_category_id = $event_inventory_category->id;
+
+                            // Finally import all inventory items
+
+                            $event_inventory = new \stdClass();
+                            if (null !== trim($rows[$i][$$variable])) {
+                                if (trim($rows[$i][$$variable])) {
+                                    $event_inventory_array = [
+                                        'eventcategoryid' => $event_inventory_category_id,
+                                        'inventoryid' => $items->id
+                                    ];
+//                                    echo 'The variable is ' . $$variable . '<br>';
+                                    $inventoryid = $items->id;
+                                    $inventory_name = $items->name;
+                                    $quantity = 1;
+                                    $cost = 0;
+                                    $description = trim($rows[$i][$$variable]);
+                                    // Add inventory item if data exists for it.
+                                    if ($items->name == 'AV Package') {
+                                        // Get inventory item
+                                        $package = $DB->get_record(TABLE_INVENTORY, ['code' => trim($rows[$i][$$variable])]);
+                                        $inventoryid = $package->id;
+                                        $inventory_name = $package->name;
+                                        $description = '';
+                                        $quantity = 1;
+                                        $cost = $quantity * $package->cost;
+                                    }
+
+                                    if (is_number(trim($rows[$i][$$variable]))) {
+                                        $quantity = trim($rows[$i][$$variable]);
+                                        $description = '';
+                                        $cost = $quantity * $items->cost;
+                                    }
+                                    if (!$event_inventory_item = $DB->get_record(TABLE_EVENT_INVENTORY, $event_inventory_array)) {
+                                        $event_inventory->eventcategoryid = $event_inventory_category_id;
+                                        $event_inventory->inventoryid = $inventoryid;
+                                        $event_inventory->name = $inventory_name;
+                                        $event_inventory->description = $description;
+                                        $event_inventory->quantity = $quantity;
+                                        $event_inventory->cost = $cost;
+                                        $event_inventory->timecreated = time();
+                                        $event_inventory->timemodified = time();
+                                        $event_inventory->usermodified = $USER->id;
+//                                        print_object($event_inventory);
+                                        if ($DB->insert_record(TABLE_EVENT_INVENTORY, $event_inventory)) {
+                                            notification::success('Inventory item added: ' . $inventory_name);
+                                        }
+
+                                    }
+                                    ob_flush();
+                                    flush();
+                                    unset($event_inventory);
+                                }
+
+                            }
+                        }
+                    }
+
+
                 }
             }
         }
-
+        raise_memory_limit(MEMORY_UNLIMITED);
         ob_start();
         // Loop through all events
         for ($i = 1; $i < count($rows) - 1; $i++) {
 
-            $found = $DB->get_record(TABLE_EVENT, ['code' => trim($rows[$i][$registration_id])]);
-            $event_id = $found->id;
+            if ($found = $DB->get_record(TABLE_EVENT, ['code' => trim($rows[$i][$registration_id])])) {
+                $event_id = $found->id;
 
-            ob_flush();
-            flush();
+
 // Event inventory will be imported in a different way
-            // Check to see if event inventory category exists
-            $event_inventory_category = $DB->get_record(TABLE_EVENT_INVENTORY_CATEGORY,
-                ['eventid' => $event_id, 'inventorycategoryid' => $type]);
+                // Check to see if event inventory category exists
+                $event_inventory_category = $DB->get_record(TABLE_EVENT_INVENTORY_CATEGORY,
+                    ['eventid' => $event_id, 'inventorycategoryid' => $type]);
 
-            $event_inventory_category_id = $event_inventory_category->id;
+                $event_inventory_category_id = $event_inventory_category->id;
 
+                // Finally import all inventory items
+                foreach ($inventory_items as $items) {
 
-            // Finally import all inventory items
-            foreach ($inventory_items as $items) {
-
-                $variable = $items->code;
-                $event_inventory = new \stdClass();
-                if (trim($rows[$i][$$variable])) {
-                    $event_inventory_array = [
-                        'eventcategoryid' => $event_inventory_category_id,
-                        'inventoryid' => $items->id
-                    ];
-                    // Add inventory item if data exists for it.
-                    if (!$event_inventory_item = $DB->get_record(TABLE_EVENT_INVENTORY, $event_inventory_array)) {
-                        $event_inventory->eventcategoryid = $event_inventory_category_id;
-                        $event_inventory->inventoryid = $items->id;
-                        $event_inventory->name = $items->name;
-                        $event_inventory->description = trim($rows[$i][$$variable]);
-                        $event_inventory->timecreated = time();
-                        $event_inventory->timemodified = time();
-                        $event_inventory->usermodified = $USER->id;
-                        print_object($event_inventory);
+                    $event_inventory = new \stdClass();
+                    if (null !== trim($rows[$i][$$variable])) {
+                        if (trim($rows[$i][$$variable])) {
+                            $event_inventory_array = [
+                                'eventcategoryid' => $event_inventory_category_id,
+                                'inventoryid' => $items->id
+                            ];
+                            echo 'The variable is ' . $$variable . '<br>';
+                            // Add inventory item if data exists for it.
+                            if (!$event_inventory_item = $DB->get_record(TABLE_EVENT_INVENTORY, $event_inventory_array)) {
+                                $event_inventory->eventcategoryid = $event_inventory_category_id;
+                                $event_inventory->inventoryid = $items->id;
+                                $event_inventory->name = $items->name;
+                                $event_inventory->description = trim($rows[$i][$$variable]);
+                                $event_inventory->timecreated = time();
+                                $event_inventory->timemodified = time();
+                                $event_inventory->usermodified = $USER->id;
+                                print_object($event_inventory);
 //                        $DB->insert_record(TABLE_EVENT_INVENTORY, $event_inventory);
+                            }
+                        }
+                        ob_flush();
+                        flush();
+                        unset($event_inventory);
                     }
                 }
-                unset($event_inventory);
             }
         }
         ob_clean();
+        raise_memory_limit(MEMORY_STANDARD);
         // reset timezone to the default time zone.
         date_default_timezone_set($current_timezone);
         return true;
