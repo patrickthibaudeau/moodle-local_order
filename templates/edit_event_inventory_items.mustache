@@ -1,8 +1,15 @@
+<style>
+    .small-text-box {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
 {{#inventory_categories}}
     <div class="card mb-0">
         <div class="card-header" id="heading_{{id}}">
             <h2 class="mb-0">
-                <button class="btn btn-link btn-block text-left btn-collapse-{{id}}" type="button" data-toggle="collapse"
+                <button class="btn btn-link btn-block text-left btn-collapse-{{id}}" type="button"
+                        data-toggle="collapse"
                         data-target="#collapse_{{id}}" aria-expanded="false" aria-controls="collapse_{{id}}">
                     {{name}}
                 </button>
@@ -12,26 +19,30 @@
         <div id="collapse_{{id}}" class="collapse" aria-labelledby="heading_{{id}}"
              data-parent="#event_inventory_accordion">
             <div class="card-body">
-                <table class="table">
-                    <tbody>
-                    {{#items}}
-                        <tr>
-                            <td>{{name}}</td>
-                            <td>{{quantity}}</td>
-                            <td class="d-flex justify-content-end">{{cost_formatted}}</td>
-                            <td>{{{actions}}}</td>
-                        </tr>
-                    {{/items}}
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td class="d-flex justify-content-end"><b>{{{total_cost}}}</b></td>
-                    </tr>
-                    </tbody>
-                </table>
+                {{#items}}
+                        <h5>{{section}}</h5>
+                        <table class="table">
+                            <tbody>
+                            {{#items}}
+                                <tr>
+                                    <td>{{name}}</td>
+                                    <td class="small-text-box">{{description}}</td>
+                                    <td>{{quantity}}</td>
+                                    <td class="d-flex justify-content-end">{{cost_formatted}}</td>
+                                    <td>{{{actions}}}</td>
+                                </tr>
+                            {{/items}}
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="d-flex justify-content-end"><b>{{{total_cost}}}</b></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                {{/items}}
                 <div class="float-right">
-
                     <button type="button" class="btn btn-outline-primary btn-sm btn-inventory-add-item"
                             data-eventinventorycategoryid="{{id}}" data-eventid="{{eventid}}">
                         {{#str}}add, local_order{{/str}}

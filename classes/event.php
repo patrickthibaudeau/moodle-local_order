@@ -514,33 +514,83 @@ class event extends crud
         $can_edit = has_capability('local/order:event_edit', $context);
         $can_delete = has_capability('local/order:event_delete', $context);
 
+        // Get unique sections for this event
+        $sections_sql = "SELECT 
+                            DISTINCT 
+                            eventcategoryid,
+                            section
+                        FROM 
+                            {order_event_inventory} 
+                        WHERE 
+                            eventcategoryid = ?";
+
         $inventory = [];
-        $i = 0;
-        if ($inventory_items = $DB->get_records(TABLE_EVENT_INVENTORY, ['eventcategoryid' => $event_category_id])) {
-            // Set currency object (Format number)
-            $amount = new \NumberFormatter(get_string('currency_locale', 'local_order'),
-                \NumberFormatter::CURRENCY);
-            foreach ($inventory_items as $item) {
-                $ROOM = new room($item->roomid);
-                $actions = [
-                    'id' => $item->id,
-                    'type' => 'event-inventory-item',
-                    'attributes' => 'data-eventid=' . $this->id
-                        . ' data-eventinventorycategoryid=' . $event_category_id,
-                    'can_edit' => $can_edit,
-                    'can_delete' => $can_delete,
-                ];
-                // format cost based on language currency
-                $item->cost_formatted = $amount->format($item->cost);
-                $item->vendor_name = $this->get_vendor_name($item->vendorid);
-                $item->room_name = $ROOM->get_full_name();
-                $item->actions = $OUTPUT->render_from_template('local_order/action_buttons', $actions);
-                $inventory[$i] = $item;
-                unset($ROOM);
-                $i++;
+
+        // Are there any sections?
+        if ($sections = $DB->get_recordset_sql($sections_sql, [$event_category_id])) {
+            $s = 0;
+            foreach ($sections as $section) {
+                // Get per section
+                $section_sql = "SELECT 
+                                    * 
+                                FROM 
+                                    {order_event_inventory} 
+                                WHERE eventcategoryid = ? AND section = ?";
+                $i = 0;
+                $inventory[$s]['section'] = $section->section;
+                $items = [];
+                if ($inventory_items = $DB->get_records_sql($section_sql, [$event_category_id, $section->section])) {
+                    // Set currency object (Format number)
+                    $amount = new \NumberFormatter(get_string('currency_locale', 'local_order'),
+                        \NumberFormatter::CURRENCY);
+                    foreach ($inventory_items as $item) {
+                        $actions = [
+                            'id' => $item->id,
+                            'type' => 'event-inventory-item',
+                            'attributes' => 'data-eventid=' . $this->id
+                                . ' data-eventinventorycategoryid=' . $event_category_id,
+                            'can_edit' => $can_edit,
+                            'can_delete' => $can_delete,
+                        ];
+                        // format cost based on language currency
+                        $item->cost_formatted = $amount->format($item->cost);
+                        $item->vendor_name = $this->get_vendor_name($item->vendorid);
+                        $items[$i] = $item;
+                        $i++;
+                    }
+                }
+                $inventory[$s]['items'] = $items;
+                $s++;
             }
+        } else {
+            $i = 0;
+            $items = [];
+            $inventory[0]['section'] = '';
+            if ($inventory_items = $DB->get_records(TABLE_EVENT_INVENTORY, ['eventcategoryid' => $event_category_id])) {
+                // Set currency object (Format number)
+                $amount = new \NumberFormatter(get_string('currency_locale', 'local_order'),
+                    \NumberFormatter::CURRENCY);
+                foreach ($inventory_items as $item) {
+                    $actions = [
+                        'id' => $item->id,
+                        'type' => 'event-inventory-item',
+                        'attributes' => 'data-eventid=' . $this->id
+                            . ' data-eventinventorycategoryid=' . $event_category_id,
+                        'can_edit' => $can_edit,
+                        'can_delete' => $can_delete,
+                    ];
+                    // format cost based on language currency
+                    $item->cost_formatted = $amount->format($item->cost);
+                    $item->vendor_name = $this->get_vendor_name($item->vendorid);
+                    $item->actions = $OUTPUT->render_from_template('local_order/action_buttons', $actions);
+                    $items[$i] = $item;
+                    $i++;
+                }
+            }
+            $inventory[0]['items'] = $items;
         }
 
+//print_object($data);
         return $inventory;
     }
 
