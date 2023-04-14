@@ -145,6 +145,15 @@ $(document).ready(function () {
             '_blank'
         );
     });
+
+    // Download excel of event
+    $('.btn-local-order-export-excel').on('click', function () {
+        let id = $("input[name='id']").val();
+        let inventoryCategoryId = $(this).data('inventorycategory');
+        window.open(M.cfg.wwwroot + '/local/order/export/excel.php?id=' + id + '&icid=' + inventoryCategoryId,
+            '_blank'
+        );
+    });
 });
 
 /**

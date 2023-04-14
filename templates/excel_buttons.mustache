@@ -1,0 +1,17 @@
+<div class="form-group fitem">
+    <div class="btn-group ml-2 mr-2" role="group">
+        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown"
+                aria-expanded="false">
+            {{#str}}download_excel, local_order{{/str}}
+        </button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item btn-local-order-export-excel" data-inventorycategory="0">
+                {{#str}}all, local_order{{/str}}
+            </a>
+            {{#inventory_categories}}
+                <a class="dropdown-item btn-local-order-export-excel" href="javascript:void(e);"
+                   data-inventorycategory="{{id}}">{{name}}</a>
+            {{/inventory_categories}}
+        </div>
+    </div>
+</div>

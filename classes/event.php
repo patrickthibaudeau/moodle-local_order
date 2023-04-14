@@ -277,6 +277,9 @@ class event extends crud
                 o.phone,
                 o.email,
                 o.website,
+                o.costcentre,
+                o.fund,
+                o.activitycode,
                 c.preferredphone,
                 u.firstname,
                 u.lastname,
@@ -535,7 +538,10 @@ class event extends crud
                                     * 
                                 FROM 
                                     {order_event_inventory} 
-                                WHERE eventcategoryid = ? AND section = ?";
+                                WHERE 
+                                    eventcategoryid = ? AND section = ?
+                                ORDER BY
+                                    name DESC";
                 $i = 0;
                 $inventory[$s]['section'] = $section->section;
                 $items = [];

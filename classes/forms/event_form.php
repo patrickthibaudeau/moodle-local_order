@@ -133,6 +133,7 @@ class event_form extends \moodleform
             }
         }
         $buttonarray[] = $mform->createElement('html', $OUTPUT->render_from_template('local_order/pdf_buttons', $pdf_buttons));
+        $buttonarray[] = $mform->createElement('html', $OUTPUT->render_from_template('local_order/excel_buttons', $pdf_buttons));
         $buttonarray[] = $mform->createElement('submit', 'submitbutton', get_string('savechanges'));
         $buttonarray[] = $mform->createElement('cancel');
         $mform->addGroup($buttonarray, 'buttonar', '', ' ', false);

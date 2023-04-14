@@ -111,6 +111,21 @@ console.log(dateRange);
         );
     });
 
+    // Download EXCEL button
+    $('.btn-local-order-export-excel').on('click', function(){
+        let inventoryCategoryId = $(this).data('inventorycategory');
+        let room = $('#local-order-room-filter').val();
+        let building = $('#local-order-building-filter').val();
+        let status = $('#local-order-status-filter').val();
+        let org = $('#local-order-organization-filter').val();
+        let dateRange = $('#local_order_events_daterange').val();
+        window.open(
+            M.cfg.wwwroot + '/local/order/export/excel.php?icid=' + inventoryCategoryId  + '&daterange=' + dateRange
+            + '&room=' + room + '&building=' + building + '&status=' + status + '&organization=' + org,
+            '_blank'
+        );
+    });
+
     // Return to today's date
     $('#local-order-reset-date').on('click', function(){
         location.href = M.cfg.wwwroot + '/local/order/events/index.php';
