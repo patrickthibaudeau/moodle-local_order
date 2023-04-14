@@ -25,20 +25,22 @@
                             <tbody>
                             {{#items}}
                                 <tr>
-                                    <td>{{name}}</td>
+                                    <td>{{shorter_name}}</td>
                                     <td class="small-text-box">{{description}}</td>
                                     <td>{{quantity}}</td>
                                     <td class="d-flex justify-content-end">{{cost_formatted}}</td>
                                     <td>{{{actions}}}</td>
                                 </tr>
                             {{/items}}
+                            {{#print_total}}
                             <tr>
                                 <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td class="d-flex justify-content-end"><b>{{{total_cost}}}</b></td>
+                                <td class="d-flex justify-content-end"><b>{{total_cost}}</b></td>
                             </tr>
+                            {{/print_total}}
                             </tbody>
                         </table>
                 {{/items}}

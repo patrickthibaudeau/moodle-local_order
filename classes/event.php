@@ -529,8 +529,16 @@ class event extends crud
 
         $inventory = [];
 
+        $number_of_sections = 0;
+        if ($sections_found = $DB->get_recordset_sql($sections_sql, [$event_category_id])) {
+            foreach ($sections_found as $sf) {
+                $number_of_sections++;
+            }
+        }
+
         // Are there any sections?
         if ($sections = $DB->get_recordset_sql($sections_sql, [$event_category_id])) {
+
             $s = 0;
             foreach ($sections as $section) {
                 // Get per section
@@ -560,6 +568,11 @@ class event extends crud
                         ];
                         // format cost based on language currency
                         $item->cost_formatted = $amount->format($item->cost);
+                        if (strlen($item->name) >= 25) {
+                            $item->shorter_name = substr($item->name, 0, 20) . '...';
+                        } else {
+                            $item->shorter_name = $item->name;
+                        }
                         $item->vendor_name = $this->get_vendor_name($item->vendorid);
                         $item->actions = $OUTPUT->render_from_template('local_order/action_buttons', $actions);
                         $items[$i] = $item;
@@ -567,6 +580,11 @@ class event extends crud
                     }
                 }
                 $inventory[$s]['items'] = $items;
+                if ($number_of_sections == $s + 1) {
+                    $inventory[$s]['print_total'] = true;
+                } else {
+                    $inventory[$s]['print_total'] = false;
+                }
                 $s++;
             }
         } else {
@@ -595,7 +613,7 @@ class event extends crud
                 }
             }
             $inventory[0]['items'] = $items;
-        }
+            $inventory[0]['print_total'] = true;        }
 
 //print_object($data);
         return $inventory;
@@ -635,6 +653,27 @@ class event extends crud
 
         }
         return $results;
+    }
+
+    /**
+     * Returns all inventory categories with their items
+     * @param $inventory_category_id default all.
+     * @return array
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
+    public function get_inventory_category_total_cost($inventory_category_id)
+    {
+        global $DB;
+        $category = $DB->get_records();
+        $results = [];
+        $i = 0;
+        $amount = new \NumberFormatter(get_string('currency_locale', 'local_order'),
+            \NumberFormatter::CURRENCY);
+
+        $total =  $amount->format($this->get_total_cost_by_category($inventory_category_id));
+
+        return $total;
     }
 
     /**
