@@ -34,11 +34,9 @@
                             {{/items}}
                             {{#print_total}}
                             <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td class="d-flex justify-content-end"><b>{{total_cost}}</b></td>
+                                <td colspan="5" style="width:100%; text-align: right;">
+                                    <b>{{#str}}total_for_category, local_order{{/str}}: {{total_cost}}</b>
+                                </td>
                             </tr>
                             {{/print_total}}
                             </tbody>

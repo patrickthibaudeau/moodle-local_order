@@ -166,6 +166,7 @@ $string['title'] = 'Title';
 $string['title_help'] = 'Enter the title or name for the event';
 $string['today'] = 'Today';
 $string['total_cost_event'] = 'Total event cost';
+$string['total_for_category'] = 'Total for category';
 $string['vendor'] = 'Vendor';
 $string['vendor_used'] = 'This vendor cannot be deleted because it is assigned to and event';
 $string['vendors'] = 'Vendors';
