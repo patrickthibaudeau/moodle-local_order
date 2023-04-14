@@ -555,6 +555,7 @@ class event extends crud
                         // format cost based on language currency
                         $item->cost_formatted = $amount->format($item->cost);
                         $item->vendor_name = $this->get_vendor_name($item->vendorid);
+                        $item->actions = $OUTPUT->render_from_template('local_order/action_buttons', $actions);
                         $items[$i] = $item;
                         $i++;
                     }
