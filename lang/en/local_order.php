@@ -147,6 +147,7 @@ $string['select'] = 'Select';
 $string['select_other_import'] = 'Please select another import type';
 $string['select_user'] = 'Select user';
 $string['setup_notes'] = 'Setup notes';
+$string['setup_type'] = 'Setup type';
 $string['start_time'] = 'Start date/time';
 $string['status'] = 'Status';
 $string['status_approved'] = 'Approved';
