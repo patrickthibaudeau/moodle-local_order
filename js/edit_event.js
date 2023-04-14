@@ -178,6 +178,7 @@ function init_event_inventory_items() {
                 $('input[name="inventoryid"]').val(0);
                 $('input[name="eventid"]').val(eventId);
                 $('input[name="eventinventorycategoryid"]').val(eventInventoryCategoryId);
+                $('input[name="section"]').val('');
                 // Clear all options
                 $('#event_inventory_name')
                     .find('option')
@@ -242,6 +243,7 @@ function init_event_inventory_items() {
                 // Add values to hidden fields
                 $('input[name="inventoryid"]').val(inventoryid);
                 $('input[name="eventid"]').val(eventId);
+                $('input[name="section"]').val(results.section);
                 $('input[name="eventinventorycategoryid"]').val(eventInventoryCategoryId);
                 $('#event_inventory_description').val(results.description);
                 $('#event_inventory_quantity').val(results.quantity);
@@ -321,6 +323,7 @@ function init_event_inventory_items() {
             eventinventorycategoryid: $('input[name="eventinventorycategoryid"]').val(),
             quantity: $('input[name="quantity"]').val(),
             cost: $('input[name="cost"]').val(),
+            section: $('input[name="section"]').val(),
             description: $('#event_inventory_description').val(),
             inventory_id: $('#event_inventory_name').val(),
             vendorid: $('#event_inventory_vendor').val()
@@ -331,6 +334,7 @@ function init_event_inventory_items() {
             data: data,
             dataType: "html",
             success: function (results) {
+                console.log(results);
                 $('#event_inventory_accordion').html(results);
                 $('#event_inventory_description').val('');
                 $('#event_inventory_quantity').val('');
@@ -343,7 +347,7 @@ function init_event_inventory_items() {
                 $('#collapse_' + data.eventinventorycategoryid).addClass('show');
                 get_event_total_cost(data.eventid);
                 $('#localOrderEditEventModal').modal('hide');
-            }
+            },
         });
     });
 

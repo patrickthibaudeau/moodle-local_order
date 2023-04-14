@@ -25,7 +25,8 @@ if ($id) {
     $date_name = date('Y-m-d H:i', $EVENT->get_starttime()) . ' - ' . date('H:i', $EVENT->get_endtime());
     $data = $EVENT->get_data_for_pdf($inventory_category_id);
 
-    $columns = set_columns($data);
+    $columns = set_columns_single_event($data);
+    print_object($columns);
 
 //print_object($data);
     unset($EVENT);
@@ -47,7 +48,8 @@ if ($id) {
     }
 }
 
-function set_columns($data) {
+function set_columns_single_event($data) {
+    global $DB;
     $columns = array();
     $columns[] = 'registration_id';
     $columns[] = 'association';
@@ -70,7 +72,6 @@ function set_columns($data) {
                 $columns[] = $items[$x]->name;
             }
         } else {
-//            print_object($inventory_items);
             $z = 1;
             foreach($inventory_items as $key => $intventory) {
                 $items = $inventory_items[$key]['items'];
@@ -86,4 +87,28 @@ function set_columns($data) {
     $columns[] = 'cost';
     $columns[] = 'chargebackaccount';
     return $columns;
+}
+
+function prepare_data_single_event($data) {
+
+
+    // Define an array of data
+    $data = [
+        ['Symbol', 'Company', 'Price'],
+        ['GOOG', 'Google Inc.', '800'],
+        ['AAPL', 'Apple Inc.', '500'],
+        ['AMZN', 'Amazon.com Inc.', '250']
+    ];
+
+// Open a file for writing
+    $filename = 'stock.csv';
+    $fp = fopen($filename, 'w');
+
+// Write each row of data to the file
+    foreach ($data as $row) {
+        fputcsv($fp, $row);
+    }
+
+// Close the file
+    fclose($fp);
 }

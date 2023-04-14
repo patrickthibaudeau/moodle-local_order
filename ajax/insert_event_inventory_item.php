@@ -17,6 +17,7 @@ $event_inventory_category_id = required_param('eventinventorycategoryid', PARAM_
 $quantity = optional_param('quantity', 0,PARAM_INT);
 $cost = optional_param('cost', 0,PARAM_FLOAT);
 $description = optional_param('description', 0,PARAM_TEXT);
+$section = optional_param('section', '',PARAM_TEXT);
 $inventory_id= optional_param('inventory_id', 0,PARAM_INT);
 $vendorid = optional_param('vendorid', 0,PARAM_INT);
 
@@ -29,6 +30,7 @@ $data->vendorid = $vendorid;
 $data->inventoryid = $inventory_id;
 $data->name = $INVENTORY->get_name();
 $data->description = $description;
+$data->section = $section;
 $data->quantity = $quantity;
 $data->cost = $cost;
 

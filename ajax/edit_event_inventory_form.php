@@ -65,6 +65,7 @@ $items = [
     'eventid' => $event_id,
     'quantity' => $EVENT_INVENTORY->get_quantity(),
     'description' => $EVENT_INVENTORY->get_description(),
+    'section' => $EVENT_INVENTORY->get_section(),
     'cost' => $EVENT_INVENTORY->get_cost(),
     'inventory' => $inventory_items,
     'vendors' => $vendors

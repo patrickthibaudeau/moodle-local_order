@@ -1,6 +1,10 @@
 <div class="col">
     <div class="card">
         <div class="card-body">
+            <div class="form-group">
+                <label for="event_inventory_section">{{#str}}section, local_order{{/str}}</label>
+                <input type="text" id="event_inventory_section" name="section" class="form-control" value="{{section}}">
+            </div>
             <div id="event_inventory_edit_form">
                 <input type="hidden" name="inventoryid" value="0">
                 <input type="hidden" name="eventid" value="{{eventid}}">

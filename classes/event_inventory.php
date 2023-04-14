@@ -102,6 +102,12 @@ class event_inventory extends crud
      *
      * @var string
      */
+    private $section;
+
+    /**
+     *
+     * @var string
+     */
     private $table;
 
 
@@ -134,6 +140,7 @@ class event_inventory extends crud
         $this->vendorid = $result->vendorid ?? 0;
         $this->inventoryid = $result->inventoryid ?? 0;
         $this->name = $result->name ?? '';
+        $this->section = $result->section ?? '';
         $this->description = $result->description ?? '';
         $this->quantity = $result->quantity ?? 0;
         $this->cost = $result->cost ?? 0;
@@ -172,17 +179,28 @@ class event_inventory extends crud
             //Set user
             $data->usermodified = $USER->id;
 
-            $id = $DB->insert_record($this->table, $data);
+            // only insert if record doesn't already exist
+            $params = [
+                'eventcategoryid' => $data->eventcategoryid,
+                'inventoryid' => $data->inventoryid,
+                'section' => $data->section
+            ];
 
-            // Now insert into history table
-            $NEW_RECORD = new event_inventory($id);
-            $new_record = $NEW_RECORD->get_record();
-            unset($new_record->id);
-            $new_record->eventinventoryid = $id;
-            $new_record->eventid = $NEW_RECORD->get_eventid();
-            $DB->insert_record('order_event_inventory_hist', $new_record);
+            if (!$exists = $DB->get_record($this->table, $params)) {
+                $id = $DB->insert_record($this->table, $data);
+                // Now insert into history table
+                $NEW_RECORD = new event_inventory($id);
+                $new_record = $NEW_RECORD->get_record();
+                unset($new_record->id);
+                $new_record->eventinventoryid = $id;
+                $new_record->eventid = $NEW_RECORD->get_eventid();
+                $DB->insert_record('order_event_inventory_hist', $new_record);
 
-            return $id;
+                return $id;
+            }
+
+            return false;
+
         } else {
             error_log('No data provided');
         }
@@ -237,7 +255,8 @@ class event_inventory extends crud
 
     }
 
-    private function create_history_record() {
+    private function create_history_record()
+    {
         global $DB;
         $current_record = $this->get_record();
         $current_record->eventinventoryid = $current_record->id;
@@ -303,6 +322,14 @@ class event_inventory extends crud
     public function get_name()
     {
         return $this->name;
+    }
+
+    /**
+     * @return section - varchar (255)
+     */
+    public function get_section()
+    {
+        return $this->section;
     }
 
     /**
