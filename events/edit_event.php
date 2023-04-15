@@ -19,10 +19,20 @@ $date_range = optional_param('daterange',
     . date('Y/m/d H:i', round(time() / (15 * 60)) * (15 * 60)), PARAM_TEXT);
 $id = optional_param('id', 0, PARAM_INT);
 
+$room = '';
+$organization = 0;
+$building = '';
+$status = '';
+
 $EVENT = new event($id);
 
 if ($id) {
-    $ROOM = new room($EVENT->get_roomid());
+    if ($event_room = $DB->get_record('order_room_basic', ['id' => $EVENT->get_roomid()])) {
+        $room = $event_room->name;
+        $building = $event_room->building_shortname;
+    }
+    $status = $EVENT->get_statusid();
+    $organization = $EVENT->get_organizationid();
     $formdata = $EVENT->get_record();
     $formdata->title = $formdata->name;
     $formdata->daterange = $date_range;
@@ -52,7 +62,13 @@ $mform = new \local_order\event_form(null, array('formdata' => $formdata));
 
 if ($mform->is_cancelled()) {
     //Handle form cancel operation, if cancel button is present on form
-    redirect($CFG->wwwroot . '/local/order/events/index.php?daterange=' . $date_range);
+    redirect($CFG->wwwroot . '/local/order/events/index.php?daterange='
+        . $date_range
+        . '&room=' . $room
+        . '&building='. $building
+        . '&status=' . $status
+        . '&organization=' . $organization
+    );
 } else if ($data = $mform->get_data()) {
 
     // Set proper fields
@@ -137,7 +153,7 @@ $PAGE->requires->css('/local/order/css/general.css');
 //**********************
 echo $OUTPUT->header();
 local_order_navdrawer_items();
-
+print_object('Status: ' . $status);
 $mform->display();
 //**********************
 //*** DISPLAY FOOTER ***
