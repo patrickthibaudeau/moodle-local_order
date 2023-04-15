@@ -54,4 +54,8 @@ switch ($action) {
         $DB->delete_records('order_vendor_contact', ['id' => $id]);
         return true;
         break;
+    case 'room':
+        $DB->delete_records('order_room_basic', ['id' => $id]);
+        echo true;
+        break;
 }

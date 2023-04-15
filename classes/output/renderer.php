@@ -70,4 +70,14 @@ class renderer extends \plugin_renderer_base {
         return $this->render_from_template('local_order/vendor_contacts', $data);
     }
 
+    /**
+     * Used with rooms/index.php
+     * @param \templatable $inventory
+     * @return type
+     */
+    public function render_rooms_dashboard(\templatable $inventory) {
+        $data = $inventory->export_for_template($this);
+        return $this->render_from_template('local_order/rooms_dashboard', $data);
+    }
+
 }

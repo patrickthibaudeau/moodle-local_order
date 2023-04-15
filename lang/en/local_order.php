@@ -43,6 +43,9 @@ permanently deleted and unrecoverable.';
 $string['delete_organization'] = 'Delete organization';
 $string['delete_organization_help'] = 'Are you sure you want to delete this organization? All data associated with this organization will be 
 permanently deleted and unrecoverable.';
+$string['delete_room'] = 'Delete room';
+$string['delete_room_help'] = 'Are you sure you want to delete this room? All data associated with this room will be 
+permanently deleted and unrecoverable.';
 $string['delete_team_member'] = 'Delete team member';
 $string['delete_team_member_help'] = 'Are you sure you want to delete this team member?';
 $string['delete_vendor'] = 'Delete vendor';
@@ -138,6 +141,7 @@ $string['quantity'] = 'Quantity';
 $string['reports'] = 'Reports';
 $string['required_field'] = 'This field is required';
 $string['room'] = 'Room';
+$string['room_exists'] = 'This room already exists. Please enter a new name';
 $string['room_placeholder'] = 'Rooms will be available when a building is selected';
 $string['room_type'] = 'Room type';
 $string['room_type_import'] = 'Room Type Import';
@@ -149,6 +153,7 @@ $string['select_other_import'] = 'Please select another import type';
 $string['select_user'] = 'Select user';
 $string['setup_notes'] = 'Setup notes';
 $string['setup_type'] = 'Setup type';
+$string['shortname'] = 'Short name';
 $string['start_time'] = 'Start date/time';
 $string['status'] = 'Status';
 $string['status_approved'] = 'Approved';
