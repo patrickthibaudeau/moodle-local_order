@@ -348,6 +348,14 @@ class event extends crud
     }
 
     /**
+     * @return int
+     */
+    public function get_statusid()
+    {
+        return $this->status;
+    }
+
+    /**
      * @return string - varchar (255)
      */
     public function get_workorder()
