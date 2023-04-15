@@ -100,7 +100,7 @@ if ($mform->is_cancelled()) {
         // remove all history for this record
         $EVENT->delete_inventory_history();
         unset($EVENT);
-        redirect($CFG->wwwroot . '/local/order/events/index.php?daterange=' . $data->daterange);
+//        redirect($CFG->wwwroot . '/local/order/events/index.php?daterange=' . $data->daterange);
     } else {
         $EVENT = new event();
         if (!has_capability('local/order:event_view', $context)) {
@@ -110,7 +110,7 @@ if ($mform->is_cancelled()) {
         // remove all history for this record
         $EVENT->delete_inventory_history();
         unset($EVENT);
-        redirect($CFG->wwwroot . '/local/order/events/edit_event.php?id=' . $event_id . '&daterange=' . $data->daterange);
+//        redirect($CFG->wwwroot . '/local/order/events/edit_event.php?id=' . $event_id . '&daterange=' . $data->daterange);
     }
 
 

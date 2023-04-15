@@ -446,19 +446,25 @@ class vendor extends crud
      * @return bool
      * @throws \dml_exception
      */
-    public function update_contact_record($data)
+    public function update_contact_record($data, $primary_contact = 0)
     {
         global $DB, $USER;
         $context = \context_system::instance();
         // Get contact record
         if ($record = $DB->get_record('order_vendor_contact', ['vendorid' => $data->vendorid, 'primarycontact' => 1])) {
             $data->id = $record->id;
+        }
             if ($data) {
                 // Set timemodified
                 if (!isset($data->timemodified)) {
                     $data->timemodified = time();
                 }
 
+                if ($primary_contact) {
+                    $data->primarycontact = 1;
+                } else {
+                    $data->primarycontact = 0;
+                }
                 //Set user
                 $data->usermodified = $USER->id;
 
@@ -471,7 +477,7 @@ class vendor extends crud
             } else {
                 error_log('No data provided');
             }
-        }
+
         return false;
     }
 
@@ -498,7 +504,7 @@ class vendor extends crud
      * @return bool
      * @throws \dml_exception
      */
-    public function insert_contact_record($data)
+    public function insert_contact_record($data, $primary_contact = 0)
     {
         global $DB, $USER;
         $context = \context_system::instance();
@@ -508,17 +514,17 @@ class vendor extends crud
                 $data->timemodified = time();
             }
 
+            if ($primary_contact) {
+                $data->primarycontact = 1;
+            } else {
+                $data->primarycontact = 0;
+            }
+
             //Set user
             $data->usermodified = $USER->id;
 
-            // Only add record if one doesn't exist for this organization. Otherwise, update the record
-            if (!$record = $DB->get_record('order_vendor_contact', ['vendorid' => $data->vendorid, 'primarycontact' => 1])) {
-                $id = $DB->insert_record('order_vendor_contact', $data);
-            } else {
-                $data->id = $record->id;
-                $DB->update_record('order_vendor_contact', $data);
-                $id = $record->id;
-            }
+             $id = $DB->insert_record('order_vendor_contact', $data);
+
             // Add user to vendor role
             $role = $DB->get_record('role', ['shortname' => 'vendor']);
             role_assign($role->id, $data->userid, $context->id);

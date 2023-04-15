@@ -39,12 +39,12 @@ if ($mform->is_cancelled()) {
     if ($data->id) {
         $VENDOR->update_record($data);
         $contact->vendorid = $data->id;
-        $VENDOR->update_contact_record($contact);
+        $VENDOR->update_contact_record($contact, true);
 
     } else {
         $new_id = $VENDOR->insert_record($data);
         $contact->vendorid = $new_id;
-        $VENDOR->insert_contact_record($contact);
+        $VENDOR->insert_contact_record($contact, true);
     }
 
     redirect($CFG->wwwroot . '/local/order/vendor/index.php');
