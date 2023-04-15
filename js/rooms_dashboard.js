@@ -43,7 +43,6 @@ $(document).ready(function () {
                         url: M.cfg.wwwroot + "/local/order/ajax/delete.php?id=" + id + "&action=room",
                         dataType: "html",
                         success: function (resultData) {
-                            console.
                             if (resultData == 1) {
                                 location.reload();
                             } else {
