@@ -130,9 +130,9 @@ class events
                         rb.name as room_name,
                         o.name As organization
                     From
-                        {order_event} e Inner Join
-                        {order_organization} o On o.id = e.organizationid Inner Join
-                        {order_event_inv_category} eic On eic.eventid = e.id Inner Join
+                        {order_event} e Left Join
+                        {order_organization} o On o.id = e.organizationid Left Join
+                        {order_event_inv_category} eic On eic.eventid = e.id Left Join
                         {order_event_inventory} ei On ei.eventcategoryid = eic.id Left JOIN 
                         {order_room_basic} rb On rb.id = e.roomid                       
                     Where 
@@ -152,7 +152,7 @@ class events
                     rb.name as room_name,
                     o.name As organization
                 From
-                    {order_event} e Inner Join
+                    {order_event} e Left Join
                     {order_organization} o On o.id = e.organizationid Left JOIN 
                     {order_room_basic} rb On rb.id = e.roomid
                 Where
@@ -212,7 +212,7 @@ class events
                 $order_column = 'e.starttime';
                 break;
         };
-        $sql .= " Group by e.id";
+//        $sql .= " Group by e.id";
         $sql .= " Order by $order_column $order_direction";
 
         $sql .= " LIMIT $start, $end";

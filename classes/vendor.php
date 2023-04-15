@@ -451,26 +451,28 @@ class vendor extends crud
         global $DB, $USER;
         $context = \context_system::instance();
         // Get contact record
-        $record = $DB->get_record('order_vendor_contact', ['vendorid' => $data->vendorid, 'primarycontact' => 1]);
-        $data->id = $record->id;
-        if ($data) {
-            // Set timemodified
-            if (!isset($data->timemodified)) {
-                $data->timemodified = time();
+        if ($record = $DB->get_record('order_vendor_contact', ['vendorid' => $data->vendorid, 'primarycontact' => 1])) {
+            $data->id = $record->id;
+            if ($data) {
+                // Set timemodified
+                if (!isset($data->timemodified)) {
+                    $data->timemodified = time();
+                }
+
+                //Set user
+                $data->usermodified = $USER->id;
+
+                $id = $DB->update_record('order_vendor_contact', $data);
+                // Add user to vendor role
+                $role = $DB->get_record('role', ['shortname' => 'vendor']);
+                role_assign($role->id, $data->userid, $context->id);
+
+                return $id;
+            } else {
+                error_log('No data provided');
             }
-
-            //Set user
-            $data->usermodified = $USER->id;
-
-            $id = $DB->update_record('order_vendor_contact', $data);
-            // Add user to vendor role
-            $role = $DB->get_record('role', ['shortname' => 'vendor']);
-            role_assign($role->id, $data->userid, $context->id);
-
-            return $id;
-        } else {
-            error_log('No data provided');
         }
+        return false;
     }
 
     /**
