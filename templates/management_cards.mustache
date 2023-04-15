@@ -58,6 +58,26 @@
                 </a>
             </div>
         </div>
+
+        <div class="card">
+            <div class="local_order_image_container">
+                <img src="{{config.wwwroot}}/local/order/img/room.jpg"
+                     class="card-img-top local_order_card_top_image"
+                     alt="...">
+            </div>
+            <div class="card-body">
+                <h3 class="card-title">{{#str}}rooms, local_order{{/str}}</h3>
+                <p class="card-text">
+                    {{#str}}rooms_card_help, local_order{{/str}}
+                </p>
+            </div>
+            <div class="card-footer">
+                <a href="{{config.wwwroot}}/local/order/rooms/index.php" class="btn btn-outline-primary float-right"
+                   title="{{#str}}view, local_order{{/str}} {{#str}}rooms, local_order{{/str}}">
+                    {{#str}}view, local_order{{/str}}
+                </a>
+            </div>
+        </div>
     {{/is_vendor}}
     <div class="card">
         <div class="local_order_image_container">

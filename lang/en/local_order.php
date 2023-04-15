@@ -141,6 +141,7 @@ $string['quantity'] = 'Quantity';
 $string['reports'] = 'Reports';
 $string['required_field'] = 'This field is required';
 $string['room'] = 'Room';
+$string['rooms_card_help'] = 'Manage and add rooms';
 $string['room_exists'] = 'This room already exists. Please enter a new name';
 $string['room_placeholder'] = 'Rooms will be available when a building is selected';
 $string['room_type'] = 'Room type';
