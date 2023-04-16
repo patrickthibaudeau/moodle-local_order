@@ -64,10 +64,6 @@ if ($mform->is_cancelled()) {
     //Handle form cancel operation, if cancel button is present on form
     redirect($CFG->wwwroot . '/local/order/events/index.php?daterange='
         . $date_range
-        . '&room=' . $room
-        . '&building='. $building
-        . '&status=' . $status
-        . '&organization=' . $organization
     );
 } else if ($data = $mform->get_data()) {
 
@@ -153,7 +149,6 @@ $PAGE->requires->css('/local/order/css/general.css');
 //**********************
 echo $OUTPUT->header();
 local_order_navdrawer_items();
-print_object('Status: ' . $status);
 $mform->display();
 //**********************
 //*** DISPLAY FOOTER ***
