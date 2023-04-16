@@ -93,6 +93,14 @@ $capabilities = array(
             'user' => CAP_ALLOW
         )
     ),
+    'local/order:event_approve' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'manager' => CAP_ALLOW,
+        )
+    ),
     /**
      * Inventory capabilties
      * Also include event_types and setup_types

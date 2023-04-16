@@ -15,7 +15,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2023041503;
+$plugin->version = 2023041504;
 $plugin->component = 'local_order';
 $plugin->release = '1.0.5';
 $plugin->requires = 2022041904;

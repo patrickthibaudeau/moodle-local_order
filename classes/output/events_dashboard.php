@@ -55,6 +55,10 @@ class events_dashboard implements \renderable, \templatable {
     public function export_for_template(\renderer_base $output) {
         global $USER, $CFG, $DB;
 
+        $context = \context_system::instance();
+
+        $can_approve = has_capability('local/order:event_approve', $context);
+
         $BUILDINGS = new room_basics();
         $template_rooms = [];
         if ($this->room_name) {
@@ -113,6 +117,7 @@ class events_dashboard implements \renderable, \templatable {
             'event_modal' => $modal,
             'rooms' => $template_rooms,
             'statuses' => $status_array,
+            'can_approve' => $can_approve,
             'buildings' => $BUILDINGS->get_buildings_for_template($this->building_shortname),
             'organizations' => $ORGANIZATIONS->get_organizations_for_template($this->organization),
         ];

@@ -23,6 +23,7 @@ console.log(dateRange);
         },
         'deferRender': true,
         "columns": [
+            {"data": "id"},
             {"data": "code"},
             {"data": "title"},
             {"data": "organization"},
@@ -30,7 +31,7 @@ console.log(dateRange);
             {"data": "type"},
             {"data": "status"},
             {"data": "workorder"},
-            {"data": "date"},
+            {"data": "date", name: "starttime"},
             {"data": "start"},
             {"data": "end"},
             {"data": "actions"},
@@ -38,9 +39,13 @@ console.log(dateRange);
         'columnDefs': [
             {
                 "searchable": false,
-                "targets": [7, 8, 9]
+                "targets": [0, 8, 9, 10, 11]
+            },
+            {
+                "sortable": false,
+                "targets": [0, 11]
             }],
-        'order': [[6, ' asc']],
+        'order': [[8, ' asc']],
         // buttons: [
         //     'excelHtml5',
         // ],
@@ -66,6 +71,21 @@ console.log(dateRange);
                 });
             });
 
+            $("#select-all").change(function() {
+                if (this.checked) {
+                    $(".event-checkbox").each(function() {
+                        this.checked=true;
+                    });
+                    approve_all();
+                } else {
+                    $(".event-checkbox").each(function() {
+                        this.checked=false;
+                    });
+                }
+            });
+
+            approve_all();
+
             // edit event
             $('.btn-edit-event').on('click', function() {
                 let dateRange = $('#local_order_events_daterange').val();
@@ -73,10 +93,18 @@ console.log(dateRange);
                  '&daterange=' + dateRange;
             });
         },
-        "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
-        "pageLength": 10,
+        "lengthMenu": [[50, 100, 250, 500, 1000], [50, 100, 250, 500, 1000]],
+        "pageLength": 50,
         stateSave: false,
     });
+
+    let html = `<span class="approve-all-container">
+                            <br>
+                            <button type="button" class="btn btn-primary btn-approve-all">Approve selected</button>
+                            </span>`;
+    if ($('#local-order-can-approve').val() == 1) {
+        $('#local_order_events_table_length').append(html);
+    }
 
     // // Add some top spacing
     $('.dataTables_length').css('margin-top', '.5rem');
@@ -208,3 +236,20 @@ console.log(dateRange);
 
     });
 });
+
+// Approval all selected events
+function approve_all() {
+    $('.btn-approve-all').off();
+    $('.btn-approve-all').on('click', function(){
+        $(".event-checkbox:checked").each(function(){
+            $.ajax({
+                type: "POST",
+                url: M.cfg.wwwroot + "/local/order/ajax/save.php?id=" + $(this).data('id') + "&action=approve",
+                dataType: "html",
+                success: function (resultData) {
+                }
+            });
+        });
+        location.reload();
+    });
+}

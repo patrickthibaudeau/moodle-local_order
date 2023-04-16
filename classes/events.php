@@ -208,6 +208,9 @@ class events
             case 'organization':
                 $order_column = 'o.name';
                 break;
+            case 'date':
+                $order_column = 'e.starttime';
+                break;
             default:
                 $order_column = 'e.starttime';
                 break;
@@ -250,6 +253,7 @@ class events
                     $status = get_string('status_rej', 'local_order');
                     break;
             }
+            $events[$i]['id'] = '<input type="checkbox" class="event-checkbox" data-id="' . $r->id . '">';
             $events[$i]['code'] = $r->code;
             $events[$i]['title'] = $r->title;
             $events[$i]['status'] = $status;

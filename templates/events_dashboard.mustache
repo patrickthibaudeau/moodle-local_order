@@ -3,12 +3,15 @@
         <div class="card">
             <div class="card-body">
                 {{> local_order/events_dashboard_filters}}
-
+                <input type="hidden" id="local-order-can-approve" value="{{can_approve}}">
                 <div class="row mt-2">
                     <div class="col">
                         <table id="local_order_events_table" class="table table-striped table-hover">
                             <thead class="thead-dark">
                             <tr>
+                                <th>
+                                    <input type="checkbox" id="select-all">
+                                </th>
                                 <th>
                                     Code
                                 </th>
