@@ -314,5 +314,20 @@ function xmldb_local_order_upgrade($oldversion)
         // Order savepoint reached.
         upgrade_plugin_savepoint(true, 2023041503, 'local', 'order');
     }
+
+    if ($oldversion < 2023041600) {
+
+        // Define field inventorycategorycode to be added to order_event_inv_category.
+        $table = new xmldb_table('order_event_inv_category');
+        $field = new xmldb_field('inventorycategorycode', XMLDB_TYPE_CHAR, '100', null, null, null, null, 'inventorycategoryid');
+
+        // Conditionally launch add field inventorycategorycode.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Order savepoint reached.
+        upgrade_plugin_savepoint(true, 2023041600, 'local', 'order');
+    }
     return true;
 }

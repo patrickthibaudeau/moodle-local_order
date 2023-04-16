@@ -11,6 +11,7 @@ define("TABLE_EVENT", "order_event");
 define("TABLE_EVENT_INVENTORY", "order_event_inventory");
 define("TABLE_EVENT_INVENTORY_HISTORY", "order_event_inventory_hist");
 define("TABLE_EVENT_INVENTORY_CATEGORY", "order_event_inv_category");
+define("TABLE_EVENT_INVENTORY_STATUS", "order_event_inv_status");
 define("TABLE_EVENT_TYPE", "order_event_type");
 define("TABLE_FLOOR", "order_floor");
 define("TABLE_INVENTORY", "order_inventory");

@@ -505,8 +505,35 @@ class event extends crud
     {
         global $DB;
         if ($this->id) {
+            $event_status = $DB->get_record(TABLE_EVENT_INVENTORY_STATUS, ['eventid' => $this->id]);
             $categories = $DB->get_records(TABLE_EVENT_INVENTORY_CATEGORY,
                 ['eventid' => $this->id], 'inventorycategoryid');
+            foreach ($categories as $category) {
+                switch($category->inventorycategorycode) {
+                    case 'AV':
+                        if ($event_status->av == true){
+                            $category->is_approved = true;
+                        } else {
+                            $category->is_approved = false;
+                        }
+                        break;
+                    case 'C':
+                        if ($event_status->catering == true){
+                            $category->is_approved = true;
+                        } else {
+                            $category->is_approved = false;
+                        }
+                        break;
+                    case 'F':
+                        if ($event_status->furnishing == true){
+                            $category->is_approved = true;
+                        } else {
+                            $category->is_approved = false;
+                        }
+                        break;
+                }
+                $category->inventorycategoryid = $category->id;
+            }
             return $categories;
         }
         return false;
@@ -1154,6 +1181,7 @@ class event extends crud
                 $params = new \stdClass();
                 $params->eventid = $id;
                 $params->inventorycategoryid = $ic->id;
+                $params->inventorycategorycode = $ic->code;
                 $params->name = $ic->name;
                 $params->usermodified = $USER->id;
                 $params->timecreated = time();

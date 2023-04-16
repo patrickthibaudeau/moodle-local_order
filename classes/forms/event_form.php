@@ -92,19 +92,19 @@ class event_form extends \moodleform
         $status_display = '';
         switch ($formdata->status) {
             case 0:
-                $status_display = '<div class="alert alert-info w-100 d-flex justify-content-center">'
+                $status_display = '<div id="local-order-status-display" class="alert alert-info w-100 d-flex justify-content-center">'
                     . get_string('status_new', 'local_order') . '</div>';
                 break;
             case 1:
-                $status_display = '<div class="alert alert-success w-100 d-flex justify-content-center">'
+                $status_display = '<div id="local-order-status-display" class="alert alert-success w-100 d-flex justify-content-center">'
                     . get_string('status_approved', 'local_order') . '</div>';
                 break;
             case 2:
-                $status_display = '<div class="alert alert-warning w-100 d-flex justify-content-center">'
+                $status_display = '<div id="local-order-status-display" class="alert alert-warning w-100 d-flex justify-content-center">'
                     . get_string('status_pending', 'local_order') . '</div>';
                 break;
             case 3:
-                $status_display = '<div class="alert alert-danger w-100 d-flex justify-content-center">'
+                $status_display = '<div id="local-order-status-display" class="alert alert-danger w-100 d-flex justify-content-center">'
                     . get_string('status_cancelled', 'local_order') . '</div>';
                 break;
         }

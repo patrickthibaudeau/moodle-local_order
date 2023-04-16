@@ -20,29 +20,40 @@
              data-parent="#event_inventory_accordion">
             <div class="card-body">
                 {{#items}}
-                        <h5>{{section}}</h5>
-                        <table class="table">
-                            <tbody>
-                            {{#items}}
-                                <tr>
-                                    <td>{{shorter_name}}</td>
-                                    <td class="small-text-box">{{description}}</td>
-                                    <td>{{quantity}}</td>
-                                    <td class="d-flex justify-content-end">{{cost_formatted}}</td>
-                                    <td>{{{actions}}}</td>
-                                </tr>
-                            {{/items}}
-                            {{#print_total}}
+                    <h5>{{section}}</h5>
+                    <table class="table">
+                        <tbody>
+                        {{#items}}
+                            <tr>
+                                <td>{{shorter_name}}</td>
+                                <td class="small-text-box">{{description}}</td>
+                                <td>{{quantity}}</td>
+                                <td class="d-flex justify-content-end">{{cost_formatted}}</td>
+                                <td>{{{actions}}}</td>
+                            </tr>
+                        {{/items}}
+                        {{#print_total}}
                             <tr>
                                 <td colspan="5" style="width:100%; text-align: right;">
                                     <b>{{#str}}total_for_category, local_order{{/str}}: {{total_cost}}</b>
                                 </td>
                             </tr>
-                            {{/print_total}}
-                            </tbody>
-                        </table>
+                        {{/print_total}}
+                        </tbody>
+                    </table>
                 {{/items}}
                 <div class="float-right">
+                    {{^is_approved}}
+                        <button
+                                type="button"
+                                class="btn btn-outline-primary btn-sm btn-approve-inventory"
+                                data-eventid="{{eventid}}"
+                                data-type="{{inventorycategorycode}}"
+                                data-eventinventorycategoryid="{{id}}"
+                        >
+                            {{#str}}approve, local_order{{/str}}
+                        </button>
+                    {{/is_approved}}
                     <button type="button" class="btn btn-outline-primary btn-sm btn-inventory-add-item"
                             data-eventinventorycategoryid="{{id}}" data-eventid="{{eventid}}">
                         {{#str}}add, local_order{{/str}}

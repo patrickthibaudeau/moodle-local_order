@@ -97,7 +97,16 @@ if ($mform->is_cancelled()) {
         if (isset($data->approvebutton)) {
             $data->status = $EVENT::STATUS_APPROVED;
             $send_approve_message = true;
-
+            // Update status to approved if approved button clicked
+            $inventory_status_params = new stdClass();
+            $eis = $DB->get_record(TABLE_EVENT_INVENTORY_STATUS, ['eventid' => $data->id]);
+            $inventory_status_params->id = $eis->id;
+            $inventory_status_params->av = true;
+            $inventory_status_params->catering = true;
+            $inventory_status_params->furnishing = true;
+            $inventory_status_params->timemodified = time();
+            $inventory_status_params->usermodified = $USER->id;
+            $DB->update_record(TABLE_EVENT_INVENTORY_STATUS, $inventory_status_params);
         }
         $EVENT->update_record($data);
         // Send notification to organizer
@@ -149,6 +158,7 @@ $PAGE->requires->css('/local/order/css/general.css');
 //**********************
 echo $OUTPUT->header();
 local_order_navdrawer_items();
+//print_object($formdata);
 $mform->display();
 //**********************
 //*** DISPLAY FOOTER ***

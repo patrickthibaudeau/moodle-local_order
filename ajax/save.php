@@ -1,7 +1,14 @@
 <?php
 include_once('../../../config.php');
+include_once('../lib.php');
 
-global $DB, $PAGE, $USER;
+use local_order\event;
+
+global $DB, $PAGE, $USER, $OUTPUT;
+
+$context = context_system::instance();
+
+$PAGE->set_context($context);
 
 $action = required_param('action', PARAM_TEXT);
 $id = optional_param('id', 0, PARAM_INT);
@@ -43,5 +50,56 @@ switch ($action) {
 
         $DB->update_record('order_event_inv_status', $event_inventory_status);
         break;
+        case 'approve_inventory':
+            $inventory_type = required_param('type', PARAM_TEXT);
+            $eis = $DB->get_record(TABLE_EVENT_INVENTORY_STATUS, ['eventid' => $id]);
+            $event_inventory_status = new stdClass();
+            $event_inventory_status->id = $eis->id;
+            switch ($inventory_type) {
+                case 'AV':
+                    $event_inventory_status->av = true;
+                    $event_inventory_status->usermodified = $USER->id;
+                    $event_inventory_status->timemodified = time();
+                    $DB->update_record('order_event_inv_status', $event_inventory_status);
+                    break;
+                case 'C':
+                    $event_inventory_status->catering = true;
+                    $event_inventory_status->usermodified = $USER->id;
+                    $event_inventory_status->timemodified = time();
+                    break;
+                case 'F':
+                    $event_inventory_status->furnishing = true;
+                    $event_inventory_status->usermodified = $USER->id;
+                    $event_inventory_status->timemodified = time();
+                    $DB->update_record('order_event_inv_status', $event_inventory_status);
+                    break;
+            }
+            $DB->update_record(TABLE_EVENT_INVENTORY_STATUS, $event_inventory_status);
+            $EVENT = new event($id);
+            // Check to see if all category statuses are true
+            $updated_eis = $DB->get_record(TABLE_EVENT_INVENTORY_STATUS, ['eventid' => $id]);
+            if ($updated_eis->av == true && $updated_eis->catering == true && $updated_eis->furnishing == true) {
+                // Update event status to 'Approved'
+                $DB->update_record('order_event', [
+                    'id' => $id,
+                    'status' => 1,
+                    'usermodified' => $USER->id,
+                    'timemodified' => time()]);
+                $EVENT->send_notification_to_vendors_event_approved();
+            } else {
+                // Update event status to 'Pending'
+                $DB->update_record('order_event', [
+                    'id' => $id,
+                    'status' => 2,
+                    'usermodified' => $USER->id,
+                    'timemodified' => time()]);
+                $EVENT->send_notification_to_vendors_event_pending();
+            }
+
+            $items = [
+                'inventory_categories' => $EVENT->get_inventory_categories_with_items()
+            ];
+            echo $OUTPUT->render_from_template('local_order/edit_event_inventory_items', $items);
+            break;
 
 }

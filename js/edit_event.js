@@ -4,7 +4,7 @@ $(document).ready(function () {
 
     if (window.history && window.history.pushState) {
         window.history.pushState('', null, './');
-        $(window).on('popstate', function() {
+        $(window).on('popstate', function () {
             // alert('Back button was pressed.');
             alert('Sorry, you can\'t use the back button. You must either cancel or submit your changes');
 
@@ -13,22 +13,23 @@ $(document).ready(function () {
 
     // Make sure that revert inventory changes do not happen if the save changes or approve buttons are clicked.
     let submitButtonClicked = false;
-    $('#id_submitbutton').on('click', function() {
+    $('#id_submitbutton').on('click', function () {
         submitButtonClicked = true;
     });
 
-    $('#id_approvebutton').on('click', function() {
+    $('#id_approvebutton').on('click', function () {
         submitButtonClicked = true;
     });
 
-    addEventListener("unload", (event) => {});
+    addEventListener("unload", (event) => {
+    });
     onbeforeunload = (event) => {
         if (!submitButtonClicked) {
             $.ajax({
                 type: "POST",
                 url: M.cfg.wwwroot + "/local/order/ajax/revert_inventory_changes.php?id=" + id,
                 dataType: "html",
-                success: function(data) {
+                success: function (data) {
                     // do nothing. The changes were reverted.
                 }
             });
@@ -36,12 +37,12 @@ $(document).ready(function () {
 
     };
 
-    $('#id_cancel').on('click', function(){
+    $('#id_cancel').on('click', function () {
         $.ajax({
             type: "POST",
             url: M.cfg.wwwroot + "/local/order/ajax/revert_inventory_changes.php?id=" + id,
             dataType: "html",
-            success: function(data) {
+            success: function (data) {
                 // do nothing. The changes were reverted.
             }
         });
@@ -49,7 +50,7 @@ $(document).ready(function () {
 
 
     $('#id_starttime').datetimepicker({
-        allowTimes:[
+        allowTimes: [
             '06:00', '06:15', '06:30', '06:45',
             '07:00', '07:15', '07:30', '07:45',
             '08:00', '08:15', '08:30', '08:45',
@@ -72,7 +73,7 @@ $(document).ready(function () {
         ]
     });
     $('#id_endtime').datetimepicker({
-        allowTimes:[
+        allowTimes: [
             '06:00', '06:15', '06:30', '06:45',
             '07:00', '07:15', '07:30', '07:45',
             '08:00', '08:15', '08:30', '08:45',
@@ -377,6 +378,27 @@ function init_event_inventory_items() {
         }
     });
 
+    // Approve inventory category
+    $('.btn-approve-inventory').on('click', function () {
+        let id = $(this).data('eventid');
+        let type = $(this).data('type');
+        let eventInventoryCategoryid = $(this).data('eventinventorycategoryid')
+        $.ajax({
+            type: "GET",
+            url: M.cfg.wwwroot + "/local/order/ajax/save.php?id=" + id + "&type=" + type + "&action=approve_inventory",
+            dataType: "html",
+            success: function (results) {
+                $('#event_inventory_accordion').html(results);
+                init_event_inventory_items();
+                get_inventory_status(id);
+                // Expand accordiaon
+                $('.btn-collapse-' + eventInventoryCategoryid).attr('aria-expanded', 'true');
+                $('#collapse_' + eventInventoryCategoryid).addClass('show');
+                get_event_total_cost(id);
+            }
+        });
+    });
+
     // Make quantity availabe only when an inventory package is selected
     $('#event_inventory_name').on('select2:select', function () {
         if ($('#event_inventory_name').val() != 0) {
@@ -429,4 +451,23 @@ function get_event_total_cost(eventId) {
 function calculate_cost(quantity, itemCost) {
     let cost = quantity * itemCost;
     $('#event_inventory_cost').val(cost);
+}
+
+function get_inventory_status(eventid) {
+    $.ajax({
+        type: "GET",
+        url: M.cfg.wwwroot + "/local/order/ajax/get_status.php?id=" + eventid,
+        dataType: "html",
+        success: function (results) {
+            if (results == 1) {
+                $('#local-order-status-display').removeClass('alert-warning').addClass('alert-success');
+                $('#local-order-status-display').html('Approved');
+                $('#id_status').val(1);
+            } else {
+                $('#local-order-status-display').removeClass('alert-success').addClass('alert-warning');
+                $('#local-order-status-display').html('Pending');
+                $('#id_status').val(2);
+            }
+        }
+    });
 }
