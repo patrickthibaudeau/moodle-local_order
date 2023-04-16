@@ -21,9 +21,21 @@ $context = context_system::instance();
 //**********************
 echo $OUTPUT->header();
 
-$ROOMS = new room_basics();
-$BUILDINGS = new buildings();
-print_object($ROOMS->get_rooms_for_form());
+ob_start();
+$events = $DB->get_records('order_event',[]);
+foreach($events as $e) {
+    if ($record = $DB->insert_record('order_event_inv_status',
+        ['eventid' => $e->id,
+            'status' => 0,
+            'usermodified' => $USER->id,
+            'timecreated' => time(),
+            'timemodified' => time()])) {
+        \core\notification::success('Event status for '.$e->name.' has been created.');
+    }
+    ob_flush();
+    flush();
+}
+ob_clean();
 //print_object($BUILDINGS->get_buildings_by_campus());
 
 //$events = $DB->get_records(TABLE_EVENT, []);

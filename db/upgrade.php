@@ -272,5 +272,47 @@ function xmldb_local_order_upgrade($oldversion)
         // Order savepoint reached.
         upgrade_plugin_savepoint(true, 2023041300, 'local', 'order');
     }
+
+    if ($oldversion < 2023041502) {
+
+        // Define table order_event_inv_status to be created.
+        $table = new xmldb_table('order_event_inv_status');
+
+        // Adding fields to table order_event_inv_status.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('av', XMLDB_TYPE_INTEGER, '1', null, null, null, '0');
+        $table->add_field('catering', XMLDB_TYPE_INTEGER, '1', null, null, null, '0');
+        $table->add_field('furnishing', XMLDB_TYPE_INTEGER, '1', null, null, null, '0');
+        $table->add_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+        // Adding keys to table order_event_inv_status.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('usermodified', XMLDB_KEY_FOREIGN, ['usermodified'], 'user', ['id']);
+
+        // Conditionally launch create table for order_event_inv_status.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Order savepoint reached.
+        upgrade_plugin_savepoint(true, 2023041502, 'local', 'order');
+    }
+
+    if ($oldversion < 2023041503) {
+
+        // Define field eventid to be added to order_event_inv_status.
+        $table = new xmldb_table('order_event_inv_status');
+        $field = new xmldb_field('eventid', XMLDB_TYPE_INTEGER, '10', null, null, null, '0', 'id');
+
+        // Conditionally launch add field eventid.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Order savepoint reached.
+        upgrade_plugin_savepoint(true, 2023041503, 'local', 'order');
+    }
     return true;
 }
