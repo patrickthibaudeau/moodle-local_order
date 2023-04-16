@@ -25,6 +25,15 @@ ob_start();
 $events = $DB->get_records('order_event', ['status' => 1]);
 
 foreach ($events as $e) {
+    $data = new stdClass();
+    $data->eventid = $e->id;
+    $data->usermodified = $USER->id;
+    $data->timemodified = time();
+    $data->timecreated = time();
+    if ($new_id = $DB->insert_record('order_event_status', $data)) {
+        \core\notification::success('Status record added');
+    }
+
     $eis = $DB->get_record('order_event_inv_status', ['eventid' => $e->id]);
     $params = new stdClass();
     $params->id = $eis->id;
