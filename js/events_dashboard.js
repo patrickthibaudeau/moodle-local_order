@@ -241,15 +241,18 @@ console.log(dateRange);
 function approve_all() {
     $('.btn-approve-all').off();
     $('.btn-approve-all').on('click', function(){
+        let ids = [];
         $(".event-checkbox:checked").each(function(){
-            $.ajax({
-                type: "POST",
-                url: M.cfg.wwwroot + "/local/order/ajax/save.php?id=" + $(this).data('id') + "&action=approve",
-                dataType: "html",
-                success: function (resultData) {
-                }
-            });
+            ids.push($(this).data('id'));
         });
-        location.reload();
+        ids = JSON.stringify(ids);
+        $.ajax({
+            type: "POST",
+            url: M.cfg.wwwroot + "/local/order/ajax/save.php?ids=" + ids + "&action=approve",
+            dataType: "html",
+            success: function (resultData) {
+                location.reload();
+            }
+        });
     });
 }
