@@ -383,20 +383,25 @@ function init_event_inventory_items() {
         let id = $(this).data('eventid');
         let type = $(this).data('type');
         let eventInventoryCategoryid = $(this).data('eventinventorycategoryid')
-        $.ajax({
-            type: "GET",
-            url: M.cfg.wwwroot + "/local/order/ajax/save.php?id=" + id + "&type=" + type + "&action=approve_inventory",
-            dataType: "html",
-            success: function (results) {
-                $('#event_inventory_accordion').html(results);
-                init_event_inventory_items();
-                get_inventory_status(id);
-                // Expand accordiaon
-                $('.btn-collapse-' + eventInventoryCategoryid).attr('aria-expanded', 'true');
-                $('#collapse_' + eventInventoryCategoryid).addClass('show');
-                get_event_total_cost(id);
-            }
-        });
+        if (confirm("are you sure you want to approve all items?")) {
+            $.ajax({
+                type: "GET",
+                url: M.cfg.wwwroot + "/local/order/ajax/save.php?id=" + id + "&type=" + type + "&action=approve_inventory",
+                dataType: "html",
+                success: function (results) {
+                    $('#event_inventory_accordion').html(results);
+                    init_event_inventory_items();
+                    get_inventory_status(id);
+                    // Expand accordiaon
+                    $('.btn-collapse-' + eventInventoryCategoryid).attr('aria-expanded', 'true');
+                    $('#collapse_' + eventInventoryCategoryid).addClass('show');
+                    get_event_total_cost(id);
+                }
+            });
+        } else {
+            return false;
+        }
+
     });
 
     // Make quantity availabe only when an inventory package is selected
