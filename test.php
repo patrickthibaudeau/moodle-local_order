@@ -30,7 +30,7 @@ foreach ($events as $e) {
     $data->usermodified = $USER->id;
     $data->timemodified = time();
     $data->timecreated = time();
-    if ($new_id = $DB->insert_record('order_event_status', $data)) {
+    if ($new_id = $DB->insert_record('order_event_inv_status', $data)) {
         \core\notification::success('Status record added');
     }
 
