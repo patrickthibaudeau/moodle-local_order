@@ -22,18 +22,23 @@ $context = context_system::instance();
 echo $OUTPUT->header();
 
 ob_start();
-$events = $DB->get_records('order_event', ['status' => 1]);
+$events = $DB->get_records('order_event',[]);
 
-foreach ($events as $e) {
+foreach ($events as $event) {
     $data = new stdClass();
-    $data->eventid = $e->id;
+    $data->eventid = $event->id;
     $data->usermodified = $USER->id;
     $data->timemodified = time();
     $data->timecreated = time();
     if ($new_id = $DB->insert_record('order_event_inv_status', $data)) {
         \core\notification::success('Status record added');
     }
+}
 
+//UPdate approved
+$approved_events = $DB->get_records('order_event', ['status' => 1]);
+
+foreach ($approved_events as $e) {
     $eis = $DB->get_record('order_event_inv_status', ['eventid' => $e->id]);
     $params = new stdClass();
     $params->id = $eis->id;
