@@ -141,6 +141,7 @@ function set_columns($inventory_category_id = 0)
         $columns[] = 'taxes';
         $columns[] = 'total';
         $columns[] = 'chargebackaccount';
+        $columns[] = 'HST Number';
     }
 
     return $columns;
@@ -148,6 +149,7 @@ function set_columns($inventory_category_id = 0)
 
 function prepare_data_single_event($event_data, $columns, $inventory_category_id = 0)
 {
+    global $CFG;
     $data = [];
 
     if ($inventory_category_id == 0 || $inventory_category_id == 1) {
@@ -194,6 +196,7 @@ function prepare_data_single_event($event_data, $columns, $inventory_category_id
         $data[432] = $event_data->organization->costcentre . '-'
             . $event_data->organization->fund . '-'
             . $event_data->organization->activitycode;
+        $data[433] = $CFG->local_order_hst_number;
     }
 
 

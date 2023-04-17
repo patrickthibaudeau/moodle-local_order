@@ -1148,7 +1148,7 @@ class event extends crud
      */
     public function get_data_for_pdf($inventory_category_id = 0)
     {
-        global $DB;
+        global $DB, $CFG;
         $data = new \stdClass();
         // Sett the title for the page based on inventory category
         switch ($inventory_category_id) {
@@ -1188,6 +1188,7 @@ class event extends crud
         $data->cost = $this->get_total_cost_of_event();
         $data->taxes = $this->get_taxes_amount();
         $data->total_cost = $this->get_total_amount_with_taxes();
+        $data->hst_number = $CFG->local_order_hst_number    ;
         $data->organization = $this->get_organization_details();
         $data->inventory_items = $this->get_inventory_categories_with_items($even_category_id);
 

@@ -210,5 +210,8 @@ $string['strftime'] = '%H:%M';
 // Taxes
 $string['gst'] = 'GST';
 $string['gst_help'] = 'Enter the GST percentage';
+$string['hst'] = 'HST';
+$string['hst_number'] = 'HST number';
+$string['hst_number_help'] = 'Enter your HST number';
 $string['pst'] = 'PST';
 $string['pst_help'] = 'Enter the PST percentage';

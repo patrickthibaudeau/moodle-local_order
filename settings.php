@@ -35,6 +35,13 @@ if ($hassiteconfig) {
         '5',
         PARAM_INT
     ));
+    $settings->add(new admin_setting_configtext(
+        'local_order_hst_number',
+        get_string('hst_number', 'local_order'),
+        get_string('hst_number_help', 'local_order'),
+        '',
+        PARAM_TEXT
+    ));
 }
 
 
