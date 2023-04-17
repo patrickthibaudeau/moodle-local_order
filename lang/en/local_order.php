@@ -54,7 +54,7 @@ permanently deleted and unrecoverable.';
 $string['description'] = 'Description';
 $string['details'] = 'Details';
 $string['download_pdf'] = 'Download PDF';
-$string['download_excel'] = 'Download EXCEL';
+$string['download_excel'] = 'Download CSV';
 $string['download_sample_files'] = 'Download sample Excel files';
 $string['end_time'] = 'End date/time';
 $string['edit'] = 'Edit';

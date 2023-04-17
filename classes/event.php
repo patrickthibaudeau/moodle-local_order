@@ -678,6 +678,7 @@ class event extends crud
                 $i++;
             } else {
                 // Only return for the specified category
+
                 if ($c->inventorycategoryid == $inventory_category_id) {
                     $c->total_cost = $amount->format($this->get_total_cost_by_category($c->id));
                     $c->items = array_values($this->get_inventory_items_by_category($c->id));
@@ -1117,6 +1118,7 @@ class event extends crud
      */
     public function get_data_for_pdf($inventory_category_id = 0)
     {
+        global $DB;
         $data = new \stdClass();
         // Sett the title for the page based on inventory category
         switch ($inventory_category_id) {
@@ -1124,6 +1126,7 @@ class event extends crud
                 $title = get_string('audio_visual_order', 'local_order');
                 break;
             case 2:
+
                 $title = get_string('catering_order', 'local_order');
                 break;
             case 3:
@@ -1132,6 +1135,13 @@ class event extends crud
             default:
                 $title = get_string('event_order', 'local_order');
                 break;
+        }
+
+        if ( $event_inventory_category = $DB->get_record(TABLE_EVENT_INVENTORY_CATEGORY,
+            ['eventid' => $this->id, 'inventorycategoryid' => $inventory_category_id])) {
+            $even_category_id = $event_inventory_category->id;
+        } else {
+            $even_category_id = 0;
         }
         $data->title = $title;
         $data->code = $this->code; // Event name
@@ -1147,7 +1157,7 @@ class event extends crud
         $data->other_notes = $this->othernotes;
         $data->cost = $this->get_total_cost_of_event();
         $data->organization = $this->get_organization_details();
-        $data->inventory_items = $this->get_inventory_categories_with_items($inventory_category_id);
+        $data->inventory_items = $this->get_inventory_categories_with_items($even_category_id);
 
         return $data;
     }
