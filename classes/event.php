@@ -608,6 +608,7 @@ class event extends crud
                         } else {
                             $item->shorter_name = $item->name;
                         }
+                        $item->display_name = preg_replace ("/^1-/", "", $item->name, 1);
                         $item->vendor_name = $this->get_vendor_name($item->vendorid);
                         $item->actions = $OUTPUT->render_from_template('local_order/action_buttons', $actions);
                         $items[$i] = $item;
@@ -640,6 +641,7 @@ class event extends crud
                         'can_delete' => $can_delete,
                     ];
                     // format cost based on language currency
+                    $item->display_name = preg_replace ("/^1-/", "", $item->name, 1);
                     $item->cost_formatted = $amount->format($item->cost);
                     $item->vendor_name = $this->get_vendor_name($item->vendorid);
                     $item->actions = $OUTPUT->render_from_template('local_order/action_buttons', $actions);

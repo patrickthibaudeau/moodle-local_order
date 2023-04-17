@@ -1,19 +1,19 @@
 <table border="0" style="border-top:0px none white; width: 100%" cellspacing="12">
-    <tr>
-        <td style="text-align: center" colspan="2">
-            <h2>York University</h2>
-            <h2>{{title}}</h2>
-        </td>
-    </tr>
+<!--    <tr>-->
+<!--        <td style="text-align: center" colspan="2">-->
+<!--            <h2>York University</h2>-->
+<!--            <h2>{{title}}</h2>-->
+<!--        </td>-->
+<!--    </tr>-->
     <tr>
         <td style="vertical-align: top; text-align: left"><b>{{#str}}organization, local_order{{/str}}</b>
             <hr>
-{{#organization}}{{name}}{{/organization}}
+            {{#organization}}{{name}}{{/organization}}
         </td>
         <td style="vertical-align: top"><b>{{#str}}event, local_order{{/str}}: {{code}}</b>
             <hr>{{#str}}event_name, local_order{{/str}}: {{name}}
-            <br>{{#str}}chargeback_account, local_order{{/str}}: {{chargebackaccount}}
             {{#organization}}
+                <br>{{#str}}chargeback_account, local_order{{/str}}: {{costcentre}}-{{fund}}-{{activitycode}}
                 <br>{{#str}}phone, core{{/str}}: {{phone}}
                 <br>{{#str}}email, core{{/str}}: {{email}}
             {{/organization}}
@@ -21,8 +21,9 @@
         </td>
     </tr>
     <tr>
-        <td colspan="2"><b>{{#str}}booking_details, local_order{{/str}}</b>
-            <hr><b>{{date}}</b>
+        <td colspan="2"><!-- <b>{{#str}}booking_details, local_order{{/str}}</b> -->
+            <hr>
+            <b>{{date}}</b>
             <br><b>{{start_time}} - {{end_time}} {{name}}</b>
             <br><b>{{#str}}room, local_order{{/str}}: {{room}}</b>
             {{#setup_notes}}
@@ -35,42 +36,46 @@
                 <br>{{other_notes}}
             {{/other_notes}}
 
-            <div style="width:100%; text-align: center;">
-                <h3>{{#str}}inventory, local_order{{/str}}</h3>
-            </div>
+<!--            <div style="width:100%; text-align: center;">-->
+<!--                <h3>{{#str}}inventory, local_order{{/str}}</h3>-->
+<!--            </div>-->
             {{#inventory_items}}
                 <h4>{{name}}</h4>
-            {{#items}}
-                <h5>{{section}}</h5>
-                <table style="border-top:0px none white; width: 100%; padding-left:5px;">
-                    <tr>
-                        <td>
-                            <table style="border-top:0px none white; width: 100%; padding:1px;">
-                                <tr>
-                                    <td style="width:30%">{{#str}}details, local_order{{/str}}</td>
-                                    <td style="width:30%; text-align: center">{{#str}}description, local_order{{/str}}</td>
-                                    <td style="width:20%; text-align: center">{{#str}}quantity, local_order{{/str}}</td>
-                                    <td style="width:20%; text-align: end">{{#str}}cost, local_order{{/str}}</td>
-                                </tr>
-                                {{#items}}
+                <hr>
+                {{#items}}
+                    <h5>{{section}}</h5>
+                    <table style="border-top:0px none white; width: 100%; padding-left:5px;">
+                        <tr>
+                            <td>
+                                <table style="border-top:0px none white; width: 100%; padding:1px;">
                                     <tr>
-                                        <td style="width:30%;">{{name}}</td>
-                                        <td style="width:30%;">{{description}}</td>
-                                        <td style="width:20%; text-align: center">{{quantity}}</td>
-                                        <td style="width:20%; text-align: end">{{cost_formatted}}</td>
+                                        <td style="width:30%">{{#str}}details, local_order{{/str}}</td>
+                                        <td style="width:30%; text-align: center">{{#str}}
+                                            description, local_order{{/str}}</td>
+                                        <td style="width:20%; text-align: center">{{#str}}
+                                            quantity, local_order{{/str}}</td>
+                                        <td style="width:20%; text-align: end">{{#str}}cost, local_order{{/str}}</td>
                                     </tr>
-                                {{/items}}
-                                <tr>
-                                    <td style="width:60%;"></td>
-                                    <td style="width:20%; text-align: right"><b>{{#str}}subtotal, local_order{{/str}}: </b></td>
-                                    <td style="width:20%; text-align: end"><b>{{total_cost}}</b></td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
+                                    {{#items}}
+                                        <tr>
+                                            <td style="width:30%;">{{display_name}}</td>
+                                            <td style="width:30%;">{{description}}</td>
+                                            <td style="width:20%; text-align: center">{{quantity}}</td>
+                                            <td style="width:20%; text-align: end">{{cost_formatted}}</td>
+                                        </tr>
+                                    {{/items}}
+                                    <tr>
+                                        <td style="width:60%;"></td>
+                                        <td style="width:20%; text-align: right"><b>{{#str}}
+                                            subtotal, local_order{{/str}}: </b></td>
+                                        <td style="width:20%; text-align: end"><b>{{total_cost}}</b></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
 
-                </table>
-            {{/items}}
+                    </table>
+                {{/items}}
             {{/inventory_items}}
             <table style="border-top:0px none white; width: 100%; padding:1px;">
                 <tr>
@@ -85,12 +90,13 @@
                 </tr>
                 <tr>
                     <td style="width:60%;"></td>
-                    <td style="width:20%; text-align: right;"><b>{{#str}}total_cost_event, local_order{{/str}}: </b></td>
+                    <td style="width:20%; text-align: right;"><b>{{#str}}total_cost_event, local_order{{/str}}: </b>
+                    </td>
                     <td style="width:20%; text-align: end;"><b>{{total_cost}}</b></td>
                 </tr>
                 <tr>
                     <td style="width:60%;"></td>
-                    <td style="width:20%; text-align: right;">{{#str}}hst_number, local_order{{/str}}: </td>
+                    <td style="width:20%; text-align: right;">{{#str}}hst_number, local_order{{/str}}:</td>
                     <td style="width:20%; text-align: end;">{{hst_number}}</td>
                 </tr>
             </table>
