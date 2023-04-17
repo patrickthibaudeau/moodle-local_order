@@ -39,7 +39,7 @@ if ($id) {
     $formdata->organization = $EVENT->get_organization();
     $formdata->eventtype = $EVENT->get_event_type();
     $formdata->inventory_categories = $EVENT->get_inventory_categories_with_items();
-    $formdata->event_total_cost = $EVENT->get_total_cost_of_event();
+    $formdata->event_total_cost = $EVENT->get_total_amount_with_taxes();
     $financials = $EVENT->get_organization_budget_codes();
     $formdata->costcentre = $financials->costcentre;
     $formdata->fund = $financials->fund;

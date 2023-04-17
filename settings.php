@@ -21,6 +21,20 @@ if ($hassiteconfig) {
         '',
         PARAM_TEXT
     ));
+    $settings->add(new admin_setting_configtext(
+        'local_order_pst',
+        get_string('pst', 'local_order'),
+        get_string('pst_help', 'local_order'),
+        '8',
+        PARAM_INT
+    ));
+    $settings->add(new admin_setting_configtext(
+        'local_order_gst',
+        get_string('gst', 'local_order'),
+        get_string('gst_help', 'local_order'),
+        '5',
+        PARAM_INT
+    ));
 }
 
 

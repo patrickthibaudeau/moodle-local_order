@@ -14,4 +14,4 @@ $id = required_param('id', PARAM_INT);
 
 $EVENT = new event($id);
 
-echo $EVENT->get_total_cost_of_event();
+echo $EVENT->get_total_amount_with_taxes();

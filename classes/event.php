@@ -815,6 +815,36 @@ class event extends crud
     }
 
     /**
+     * Returns Tax amount
+     * @return false|string
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
+    public function get_taxes_amount()
+    {
+        global $CFG;
+        $total = (($CFG->local_order_pst + $CFG->local_order_gst)/100) * (float)str_replace('$', '', $this->get_total_cost_of_event());
+        $amount = new \NumberFormatter(get_string('currency_locale', 'local_order'),
+            \NumberFormatter::CURRENCY);
+        return $amount->format($total);
+    }
+    /**
+     * Returns Total + Tax amount
+     * @return false|string
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
+    public function get_total_amount_with_taxes()
+    {
+
+        $total = (float)str_replace('$','', $this->get_total_cost_of_event()) + (float)str_replace('$', '', $this->get_taxes_amount());
+        $amount = new \NumberFormatter(get_string('currency_locale', 'local_order'),
+            \NumberFormatter::CURRENCY);
+        return $amount->format($total);
+    }
+
+
+    /**
      * @return array
      * @throws \dml_exception
      */
@@ -1156,6 +1186,8 @@ class event extends crud
         $data->setup_notes = $this->setupnotes;
         $data->other_notes = $this->othernotes;
         $data->cost = $this->get_total_cost_of_event();
+        $data->taxes = $this->get_taxes_amount();
+        $data->total_cost = $this->get_total_amount_with_taxes();
         $data->organization = $this->get_organization_details();
         $data->inventory_items = $this->get_inventory_categories_with_items($even_category_id);
 

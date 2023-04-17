@@ -168,10 +168,12 @@ $string['section_help'] = '(optional) Create a section to separate related inven
 $string['settings'] = 'Settings';
 $string['subtotal'] = 'Subtotal';
 $string['table_must_have_data'] = 'The following tables must have data';
+$string['taxes'] = 'Taxes';
 $string['team_members'] = 'Team members';
 $string['title'] = 'Title';
 $string['title_help'] = 'Enter the title or name for the event';
 $string['today'] = 'Today';
+$string['total_cost'] = 'Total cost';
 $string['total_cost_event'] = 'Total event cost';
 $string['total_for_category'] = 'Total for category';
 $string['vendor'] = 'Vendor';
@@ -204,3 +206,9 @@ $string['order:reports_view'] = 'View reports';
 $string['strftimedate'] = '%b %d, %Y';
 $string['strftimelongdate'] = '%A %B %e, %Y';
 $string['strftime'] = '%H:%M';
+
+// Taxes
+$string['gst'] = 'GST';
+$string['gst_help'] = 'Enter the GST percentage';
+$string['pst'] = 'PST';
+$string['pst_help'] = 'Enter the PST percentage';

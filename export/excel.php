@@ -138,6 +138,8 @@ function set_columns($inventory_category_id = 0)
 
     if ($inventory_category_id == 0) {
         $columns[] = 'cost';
+        $columns[] = 'taxes';
+        $columns[] = 'total';
         $columns[] = 'chargebackaccount';
     }
 
@@ -187,7 +189,9 @@ function prepare_data_single_event($event_data, $columns, $inventory_category_id
 
     if ($inventory_category_id == 0) {
         $data[429] = $event_data->cost;
-        $data[430] = $event_data->organization->costcentre . '-'
+        $data[430] = $event_data->taxes;
+        $data[431] = $event_data->total_cost;
+        $data[432] = $event_data->organization->costcentre . '-'
             . $event_data->organization->fund . '-'
             . $event_data->organization->activitycode;
     }

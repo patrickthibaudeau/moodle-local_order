@@ -75,8 +75,18 @@
             <table style="border-top:0px none white; width: 100%; padding:1px;">
                 <tr>
                     <td style="width:60%;"></td>
+                    <td style="width:20%; text-align: right;"><b>{{#str}}total_cost, local_order{{/str}}: </b></td>
+                    <td style="width:20%; text-align: end;"><b>{{cost}}</b></td>
+                </tr>
+                <tr>
+                    <td style="width:60%;"></td>
+                    <td style="width:20%; text-align: right;"><b>{{#str}}taxes, local_order{{/str}}: </b></td>
+                    <td style="width:20%; text-align: end;"><b>{{taxes}}</b></td>
+                </tr>
+                <tr>
+                    <td style="width:60%;"></td>
                     <td style="width:20%; text-align: right;"><b>{{#str}}total_cost_event, local_order{{/str}}: </b></td>
-                    <td style="width:20%; text-align: end;;"><b>{{cost}}</b></td>
+                    <td style="width:20%; text-align: end;"><b>{{total_cost}}</b></td>
                 </tr>
             </table>
         </td>
