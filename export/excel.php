@@ -125,7 +125,7 @@ function prepare_data_single_event($event_data, $columns)
 //print_object($event_data);
     $data[] = $event_data->code;
     $data[] = $event_data->organization->name;
-    $data[] = $event_data->title;
+    $data[] = $event_data->name;
     $data[] = $event_data->date;
     $data[] = $event_data->start_time;
     $data[] = $event_data->end_time;
