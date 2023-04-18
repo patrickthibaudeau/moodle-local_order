@@ -3,13 +3,13 @@ $(document).ready(function () {
     $('#local_order_events_daterange').daterangepicker({
         autoApply: true
     });
-
+    // Get all variables
     let dateRange = $('#local_order_events_daterange').val();
     let selectedBuilding = $('#local-order-building-filter').val();
     let room = $('#local-order-room-filter').val();
     let currentStatus = $('#local-order-status-filter').val();
     let currentOrg = $('#local-order-organization-filter').val();
-console.log(dateRange);
+    // Set data table options
     let eventsTable = $('#local_order_events_table').DataTable({
         // dom: 'Blfprtip',
         dom: 'lfprtip',
@@ -219,6 +219,9 @@ console.log(dateRange);
         });
     });
 
+    /**
+     * Refresh page based on filters
+     */
     $('.refresh-change').off();
     $('.refresh-change').on('change', function(){
         let room = $('#local-order-room-filter').val();
@@ -230,9 +233,13 @@ console.log(dateRange);
             + '&building=' + building + '&status=' + status + '&organization=' + org;
     });
 
+    /**
+     * Reset filters
+     */
     $('#clear-filters').on('click', function(){
         let dateRange = $('#local_order_events_daterange').val();
-        location.href = M.cfg.wwwroot + "/local/order/events/index.php?daterange=" + dateRange;
+        location.href = M.cfg.wwwroot + "/local/order/events/index.php?daterange=" + dateRange
+            + "&room=&building=&status=-1&organization=-1";
 
     });
 });
