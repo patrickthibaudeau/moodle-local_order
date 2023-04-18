@@ -188,6 +188,7 @@ class organizations
         global $DB;
         $sql = "Select 
                     id, 
+                    code,
                     name
                 From 
                     {order_organization}
@@ -198,7 +199,7 @@ class organizations
         $organizations = [];
         $i = 0;
         foreach ($results as $r) {
-            $organizations[$i]['text'] = $r->name;
+            $organizations[$i]['text'] = $r->code . ' - ' . $r->name;
             $organizations[$i]['value'] = $r->id;
             if ($organization == $r->id) {
                 $organizations[$i]['selected'] = true;
