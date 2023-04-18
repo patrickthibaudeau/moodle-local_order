@@ -253,10 +253,28 @@ class events
                     $status = get_string('status_rej', 'local_order');
                     break;
             }
+            // Get status for event inventory
+            $event_inventory_status = $DB->get_record('order_event_inv_status', ['eventid' => $r->id]);
+            $av_status = '<br>AV <i class="fa fa-times-circle-o"></i>';
+            $catering_status = '<br>Catering <i class="fa fa-times-circle-o"></i>';
+            $furnishing_status = '<br>Furnishing <i class="fa fa-times-circle-o"></i>';
+            $other_status = '';
+            if ($event_inventory_status->catering) {
+                $catering_status = '<br>Catering <i class="fa fa-check-circle-o"></i>';
+            }
+
+            if ($event_inventory_status->furnishing) {
+                $furnishing_status = '<br>Furnishing <i class="fa fa-check-circle-o"></i>';
+            }
+
+            if ($event_inventory_status->av) {
+                $av_status = '<br>AV <i class="fa fa-check-circle-o"></i>';
+            }
+
             $events[$i]['id'] = '<input type="checkbox" class="event-checkbox" data-id="' . $r->id . '">';
             $events[$i]['code'] = $r->code;
             $events[$i]['title'] = $r->title;
-            $events[$i]['status'] = $status;
+            $events[$i]['status'] = $status . $av_status . $catering_status . $furnishing_status;
             $events[$i]['date'] = $event_start_date;
             $events[$i]['start'] = $event_start_time;
             $events[$i]['end'] = $event_end_time;
