@@ -324,7 +324,7 @@ function init_event_inventory_items() {
             eventinventorycategoryid: $('input[name="eventinventorycategoryid"]').val(),
             quantity: $('input[name="quantity"]').val(),
             cost: $('input[name="cost"]').val(),
-            section: $('input[name="section"]').val(),
+            section: $('#event_inventory_section').val(),
             description: $('#event_inventory_description').val(),
             inventory_id: $('#event_inventory_name').val(),
             vendorid: $('#event_inventory_vendor').val()
