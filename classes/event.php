@@ -813,7 +813,8 @@ class event extends crud
         }
         $amount = new \NumberFormatter(get_string('currency_locale', 'local_order'),
             \NumberFormatter::CURRENCY);
-        return $amount->format($sum);
+//        return $amount->format($sum);
+        return $sum;
     }
 
     /**
@@ -825,10 +826,12 @@ class event extends crud
     public function get_taxes_amount()
     {
         global $CFG;
-        $total = (($CFG->local_order_pst + $CFG->local_order_gst)/100) * (float)str_replace('$', '', $this->get_total_cost_of_event());
+//        $total = (($CFG->local_order_pst + $CFG->local_order_gst)/100) * (float)str_replace('$', '', $this->get_total_cost_of_event());
+        $total = (($CFG->local_order_pst + $CFG->local_order_gst)/100) * $this->get_total_cost_of_event();
         $amount = new \NumberFormatter(get_string('currency_locale', 'local_order'),
             \NumberFormatter::CURRENCY);
-        return $amount->format($total);
+//        return $amount->format($total);
+        return $total;
     }
     /**
      * Returns Total + Tax amount
@@ -838,8 +841,8 @@ class event extends crud
      */
     public function get_total_amount_with_taxes()
     {
-
-        $total = (float)str_replace('$','', $this->get_total_cost_of_event()) + (float)str_replace('$', '', $this->get_taxes_amount());
+//        $total = (float)str_replace('$','', $this->get_total_cost_of_event()) + (float)str_replace('$', '', $this->get_taxes_amount());
+        $total = $this->get_total_cost_of_event() + $this->get_taxes_amount();
         $amount = new \NumberFormatter(get_string('currency_locale', 'local_order'),
             \NumberFormatter::CURRENCY);
         return $amount->format($total);
@@ -1152,6 +1155,8 @@ class event extends crud
     {
         global $DB, $CFG;
         $data = new \stdClass();
+        $amount = new \NumberFormatter(get_string('currency_locale', 'local_order'),
+            \NumberFormatter::CURRENCY);
         // Sett the title for the page based on inventory category
         switch ($inventory_category_id) {
             case 1:
@@ -1187,8 +1192,8 @@ class event extends crud
         $data->setup_type = $this->setuptype;
         $data->setup_notes = $this->setupnotes;
         $data->other_notes = $this->othernotes;
-        $data->cost = $this->get_total_cost_of_event();
-        $data->taxes = $this->get_taxes_amount();
+        $data->cost = $amount->format($this->get_total_cost_of_event());
+        $data->taxes = $amount->format($this->get_taxes_amount());
         $data->total_cost = $this->get_total_amount_with_taxes();
         $data->hst_number = $CFG->local_order_hst_number    ;
         $data->organization = $this->get_organization_details();
@@ -1233,6 +1238,14 @@ class event extends crud
                 $params->timemodified = time();
                 $DB->insert_record('order_event_inv_category', $params);
             }
+
+            //  Create status record
+            $DB->insert_record('order_event_inv_status', [
+                'eventid' => $id,
+                'timecreated' => time(),
+                'timemodified' => time(),
+                'usermodified' => $USER->id
+            ]);
 
             return $id;
         } else {

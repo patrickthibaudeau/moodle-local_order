@@ -53,6 +53,10 @@ if ($id) {
     $formdata->id = 0;
     $formdata->daterange = $date_range;
     $formdata->organization = [];
+    $formdata->status = 0;
+    $formdata->costcentre = '';
+    $formdata->activitycode = '';
+    $formdata->fund ='';
     $formdata->eventtype = [];
     $formdata->starttime = date('Y/m/d H:i', round(time() / (15 * 60)) * (15 * 60));
     $formdata->endtime = date('Y/m/d H:i', round(time() / (15 * 60)) * (15 * 60));
@@ -131,7 +135,7 @@ if ($mform->is_cancelled()) {
         // remove all history for this record
         $EVENT->delete_inventory_history();
         unset($EVENT);
-//        redirect($CFG->wwwroot . '/local/order/events/edit_event.php?id=' . $event_id . '&daterange=' . $data->daterange);
+        redirect($CFG->wwwroot . '/local/order/events/edit_event.php?id=' . $event_id);
     }
 
 
