@@ -179,7 +179,7 @@ function init_event_inventory_items() {
                 $('input[name="inventoryid"]').val(0);
                 $('input[name="eventid"]').val(eventId);
                 $('input[name="eventinventorycategoryid"]').val(eventInventoryCategoryId);
-                $('input[name="section"]').val('');
+                $('#event_inventory_section').val('');
                 // Clear all options
                 $('#event_inventory_name')
                     .find('option')
@@ -244,7 +244,7 @@ function init_event_inventory_items() {
                 // Add values to hidden fields
                 $('input[name="inventoryid"]').val(inventoryid);
                 $('input[name="eventid"]').val(eventId);
-                $('input[name="section"]').val(results.section);
+                $('#event_inventory_section').val(results.section);
                 $('input[name="eventinventorycategoryid"]').val(eventInventoryCategoryId);
                 $('#event_inventory_description').val(results.description);
                 $('#event_inventory_quantity').val(results.quantity);

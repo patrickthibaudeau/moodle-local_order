@@ -3,7 +3,13 @@
         <div class="card-body">
             <div class="form-group">
                 <label for="event_inventory_section">{{#str}}section, local_order{{/str}}</label>
-                <input type="text" id="event_inventory_section" name="section" class="form-control" value="{{section}}">
+                <select id="event_inventory_section" name="section" class="form-control">
+                    <option vlaue=""></option>
+                    <option vlaue="Meal 1">Meal 1</option>
+                    <option vlaue="Meal 2">Meal 2</option>
+                    <option vlaue="Meal 3">Meal 3</option>
+                    <option vlaue="Meal 4">Meal 4</option>
+                </select>
             </div>
             <div id="event_inventory_edit_form">
                 <input type="hidden" name="inventoryid" value="0">
