@@ -45,6 +45,7 @@ $pdf->SetFont('times', '', 10);
 
     $data['organization'] = $ORGANIZATION->get_record();
     $cost_data = $ORGANIZATION->get_inventory_cost();
+    $data['title']  = 'Event Summary';
     $data['av']  = $ORGANIZATION->get_inventory_cost_per_category('AV');
     $data['catering']  = $ORGANIZATION->get_inventory_cost_per_category('C');
     $data['furnishing']  = $ORGANIZATION->get_inventory_cost_per_category('F');
