@@ -29,7 +29,7 @@ echo '<div class="row">';
 echo '<div class="col">';
 echo '<h3>'.$ORG->get_name().'</h3>';
 
-print_object($ORG->get_inventory_cost());
+print_object($ORG->get_inventory_cost_per_category());
 echo '</div>';
 echo '</div>';
 echo '</div>';

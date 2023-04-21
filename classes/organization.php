@@ -523,6 +523,12 @@ class organization extends crud {
         }
     }
 
+    /**
+     * Returns the inventory cost per item
+     * @return \stdClass
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
     public function get_inventory_cost() {
         global $DB, $CFG;
         $sql = "Select
@@ -562,6 +568,33 @@ class organization extends crud {
         $data->items = $items;
 
         return $data;
+    }
+
+    public function get_inventory_cost_per_category($category = 'AV') {
+        global $DB;
+
+        // Format the cost
+        $amount = new \NumberFormatter(get_string('currency_locale', 'local_order'),
+            \NumberFormatter::CURRENCY);
+
+        $sql = "Select
+    (SELECT SUM(oei.cost) WHERE oei.name = oei.name) as cost
+        From
+            {order_event} oe Inner Join
+            {order_event_inv_category} oeic On oeic.eventid = oe.id Inner Join
+            {order_event_inventory} oei On oei.eventcategoryid = oeic.id
+        Where
+            oe.organizationid = ? And
+            oeic.inventorycategorycode = ?
+        Group By oei.name";
+
+        $results = $DB->get_recordset_sql($sql, [$this->id, $category]);
+        $total_cost = 0;
+        foreach ($results as $result) {
+            $total_cost += $result->cost;
+        }
+
+        return $amount->format($total_cost);
     }
 
 }

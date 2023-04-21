@@ -1,0 +1,109 @@
+<table boder="0"  style="border-top:0px none white; width: 100%" cellspacing="12">
+    <tr>
+        <td>
+            <img src="{{config.wwwroot}}/local/order/img/yorklogo.png"
+                 style="width: 150px; height: auto;">
+        </td>
+        <td style="text-align: center">
+            <h2>{{title}}</h2>
+        </td>
+        <td></td>
+    </tr>
+</table>
+<div style="width: 100%;">
+<table border="0" style="border-top:0px none white; width: 100%" cellspacing="12">
+    <tr>
+        <td style="vertical-align: top; text-align: left"><b>{{#str}}organization, local_order{{/str}}</b>
+            <hr>
+            {{#organization}}{{name}}{{/organization}}
+        </td>
+        <td style="vertical-align: top">
+            <hr>
+            {{#organization}}
+                <br>{{#str}}chargeback_account, local_order{{/str}}: {{costcentre}}-{{fund}}-{{activitycode}}
+                <br>{{#str}}phone, core{{/str}}: {{phone}}
+                <br>{{#str}}email, core{{/str}}: {{email}}
+            {{/organization}}
+            <br>{{#str}}setup_type, local_order{{/str}}: {{#setup_type}}{{setup_type}}{{/setup_type}}<br>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2"><!-- <b>{{#str}}booking_details, local_order{{/str}}</b> -->
+            <hr>
+
+
+                    <table style="border-top:0px none white; width: 100%; padding-left:5px;">
+                        <tr>
+                            <td>
+                                <table style="border-top:0px none white; width: 100%; padding:1px;">
+                                    <tr>
+                                        <td style="width:80%"><b>{{#str}}details, local_order{{/str}}</b></td>
+                                        <td style="width:20%; text-align: end"><b>{{#str}}cost, local_order{{/str}}</b></td>
+                                    </tr>
+
+                                        <tr>
+                                            <td style="width:80%;">Audio/Visual</td>
+                                            <td style="width:20%; text-align: end">{{av}}</td>
+                                        </tr>
+                                    <tr>
+                                        <td style="width:80%;">Catering</td>
+                                        <td style="width:20%; text-align: end">{{catering}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:80%;">Furnishing</td>
+                                        <td style="width:20%; text-align: end">{{furnishing}}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+            <br>
+            <hr>
+            <br>
+            <table style="border-top:0px none white; width: 100%; padding:1px;">
+                <tr>
+
+                    <td style="width:80%; text-align: right;"><b>{{#str}}total_cost, local_order{{/str}}: </b></td>
+                    <td style="width:20%; text-align: end;"><b>{{subtotal}}</b></td>
+                </tr>
+                <tr>
+                    <td style="width:80%; text-align: right;"><b>{{#str}}hst, local_order{{/str}}: </b></td>
+                    <td style="width:20%; text-align: end;"><b>{{taxes}}</b></td>
+                </tr>
+                <tr>
+                    <td style="width:80%; text-align: right;"><b>{{#str}}total_cost_event, local_order{{/str}}: </b>
+                    </td>
+                    <td style="width:20%; text-align: end;"><b>{{total}}</b></td>
+                </tr>
+                <tr>
+                    <td style="width:80%; text-align: right;">{{#str}}hst_number, local_order{{/str}}:</td>
+                    <td style="width:20%; text-align: end;">{{hst_number}}</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+    <table border="0" style="border-top:0px none white; width: 100%" cellspacing="12">
+        <tr>
+            <td style="padding: 5px;">
+                <hr>
+                Signature
+            </td>
+            <td style="padding: 5px;">
+                <hr>
+                Print name
+            </td>
+            <td style="padding: 5px;">
+                <hr>
+                Date
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" style="text-align: center;">
+                I agree to the Policies and General Information as provided in the Catering and AV/Furnishing menus.
+            </td>
+        </tr>
+    </table>

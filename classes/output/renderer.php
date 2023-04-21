@@ -100,4 +100,14 @@ class renderer extends \plugin_renderer_base {
         return $this->render_from_template('local_order/report_event_cost_by_org', $data);
     }
 
+    /**
+     * Used with reports/event_summary_by_org.php
+     * @param \templatable $inventory
+     * @return type
+     */
+    public function render_report_event_summary_by_org(\templatable $report) {
+        $data = $report->export_for_template($this);
+        return $this->render_from_template('local_order/report_event_summary_by_org', $data);
+    }
+
 }
