@@ -1,0 +1,13 @@
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <label for="local-order-organization">{{#str}}organization, local_order{{/str}}</label>
+            <select id="local-order-organization" class="form-control">
+                <option value="">{{#str}}select, local_order{{/str}}</option>
+                {{#organizations}}
+                    <option value="{{value}}">{{text}}</option>
+                {{/organizations}}
+            </select>
+        </div>
+    </div>
+</div>

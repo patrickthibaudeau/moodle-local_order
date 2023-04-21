@@ -13,10 +13,48 @@
  * *************************************************************************
  * ************************************************************************ */
 
-defined('MOODLE_INTERNAL') || die();
+namespace local_order\output;
 
-$plugin->version = 2023042101;
-$plugin->component = 'local_order';
-$plugin->release = '1.1.4';
-$plugin->requires = 2022041904;
-$plugin->maturity = MATURITY_STABLE;
+use local_order\event;
+use local_order\events;
+use local_order\organization;
+use local_order\organizations;
+use local_order\vendors;
+use local_order\inventory_categories;
+use local_order\room_basics;
+
+class reports_dashboard implements \renderable, \templatable {
+
+    /**
+     * @var string
+     */
+    private $date_range;
+
+    public function __construct() {
+        }
+
+    /**
+     * 
+     * @global type $USER
+     * @global type $CFG
+     * @global \moodle_database $DB
+     * @param \renderer_base $output
+     * @return type
+     */
+    public function export_for_template(\renderer_base $output) {
+        global $USER, $CFG, $DB;
+        $can_edit = false;
+        $context = \context_system::instance();
+
+        if (has_capability('local/order:reports_view', $context)) {
+           $can_edit = true;
+        }
+
+        $data = [
+
+        ];
+
+        return $data;
+    }
+
+}

@@ -100,7 +100,7 @@ function local_order_navdrawer_items()
         $items[] = navdrawer::add(
             get_string('reports', 'local_order'),
             null,
-            '#',
+            $CFG->wwwroot . '/local/order/reports/index.php',
             'fas fa-file-invoice',
         );
     }

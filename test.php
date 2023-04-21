@@ -21,37 +21,48 @@ $context = context_system::instance();
 //**********************
 echo $OUTPUT->header();
 
-ob_start();
-$events = $DB->get_records('order_event',[]);
+$ORG = new organization(33);
 
-foreach ($events as $event) {
-    $data = new stdClass();
-    $data->eventid = $event->id;
-    $data->usermodified = $USER->id;
-    $data->timemodified = time();
-    $data->timecreated = time();
-    if ($new_id = $DB->insert_record('order_event_inv_status', $data)) {
-        \core\notification::success('Status record added');
-    }
-}
+//ob_start();
+echo '<div class="container">';
+echo '<div class="row">';
+echo '<div class="col">';
+echo '<h3>'.$ORG->get_name().'</h3>';
+
+print_object($ORG->get_inventory_cost());
+echo '</div>';
+echo '</div>';
+echo '</div>';
+//$events = $DB->get_records('order_event',[]);
+//
+//foreach ($events as $event) {
+//    $data = new stdClass();
+//    $data->eventid = $event->id;
+//    $data->usermodified = $USER->id;
+//    $data->timemodified = time();
+//    $data->timecreated = time();
+//    if ($new_id = $DB->insert_record('order_event_inv_status', $data)) {
+//        \core\notification::success('Status record added');
+//    }
+//}
 
 //UPdate approved
-$approved_events = $DB->get_records('order_event', ['status' => 1]);
-
-foreach ($approved_events as $e) {
-    $eis = $DB->get_record('order_event_inv_status', ['eventid' => $e->id]);
-    $params = new stdClass();
-    $params->id = $eis->id;
-    $params->av = true;
-    $params->catering = true;
-    $params->furnishing = true;
-    $params->usermodified = $USER->id;
-    $params->timemodified = time();
-    $DB->update_record('order_event_inv_status', $params);
-    \core\notification::success('Event Approved');
-    ob_flush();
-    flush();
-}
+//$approved_events = $DB->get_records('order_event', ['status' => 1]);
+//
+//foreach ($approved_events as $e) {
+//    $eis = $DB->get_record('order_event_inv_status', ['eventid' => $e->id]);
+//    $params = new stdClass();
+//    $params->id = $eis->id;
+//    $params->av = true;
+//    $params->catering = true;
+//    $params->furnishing = true;
+//    $params->usermodified = $USER->id;
+//    $params->timemodified = time();
+//    $DB->update_record('order_event_inv_status', $params);
+//    \core\notification::success('Event Approved');
+//    ob_flush();
+//    flush();
+//}
 
 //$events = $DB->get_recordset_sql('SELECT *
 //        FROM `mdl_order_events_to_sql`
@@ -305,7 +316,7 @@ foreach ($approved_events as $e) {
 //    ob_flush();
 //    flush();
 //}
-ob_clean();
+//ob_clean();
 //print_object($BUILDINGS->get_buildings_by_campus());
 
 //$events = $DB->get_records(TABLE_EVENT, []);

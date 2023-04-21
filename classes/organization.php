@@ -523,4 +523,45 @@ class organization extends crud {
         }
     }
 
+    public function get_inventory_cost() {
+        global $DB, $CFG;
+        $sql = "Select
+                     oei.name  as name,
+                    (SELECT SUM(oei.cost) WHERE oei.name = oei.name) as cost,
+                    (SELECT count(oei.id) WHERE oei.name = oei.name) as total
+                From
+                    {order_event} oe Inner Join
+                    {order_event_inv_category} oeic On oeic.eventid = oe.id Inner Join
+                    {order_event_inventory} oei On oei.eventcategoryid = oeic.id
+                Where
+                    oe.organizationid = ?
+                    Group By oei.name";
+        $results = $DB->get_recordset_sql($sql, [$this->id]);
+        $items = [];
+        $total_cost = 0;
+        $i = 0;
+        // Format the cost
+        $amount = new \NumberFormatter(get_string('currency_locale', 'local_order'),
+            \NumberFormatter::CURRENCY);
+        foreach($results as $result) {
+            if ($result->cost != 0) {
+                $items[$i] = new \stdClass();
+                $items[$i]->name = preg_replace ("/^1-/", "", $result->name, 1);
+                $items[$i]->cost = $amount->format($result->cost);
+                $items[$i]->quantity = $result->total;
+                $total_cost += $result->cost;
+                $i++;
+            }
+
+        }
+        $taxes = (($CFG->local_order_gst + $CFG->local_order_pst) / 100) * $total_cost;
+        $data = new \stdClass();
+        $data->subtotal = $amount->format($total_cost);
+        $data->taxes = $amount->format($taxes);
+        $data->total = $amount->format($total_cost + $taxes);
+        $data->items = $items;
+
+        return $data;
+    }
+
 }

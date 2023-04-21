@@ -184,7 +184,7 @@ class organizations
      * @return array
      * @throws \dml_exception
      */
-    public function get_organizations_for_template($organization) {
+    public function get_organizations_for_template($organization = null) {
         global $DB;
         $sql = "Select 
                     id, 

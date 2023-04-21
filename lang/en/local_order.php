@@ -138,6 +138,7 @@ $string['other_notes'] = 'Other notes';
 $string['pending'] = 'Pending';
 $string['pluginname'] = 'Ordering System';
 $string['quantity'] = 'Quantity';
+$string['report_event_cost_by_org'] = 'Event cost by association';
 $string['reports'] = 'Reports';
 $string['required_field'] = 'This field is required';
 $string['room'] = 'Room';
