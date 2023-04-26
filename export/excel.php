@@ -35,7 +35,7 @@ switch ($inventory_category_id) {
 
 $columns = set_columns($inventory_category_id);
 // tell the browser it's going to be a csv file
-header('Content-Type: text/csv');
+header('Content-type: text/csv;');
 // tell the browser we want to save it instead of displaying it
 header('Content-Disposition: attachment; filename="' . $filename . '";');
 // Open a file for writing
@@ -67,6 +67,7 @@ if ($id) {
         $data = $EVENT->get_data_for_pdf($inventory_category_id);
         // Prepare data for CSV row
         $event_data = prepare_data_single_event($data, $columns, $inventory_category_id);
+
         fputcsv($fp, $event_data);
         unset($EVENT);
     }
@@ -173,9 +174,9 @@ function prepare_data_single_event($event_data, $columns, $inventory_category_id
 
 //print_object($event_data);
     $data[] = $event_data->code;
-    $data[] = $event_data->organization->name;
+    $data[] = $event_data->organization->code . ' - ' . $event_data->organization->name;
     $data[] = $event_data->name;
-    $data[] = $event_data->date;
+    $data[] = $event_data->date_short;
     $data[] = $event_data->start_time;
     $data[] = $event_data->end_time;
     $data[] = $event_data->room;

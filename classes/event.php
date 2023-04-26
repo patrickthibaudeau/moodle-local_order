@@ -270,6 +270,7 @@ class event extends crud
         $sql = "Select
                 o.id,
                 o.name,
+                o.code,
                 o.address,
                 o.postal,
                 o.province,
@@ -1185,6 +1186,7 @@ class event extends crud
         $data->name = $this->name; // Event name
         $data->chargebackaccount = $this->chargebackaccount; // Event name
         $data->date = strftime(get_string('strftimelongdate', 'local_order'), $this->starttime);
+        $data->date_short = date('m/d/Y', $this->starttime);
         $data->start_time = strftime(get_string('strftime', 'local_order'), $this->starttime);
         $data->end_time = strftime(get_string('strftime', 'local_order'), $this->endtime);
         $data->event_type = $this->get_event_type();
