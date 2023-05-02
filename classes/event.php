@@ -588,6 +588,7 @@ class event extends crud
                                     name DESC";
                 $i = 0;
                 $inventory[$s]['section'] = $section->section;
+                $inventory[$s]['subtotal'] = $this->get_subtotal_cost_by_item_section($event_category_id, $section->section);
                 $items = [];
                 if ($inventory_items = $DB->get_records_sql($section_sql, [$event_category_id, $section->section])) {
                     // Set currency object (Format number)
@@ -782,6 +783,19 @@ class event extends crud
             }
         }
 
+    }
+
+    /**
+     * @param $event_category_id
+     * @param $section
+     * @return mixed
+     * @throws \dml_exception
+     */
+    public function get_subtotal_cost_by_item_section($event_category_id, $section = '') {
+        global $DB;
+        $sql = "SELECT SUM(cost) as amount FROM {order_event_inventory} WHERE eventcategoryid = $event_category_id AND section = '$section'";
+        $result = $DB->get_record_sql($sql);
+        return $result->amount;
     }
 
     /**
@@ -1164,7 +1178,6 @@ class event extends crud
                 $title = get_string('audio_visual_order', 'local_order');
                 break;
             case 2:
-
                 $title = get_string('catering_order', 'local_order');
                 break;
             case 3:
