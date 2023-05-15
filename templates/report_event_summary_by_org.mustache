@@ -4,10 +4,21 @@
             <label for="local-order-organization">{{#str}}organization, local_order{{/str}}</label>
             <select id="local-order-organization" class="form-control">
                 <option value="">{{#str}}select, local_order{{/str}}</option>
+                <option value="0">All (Excel only)</option>
                 {{#organizations}}
                     <option value="{{value}}">{{text}}</option>
                 {{/organizations}}
             </select>
+        </div>
+    </div>
+    <div id="export-button-container" class="row mt-3" style="display: none;">
+        <div class="col">
+            <button type="button" id="export-to-pdf" class="btn btn-outline-danger">
+                PDF
+            </button>
+            <button type="button" id="export-to-xls" class="btn btn-outline-success">
+                XLSX
+            </button>
         </div>
     </div>
 </div>

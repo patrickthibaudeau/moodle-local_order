@@ -24,7 +24,6 @@ $sheet = $spreadsheet->getActiveSheet();
 $sheet->fromArray($columns, 'A1');
 
 $ORGANIZATION = new organization($id);
-$data = [];
 
 $filename = 'association_order_' . $ORGANIZATION->get_code() . '.xlsx';
 
