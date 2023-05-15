@@ -1,8 +1,9 @@
 <?php
 include_once('../../../config.php');
+require_once($CFG->libdir . '/phpspreadsheet/vendor/autoload.php');
 
-use local_order\events;
-use local_order\event;
+use local_order\organizations;
+use local_order\organization;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -14,162 +15,116 @@ $context = context_system::instance();
 $PAGE->set_context($context);
 
 $id = optional_param('id', 0, PARAM_INT);
-$inventory_category_id = optional_param('icid', 0, PARAM_INT);
-$daterange = optional_param('daterange', date('m/d/Y - m/d/Y', time()), PARAM_TEXT); // event id
-$building = optional_param('building', '', PARAM_TEXT);
-$room = optional_param('room', '', PARAM_TEXT);
-$status = optional_param('status', -1, PARAM_INT);
-$organization = optional_param('organization', -1, PARAM_INT);
-switch ($inventory_category_id) {
-    case 1:
-        $filename = 'congress_' . date('Y', time()) . '_export_av.csv';
-        break;
-    case 2:
-        $filename = 'congress_' . date('Y', time()) . '_export_catering.csv';
-        break;
-    case 3:
-        $filename = 'congress_' . date('Y', time()) . '_export_furnishing.csv';
-        break;
-    default:
-        $filename = 'congress_' . date('Y', time()) . 'all_export.csv';
-        break;
-}
 
-$columns = set_columns($inventory_category_id);
-// tell the browser it's going to be a csv file
-header('Content-type: text/csv;');
-// tell the browser we want to save it instead of displaying it
-header('Content-Disposition: attachment; filename="' . $filename . '";');
-// Open a file for writing
 
-$fp = fopen('php://output', 'w');
-// Put column names first
-fputcsv($fp, $columns);
+$columns = set_columns();
 
-if ($id) {
-    $EVENT = new event($id);
+$spreadsheet = new Spreadsheet();
+$sheet = $spreadsheet->getActiveSheet();
+$sheet->fromArray($columns, 'A1');
 
-    // Get event data
-    $data = $EVENT->get_data_for_pdf($inventory_category_id);
-    // Prepare data for CSV row
-    $event_data = prepare_data_single_event($data, $columns, $inventory_category_id);
+$ORGANIZATION = new organization($id);
+$data = [];
+
+$filename = 'association_order_' . $ORGANIZATION->get_code() . '.xlsx';
+
+$data['organization'] = $ORGANIZATION->get_record();
+$cost_data = $ORGANIZATION->get_inventory_cost();
+$items = $cost_data->items;
 // Write each row of data to the file
-    fputcsv($fp, $event_data);
-    unset($EVENT);
 
-} else {
-    // Export all events based on date range
-    $EVENTS = new events();
-    $events = $EVENTS->get_event_ids_by_daterange($daterange, $building, $room, $status, $organization);
-    // loop through events
-    foreach ($events as $e) {
-        $EVENT = new event($e->id);
-        // get event inventory category
-        // Get event data
-        $data = $EVENT->get_data_for_pdf($inventory_category_id);
-        // Prepare data for CSV row
-        $event_data = prepare_data_single_event($data, $columns, $inventory_category_id);
-
-        fputcsv($fp, $event_data);
-        unset($EVENT);
-    }
+$cell_letter = "B";
+$i = 2;
+foreach ($items as $item) {
+    $sheet->setCellValue('A' . $i, $ORGANIZATION->get_name());
+    $sheet->setCellValue('B' . $i, $item->name);
+    $sheet->setCellValue('C' . $i, $item->quantity);
+    $sheet->setCellValue('D' . $i, $item->cost);
+    $i++;
 }
+$sheet->setCellValue('C' . $i, 'Subtotal');
+$sheet->setCellValue('D' . $i, $cost_data->subtotal);
+$sheet->setCellValue('C' . ++$i, 'Taxes');
+$sheet->setCellValue('D' . $i, $cost_data->taxes);
+$sheet->setCellValue('C' . ++$i, 'Total');
+$sheet->setCellValue('D' . $i, $cost_data->total);
+$sheet->setCellValue('C' . ++$i, 'Cost-Centre');
+$sheet->setCellValue('D' . $i, $ORGANIZATION->get_costcentre());
+$sheet->setCellValue('C' . ++$i, 'HST Number');
+$sheet->setCellValue('D' . $i, $CFG->local_order_hst_number);
 
-// Close the file
-fclose($fp);
+unset($ORGANIZATION);
+
+
+$writer = new Xlsx($spreadsheet);
+header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+header('Content-Disposition: attachment; filename="' . urlencode($filename) . '"');
+$writer->save('php://output');
+
 
 function set_columns($inventory_category_id = 0)
 {
     global $DB;
 
-// Get all inventory items as columns by category
-    if ($inventory_category_id == 0 || $inventory_category_id == 1) {
-        $av_inventory = $DB->get_records('order_inventory', ['inventorycategoryid' => 1]);
-    }
-    if ($inventory_category_id == 0 || $inventory_category_id == 2) {
-        $catering_inventory = $DB->get_records('order_inventory', ['inventorycategoryid' => 2], 'name DESC');
-    }
-    if ($inventory_category_id == 0 || $inventory_category_id == 3) {
-        $furnishing_inventory = $DB->get_records('order_inventory', ['inventorycategoryid' => 3]);
-    }
 
     $columns = array();
-    $columns[] = 'registration_id';
     $columns[] = 'association';
-    $columns[] = 'event_title';
-    $columns[] = 'date';
-    $columns[] = 'start_time';
-    $columns[] = 'end__time';
-    $columns[] = 'room';
-    $columns[] = 'setup_type';
-    $columns[] = 'setup_notes';
-    $columns[] = 'other_notes';
-    // Furnishing
-    if ($inventory_category_id == 0 || $inventory_category_id == 3) {
-        foreach ($furnishing_inventory as $fi) {
-            $columns[] = $fi->name;
-        }
-    }
-
-    // AV
-    if ($inventory_category_id == 0 || $inventory_category_id == 1) {
-        foreach ($av_inventory as $ai) {
-            $columns[] = $ai->name;
-        }
-    }
-    // Catering
-    if ($inventory_category_id == 0 || $inventory_category_id == 2) {
-        // For catering we must repeat for each meal
-        // Posisble numebr of meals is 4
-        // Meal 1
-        foreach ($catering_inventory as $ci) {
-            $columns[] = $ci->name;
-        }
-        // Meal 2
-        foreach ($catering_inventory as $ci) {
-            $columns[] = str_replace('1-', '2-', $ci->name);
-        }
-        // Meal 3
-        foreach ($catering_inventory as $ci) {
-            $columns[] = str_replace('1-', '3-', $ci->name);
-        }
-        // Meal 4
-        foreach ($catering_inventory as $ci) {
-            $columns[] = str_replace('1-', '4-', $ci->name);
-        }
-    }
-
-    if ($inventory_category_id == 0) {
-        $columns[] = 'cost';
-        $columns[] = 'taxes';
-        $columns[] = 'total';
-        $columns[] = 'chargebackaccount';
-        $columns[] = 'HST Number';
-    }
-
+    $columns[] = 'item';
+    $columns[] = 'quantity';
+    $columns[] = 'cost';
     return $columns;
 }
 
+/**
+ * @deprecated  No longer used. keeping it here for another excel.
+ * @param $event_data
+ * @param $columns
+ * @param $inventory_category_id
+ * @return array
+ */
 function prepare_data_single_event($event_data, $columns, $inventory_category_id = 0)
 {
     global $CFG;
+    print_object($event_data);
     $data = [];
+    $number_of_columns = count($columns);
+
+    $av_subtotal = 0.00;
+    $catering_subtotal = 0.00;
+    $furnishing_subtotal = 0.00;
 
     if ($inventory_category_id == 0 || $inventory_category_id == 1) {
         $av = @$event_data->inventory_items[0]->items[0]['items'];
+
+        if (isset($event_data->inventory_items[0]->items[0]['subtotal'])) {
+            $av_subtotal = $event_data->inventory_items[0]->items[0]['subtotal'];
+        }
     }
     if ($inventory_category_id == 0 || $inventory_category_id == 2) {
+
         if ($inventory_category_id == 2) {
             $catering = @$event_data->inventory_items[0]->items;
+            if (isset($event_data->inventory_items[0]->items[0]['subtotal'])) {
+                $catering_subtotal = $event_data->inventory_items[0]->items[0]['subtotal'];
+            }
         } else {
             $catering = @$event_data->inventory_items[1]->items;
+            if (isset($event_data->inventory_items[1]->items[0]['subtotal'])) {
+                $catering_subtotal = $event_data->inventory_items[1]->items[0]['subtotal'];
+            }
         }
     }
     if ($inventory_category_id == 0 || $inventory_category_id == 3) {
         if ($inventory_category_id == 3) {
             $furnishing = @$event_data->inventory_items[0]->items[0]['items'];
+            if (isset($event_data->inventory_items[0]->items[0]['subtotal'])) {
+                $furnishing_subtotal = $event_data->inventory_items[0]->items[0]['subtotal'];
+            }
         } else {
             $furnishing = @$event_data->inventory_items[2]->items[0]['items'];
+            if (isset($event_data->inventory_items[2]->items[0]['subtotal'])) {
+                $furnishing_subtotal = $event_data->inventory_items[2]->items[0]['subtotal'];
+            }
         }
 
     }
@@ -193,13 +148,16 @@ function prepare_data_single_event($event_data, $columns, $inventory_category_id
     }
 
     if ($inventory_category_id == 0) {
-        $data[429] = $event_data->cost;
-        $data[430] = $event_data->taxes;
-        $data[431] = $event_data->total_cost;
-        $data[432] = $event_data->organization->costcentre . '-'
+        $data[$number_of_columns - 8] = ''; // AV subtotal
+        $data[$number_of_columns - 7] = ''; // Catering subtotal
+        $data[$number_of_columns - 6] = ''; // Furnishing subtotal
+        $data[$number_of_columns - 5] = $event_data->cost;
+        $data[$number_of_columns - 4] = $event_data->taxes;
+        $data[$number_of_columns - 3] = $event_data->total_cost;
+        $data[$number_of_columns - 2] = $event_data->organization->costcentre . '-'
             . $event_data->organization->fund . '-'
             . $event_data->organization->activitycode;
-        $data[433] = $CFG->local_order_hst_number;
+        $data[$number_of_columns - 1] = $CFG->local_order_hst_number;
     }
 
 
@@ -209,6 +167,9 @@ function prepare_data_single_event($event_data, $columns, $inventory_category_id
             foreach ($furnishing as $f) {
                 $key = array_search(trim($f->name), $columns);
                 $data[$key] = trim($f->quantity . ' ' . $f->description);
+                if ($inventory_category_id == 0) {
+                    $data[$number_of_columns - 6] = $furnishing_subtotal;
+                }
             }
         }
     }
@@ -220,12 +181,16 @@ function prepare_data_single_event($event_data, $columns, $inventory_category_id
             foreach ($av as $a) {
                 $key = array_search(trim($a->name), $columns);
                 $data[$key] = trim($a->quantity . ' ' . $a->description);
+                if ($inventory_category_id == 0) {
+                    $data[$number_of_columns - 8] = $av_subtotal;
+                }
             }
         }
     }
 
     if ($inventory_category_id == 0 || $inventory_category_id == 2) {
         if (isset($catering)) {
+
             foreach ($catering as $section_key => $section) {
                 $section_key = $section_key + 1;
                 $items = $section['items'];
@@ -233,6 +198,9 @@ function prepare_data_single_event($event_data, $columns, $inventory_category_id
                     $name = str_replace('1-', $section_key . '-', $c->name);
                     $key = array_search(trim($name), $columns);
                     $data[$key] = trim(str_replace('1 ', '', $c->quantity . ' ' . $c->description));
+                    if ($inventory_category_id == 0) {
+                        $data[$number_of_columns - 7] = $catering_subtotal;
+                    }
                 }
             }
         }

@@ -39,7 +39,6 @@ $pdf->SetAutoPageBreak(TRUE, 0.5);
 
 $pdf->SetFont('times', '', 10);
 
-
     $ORGANIZATION = new organization($id);
     $data = [];
 
