@@ -554,6 +554,7 @@ class organization extends crud {
                 $items[$i] = new \stdClass();
                 $items[$i]->name = preg_replace ("/^1-/", "", $result->name, 1);
                 $items[$i]->cost = $amount->format($result->cost);
+                $items[$i]->cost_as_number = $result->cost;
                 $items[$i]->quantity = $result->total;
                 $total_cost += $result->cost;
                 $i++;

@@ -4,6 +4,7 @@ require_once($CFG->libdir . '/phpspreadsheet/vendor/autoload.php');
 
 use local_order\organizations;
 use local_order\organization;
+use local_order\helper;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -38,15 +39,27 @@ foreach ($items as $item) {
     $sheet->setCellValue('A' . $i, $ORGANIZATION->get_name());
     $sheet->setCellValue('B' . $i, $item->name);
     $sheet->setCellValue('C' . $i, $item->quantity);
-    $sheet->setCellValue('D' . $i, $item->cost);
+    $sheet->setCellValue('D' . $i, helper::convert_to_float($item->cost));
+    $sheet->getStyle("D$i")
+        ->getNumberFormat()
+        ->setFormatCode(PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
     $i++;
 }
 $sheet->setCellValue('C' . $i, 'Subtotal');
-$sheet->setCellValue('D' . $i, $cost_data->subtotal);
+$sheet->setCellValue('D' . $i, helper::convert_to_float($cost_data->subtotal));
+$sheet->getStyle("D$i")
+    ->getNumberFormat()
+    ->setFormatCode(PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
 $sheet->setCellValue('C' . ++$i, 'Taxes');
-$sheet->setCellValue('D' . $i, $cost_data->taxes);
+$sheet->setCellValue('D' . $i, helper::convert_to_float($cost_data->taxes));
+$sheet->getStyle("D$i")
+    ->getNumberFormat()
+    ->setFormatCode(PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
 $sheet->setCellValue('C' . ++$i, 'Total');
-$sheet->setCellValue('D' . $i, $cost_data->total);
+$sheet->setCellValue('D' . $i, helper::convert_to_float($cost_data->total));
+$sheet->getStyle("D$i")
+    ->getNumberFormat()
+    ->setFormatCode(PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
 $sheet->setCellValue('C' . ++$i, 'Cost-Centre');
 $sheet->setCellValue('D' . $i, $ORGANIZATION->get_costcentre());
 $sheet->setCellValue('C' . ++$i, 'HST Number');

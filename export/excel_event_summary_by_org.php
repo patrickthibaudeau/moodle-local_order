@@ -4,6 +4,7 @@ require_once($CFG->libdir . '/phpspreadsheet/vendor/autoload.php');
 
 use local_order\organizations;
 use local_order\organization;
+use local_order\helper;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -22,6 +23,9 @@ $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
 $sheet->fromArray($columns, 'A1');
 
+
+
+
 if ($id > 0) {
     $ORGANIZATION = new organization($id);
     $cost_data = $ORGANIZATION->get_inventory_cost();
@@ -31,14 +35,18 @@ if ($id > 0) {
 
 // Write each row of data to the file
     $sheet->setCellValue('A2', $ORGANIZATION->get_name());
-    $sheet->setCellValue('B2', (float)str_replace('$', '', $ORGANIZATION->get_inventory_cost_per_category('AV')));
-    $sheet->setCellValue('C2', (float)str_replace('$', '', $ORGANIZATION->get_inventory_cost_per_category('C')));
-    $sheet->setCellValue('D2', (float)str_replace('$', '', $ORGANIZATION->get_inventory_cost_per_category('F')));
-    $sheet->setCellValue('E2', (float)str_replace('$', '', $cost_data->subtotal));
-    $sheet->setCellValue('F2', (float)str_replace('$', '', $cost_data->taxes));
-    $sheet->setCellValue('G2', (float)str_replace('$', '', $cost_data->total));
+    $sheet->setCellValue('B2', helper::convert_to_float($ORGANIZATION->get_inventory_cost_per_category('AV')));
+    $sheet->setCellValue('C2', helper::convert_to_float($ORGANIZATION->get_inventory_cost_per_category('C')));
+    $sheet->setCellValue('D2', helper::convert_to_float($ORGANIZATION->get_inventory_cost_per_category('F')));
+    $sheet->setCellValue('E2', helper::convert_to_float($cost_data->subtotal));
+    $sheet->setCellValue('F2', helper::convert_to_float($cost_data->taxes));
+    $sheet->setCellValue('G2', helper::convert_to_float($cost_data->total));
     $sheet->setCellValue('H2', $ORGANIZATION->get_costcentre());
     $sheet->setCellValue('I2', $CFG->local_order_hst_number);
+
+    $sheet->getStyle('B2:G2')
+        ->getNumberFormat()
+        ->setFormatCode(PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
 
     unset($ORGANIZATION);
 } else {
@@ -54,14 +62,18 @@ if ($id > 0) {
 
 // Write each row of data to the file
         $sheet->setCellValue('A' . $i, $ORGANIZATION->get_name());
-        $sheet->setCellValue('B' . $i, (float)str_replace('$', '', $ORGANIZATION->get_inventory_cost_per_category('AV')));
-        $sheet->setCellValue('C' . $i, (float)str_replace('$', '', $ORGANIZATION->get_inventory_cost_per_category('C')));
-        $sheet->setCellValue('D' . $i, (float)str_replace('$', '', $ORGANIZATION->get_inventory_cost_per_category('F')));
-        $sheet->setCellValue('E' . $i, (float)str_replace('$', '', $cost_data->subtotal));
-        $sheet->setCellValue('F' . $i, (float)str_replace('$', '', $cost_data->taxes));
-        $sheet->setCellValue('G' . $i, (float)str_replace('$', '', $cost_data->total));
+        $sheet->setCellValue('B' . $i, helper::convert_to_float($ORGANIZATION->get_inventory_cost_per_category('AV')));
+        $sheet->setCellValue('C' . $i, helper::convert_to_float($ORGANIZATION->get_inventory_cost_per_category('C')));
+        $sheet->setCellValue('D' . $i, helper::convert_to_float($ORGANIZATION->get_inventory_cost_per_category('F')));
+        $sheet->setCellValue('E' . $i, helper::convert_to_float($cost_data->subtotal));
+        $sheet->setCellValue('F' . $i, helper::convert_to_float($cost_data->taxes));
+        $sheet->setCellValue('G' . $i, helper::convert_to_float($cost_data->total));
         $sheet->setCellValue('H' . $i, $ORGANIZATION->get_costcentre());
         $sheet->setCellValue('I' . $i, $CFG->local_order_hst_number);
+
+        $sheet->getStyle("B$i:G$i")
+            ->getNumberFormat()
+            ->setFormatCode(PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
         $i++;
     }
     unset($ORGANIZATION);
