@@ -67,8 +67,9 @@ if ($id) {
         $data = $EVENT->get_data_for_pdf($inventory_category_id);
         // Prepare data for CSV row
         $event_data = prepare_data_single_event($data, $columns, $inventory_category_id);
-
-        fputcsv($fp, $event_data);
+        if (count($event_data) > 0) {
+            fputcsv($fp, $event_data);
+        }
         unset($EVENT);
     }
 }
@@ -152,15 +153,25 @@ function prepare_data_single_event($event_data, $columns, $inventory_category_id
 {
     global $CFG;
     $data = [];
+    $has_av = false; // Is there AV available
+    $has_catering = false; // Is there catering available
+    $has_furnishing = false; // Is there furnishing available
+    $print_data = false; // Should data be added to data array
 
     if ($inventory_category_id == 0 || $inventory_category_id == 1) {
         $av = @$event_data->inventory_items[0]->items[0]['items'];
+        if (count($av) > 0) {
+            $has_av = true;
+        }
     }
     if ($inventory_category_id == 0 || $inventory_category_id == 2) {
         if ($inventory_category_id == 2) {
             $catering = @$event_data->inventory_items[0]->items;
         } else {
             $catering = @$event_data->inventory_items[1]->items;
+        }
+        if (count($catering) > 0) {
+            $has_catering = true;
         }
     }
     if ($inventory_category_id == 0 || $inventory_category_id == 3) {
@@ -169,68 +180,77 @@ function prepare_data_single_event($event_data, $columns, $inventory_category_id
         } else {
             $furnishing = @$event_data->inventory_items[2]->items[0]['items'];
         }
-
-    }
-
-//print_object($event_data);
-    $data[] = $event_data->code;
-    $data[] = $event_data->organization->code . ' - ' . $event_data->organization->name;
-    $data[] = $event_data->name;
-    $data[] = $event_data->date_short;
-    $data[] = $event_data->start_time;
-    $data[] = $event_data->end_time;
-    $data[] = $event_data->room;
-    $data[] = $event_data->setup_type;
-    $data[] = $event_data->setup_notes;
-    $data[] = $event_data->other_notes;
-
-    for ($i = 10; $i < count($columns); $i++) {
-        if (!isset($data[$i])) {
-            $data[$i] = '';
+        if (count($furnishing) > 0) {
+            $has_furnishing = true;
         }
     }
 
-    if ($inventory_category_id == 0) {
-        $data[429] = $event_data->cost;
-        $data[430] = $event_data->taxes;
-        $data[431] = $event_data->total_cost;
-        $data[432] = $event_data->organization->costcentre . '-'
-            . $event_data->organization->fund . '-'
-            . $event_data->organization->activitycode;
-        $data[433] = $CFG->local_order_hst_number;
+    if ($inventory_category_id != 0 && ($has_av || $has_catering || $has_furnishing)) {
+        $print_data = true;
+    } else if ($inventory_category_id == 0) {
+        $print_data = true;
     }
 
+    if ($print_data) {
+        $data[] = $event_data->code;
+        $data[] = $event_data->organization->code . ' - ' . $event_data->organization->name;
+        $data[] = $event_data->name;
+        $data[] = $event_data->date_short;
+        $data[] = $event_data->start_time;
+        $data[] = $event_data->end_time;
+        $data[] = $event_data->room;
+        $data[] = $event_data->setup_type;
+        $data[] = $event_data->setup_notes;
+        $data[] = $event_data->other_notes;
 
-    // Get furnishing Data
-    if ($inventory_category_id == 0 || $inventory_category_id == 3) {
-        if (isset($furnishing)) {
-            foreach ($furnishing as $f) {
-                $key = array_search(trim($f->name), $columns);
-                $data[$key] = trim($f->quantity . ' ' . $f->description);
+        for ($i = 10; $i < count($columns); $i++) {
+            if (!isset($data[$i])) {
+                $data[$i] = '';
             }
         }
-    }
+
+        if ($inventory_category_id == 0) {
+            $data[429] = $event_data->cost;
+            $data[430] = $event_data->taxes;
+            $data[431] = $event_data->total_cost;
+            $data[432] = $event_data->organization->costcentre . '-'
+                . $event_data->organization->fund . '-'
+                . $event_data->organization->activitycode;
+            $data[433] = $CFG->local_order_hst_number;
+        }
 
 
-    //Get AV Data
-    if ($inventory_category_id == 0 || $inventory_category_id == 1) {
-        if (isset($av)) {
-            foreach ($av as $a) {
-                $key = array_search(trim($a->name), $columns);
-                $data[$key] = trim($a->quantity . ' ' . $a->description);
+        // Get furnishing Data
+        if ($inventory_category_id == 0 || $inventory_category_id == 3) {
+            if (isset($furnishing)) {
+                foreach ($furnishing as $f) {
+                    $key = array_search(trim($f->name), $columns);
+                    $data[$key] = trim($f->quantity . ' ' . $f->description);
+                }
             }
         }
-    }
 
-    if ($inventory_category_id == 0 || $inventory_category_id == 2) {
-        if (isset($catering)) {
-            foreach ($catering as $section_key => $section) {
-                $section_key = $section_key + 1;
-                $items = $section['items'];
-                foreach ($items as $item_key => $c) {
-                    $name = str_replace('1-', $section_key . '-', $c->name);
-                    $key = array_search(trim($name), $columns);
-                    $data[$key] = trim(str_replace('1 ', '', $c->quantity . ' ' . $c->description));
+
+        //Get AV Data
+        if ($inventory_category_id == 0 || $inventory_category_id == 1) {
+            if (isset($av)) {
+                foreach ($av as $a) {
+                    $key = array_search(trim($a->name), $columns);
+                    $data[$key] = trim($a->quantity . ' ' . $a->description);
+                }
+            }
+        }
+
+        if ($inventory_category_id == 0 || $inventory_category_id == 2) {
+            if (isset($catering)) {
+                foreach ($catering as $section_key => $section) {
+                    $section_key = $section_key + 1;
+                    $items = $section['items'];
+                    foreach ($items as $item_key => $c) {
+                        $name = str_replace('1-', $section_key . '-', $c->name);
+                        $key = array_search(trim($name), $columns);
+                        $data[$key] = trim(str_replace('1 ', '', $c->quantity . ' ' . $c->description));
+                    }
                 }
             }
         }
