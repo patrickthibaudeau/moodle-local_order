@@ -1172,7 +1172,7 @@ class event extends crud
         $data = new \stdClass();
         $amount = new \NumberFormatter(get_string('currency_locale', 'local_order'),
             \NumberFormatter::CURRENCY);
-        // Sett the title for the page based on inventory category
+        // Set the title for the page based on inventory category
         switch ($inventory_category_id) {
             case 1:
                 $title = get_string('audio_visual_order', 'local_order');
@@ -1194,6 +1194,11 @@ class event extends crud
         } else {
             $even_category_id = 0;
         }
+
+        if ($this->status == 3) {
+            $title .= ' ' . strtoupper(get_string('cancelled', 'local_order'));
+        }
+
         $data->title = $title;
         $data->code = $this->code; // Event name
         $data->name = $this->name; // Event name
