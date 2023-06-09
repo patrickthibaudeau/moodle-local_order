@@ -13,10 +13,44 @@
  * *************************************************************************
  * ************************************************************************ */
 
-defined('MOODLE_INTERNAL') || die();
+namespace local_order\output;
 
-$plugin->version = 2023060800;
-$plugin->component = 'local_order';
-$plugin->release = '1.1.7';
-$plugin->requires = 2022041904;
-$plugin->maturity = MATURITY_STABLE;
+use local_order\vendors;
+
+
+class report_event_cost_by_vendor implements \renderable, \templatable {
+
+    /**
+     * @var string
+     */
+    private $date_range;
+
+    public function __construct() {
+        }
+
+    /**
+     * 
+     * @global type $USER
+     * @global type $CFG
+     * @global \moodle_database $DB
+     * @param \renderer_base $output
+     * @return type
+     */
+    public function export_for_template(\renderer_base $output) {
+        global $USER, $CFG, $DB;
+        $can_edit = false;
+        $context = \context_system::instance();
+
+        if (has_capability('local/order:reports_view', $context)) {
+           $can_edit = true;
+        }
+
+        $VENDORS = new vendors();
+        $data = [
+            'vendors' => $VENDORS->get_vendors_for_template(),
+        ];
+
+        return $data;
+    }
+
+}

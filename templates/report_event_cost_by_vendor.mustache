@@ -1,0 +1,23 @@
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <label for="local-order-vednor">{{#str}}vendor, local_order{{/str}}</label>
+            <select id="local-order-vendor" class="form-control">
+                <option value="">{{#str}}select, local_order{{/str}}</option>
+                {{#vendors}}
+                    <option value="{{value}}">{{text}}</option>
+                {{/vendors}}
+            </select>
+        </div>
+    </div>
+    <div id="export-button-container" class="row mt-3" style="display: none;">
+        <div class="col">
+<!--            <button type="button" id="export-to-pdf" class="btn btn-outline-danger">-->
+<!--                PDF-->
+<!--            </button>-->
+            <button type="button" id="export-to-xls" class="btn btn-outline-success">
+                XLSX
+            </button>
+        </div>
+    </div>
+</div>

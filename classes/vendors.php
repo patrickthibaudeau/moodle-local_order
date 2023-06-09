@@ -151,4 +151,35 @@ class vendors {
 
     }
 
+    /**
+     * return organizations for template
+     * @param $organization
+     * @return array
+     * @throws \dml_exception
+     */
+    public function get_vendors_for_template($vendor = null) {
+        global $DB;
+        $sql = "Select 
+                    id, 
+                    name
+                From 
+                    {order_vendor}
+                Where
+                    deleted = 0
+                ORDER BY name";
+        $results = $DB->get_records_sql($sql);
+        $vendors = [];
+        $i = 0;
+        foreach ($results as $r) {
+            $vendors[$i]['text'] = $r->name;
+            $vendors[$i]['value'] = $r->id;
+            if ($vendor == $r->id) {
+                $vendor[$i]['selected'] = true;
+            }
+            $i++;
+        }
+
+        return $vendors;
+    }
+
 }
