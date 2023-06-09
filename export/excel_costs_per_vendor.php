@@ -28,8 +28,6 @@ $columns = [
     'Association Code',
     'Category',
     'Description',
-    'Quantity',
-    'Cost',
     'Subtotal',
     'Taxes',
     'Total'
@@ -48,8 +46,6 @@ $sql = "Select
     o.code As association_code,
     eic.name As category,
     ei.name As description,
-    ei.quantity,
-    ei.cost,
     ei.cost As subtotal,
     (ei.cost * 0.13) As taxes,
     (ei.cost + (ei.cost * 0.13)) As total
@@ -80,21 +76,16 @@ foreach ($results as $result) {
     $sheet->setCellValue('F' . $i, $result->association_code);
     $sheet->setCellValue('G' . $i, $result->category);
     $sheet->setCellValue('H' . $i, $result->description);
-    $sheet->setCellValue('I' . $i, $result->quantity);
-    $sheet->setCellValue('J' . $i, helper::convert_to_float($result->cost));
+    $sheet->setCellValue('I' . $i, helper::convert_to_float($result->subtotal));
+    $sheet->getStyle("I$i")
+        ->getNumberFormat()
+        ->setFormatCode(PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
+    $sheet->setCellValue('J' . $i, helper::convert_to_float($result->taxes));
     $sheet->getStyle("J$i")
         ->getNumberFormat()
         ->setFormatCode(PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
-    $sheet->setCellValue('K' . $i, helper::convert_to_float($result->subtotal));
+    $sheet->setCellValue('K' . $i, helper::convert_to_float($result->total));
     $sheet->getStyle("K$i")
-        ->getNumberFormat()
-        ->setFormatCode(PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
-    $sheet->setCellValue('L' . $i, helper::convert_to_float($result->taxes));
-    $sheet->getStyle("L$i")
-        ->getNumberFormat()
-        ->setFormatCode(PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
-    $sheet->setCellValue('M' . $i, helper::convert_to_float($result->total));
-    $sheet->getStyle("M$i")
         ->getNumberFormat()
         ->setFormatCode(PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
     $subtotal = $subtotal + $result->subtotal;
@@ -103,16 +94,16 @@ foreach ($results as $result) {
     $i++;
 }
 
-$sheet->setCellValue('K' . $i, $subtotal);
+$sheet->setCellValue('I' . $i, $subtotal);
+$sheet->getStyle("I$i")
+    ->getNumberFormat()
+    ->setFormatCode(PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
+$sheet->setCellValue('J' . $i, $taxes);
+$sheet->getStyle("J$i")
+    ->getNumberFormat()
+    ->setFormatCode(PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
+$sheet->setCellValue('K' . $i, $total);
 $sheet->getStyle("K$i")
-    ->getNumberFormat()
-    ->setFormatCode(PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
-$sheet->setCellValue('L' . $i, $taxes);
-$sheet->getStyle("L$i")
-    ->getNumberFormat()
-    ->setFormatCode(PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
-$sheet->setCellValue('M' . $i, $total);
-$sheet->getStyle("M$i")
     ->getNumberFormat()
     ->setFormatCode(PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
 
