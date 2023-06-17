@@ -17,7 +17,17 @@ $PAGE->set_context($context);
 
 $id = required_param('id', PARAM_INT);
 
-$columns = ['Association', 'AV', 'Catering', 'Furnishing', 'Subtotal', 'Taxes', 'Total', 'Cost-Centre', 'HST Number'];
+$columns = ['Association',
+    'AV',
+    'Catering',
+    'Furnishing',
+    'Subtotal',
+    'Taxes',
+    'Total',
+    'Cost-Centre',
+    'Fund',
+    'Activity code',
+    'HST Number'];
 
 $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
@@ -42,7 +52,9 @@ if ($id > 0) {
     $sheet->setCellValue('F2', helper::convert_to_float($cost_data->taxes));
     $sheet->setCellValue('G2', helper::convert_to_float($cost_data->total));
     $sheet->setCellValue('H2', $ORGANIZATION->get_costcentre());
-    $sheet->setCellValue('I2', $CFG->local_order_hst_number);
+    $sheet->setCellValue('I2', $ORGANIZATION->get_fund());
+    $sheet->setCellValue('J2', $ORGANIZATION->get_activitycode());
+    $sheet->setCellValue('K2', $CFG->local_order_hst_number);
 
     $sheet->getStyle('B2:G2')
         ->getNumberFormat()
@@ -69,7 +81,9 @@ if ($id > 0) {
         $sheet->setCellValue('F' . $i, helper::convert_to_float($cost_data->taxes));
         $sheet->setCellValue('G' . $i, helper::convert_to_float($cost_data->total));
         $sheet->setCellValue('H' . $i, $ORGANIZATION->get_costcentre());
-        $sheet->setCellValue('I' . $i, $CFG->local_order_hst_number);
+        $sheet->setCellValue('I' . $i, $ORGANIZATION->get_fund());
+        $sheet->setCellValue('J' . $i, $ORGANIZATION->get_activitycode());
+        $sheet->setCellValue('K' . $i, $CFG->local_order_hst_number);
 
         $sheet->getStyle("B$i:G$i")
             ->getNumberFormat()
